@@ -10,7 +10,7 @@ type questionRepositoryPostgres struct {
 }
 
 func NewQuestionRepositoryPostgres(db *gorm.DB) QuestionRepository {
-	err := db.AutoMigrate(&QuestionOption{}, &Question{})
+	err := db.AutoMigrate(&Question{}, &QuestionOption{})
 	if err != nil {
 		log.Fatal(err)
 	}
