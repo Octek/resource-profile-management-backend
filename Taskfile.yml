@@ -1,0 +1,39 @@
+version: "3.0"
+
+tasks:
+  default:
+    cmds:
+#      - task: swagger
+      - go mod tidy
+      - |     
+        export DB_SERVICE_DIALECT=postgres
+        export DB_SERVICE_CONNECTION_STRING="host=localhost port=8007 user=postgres dbname=profile-management password=password sslmode=disable"
+        export S3_BUCKET_NAME=skoopsignage-dev
+        export SERVER_PORT=4001
+        
+        export SWAGGER_HOST_URL=localhost:4001
+        go run .
+  swagger:
+    cmds:
+      - swag init --parseDependency
+
+  setup:
+    cmds:
+      - go mod tidy
+      - go get github.com/swaggo/files@v0.0.0-20190704085106-630677cd5c14
+      - go get -u github.com/swaggo/swag/cmd/swag
+      - go get -u github.com/go-swagger/go-swagger/cmd/swagger
+      - go get -u gopkg.in/square/go-jose.v2@v2.5.1
+      - go mod download github.com/alecthomas/template
+      - go get -u github.com/gin-gonic/gin/binding@v1.7.0
+      - go get github.com/gin-gonic/gin@v1.7.0
+      - go get -u golang.org/x/image/bmp
+      - go get -u golang.org/x/image/tiff
+      - go get -u github.com/liujiawm/graphics-go/graphics
+      - go get -u golang.org/x/net/html
+      - go get -u github.com/nicksnyder/go-i18n/v2/i18n
+
+
+
+
+
