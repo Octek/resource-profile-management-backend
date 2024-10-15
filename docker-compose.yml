@@ -1,0 +1,24 @@
+version: "3.5"
+
+services:
+  db:
+    image: "postgres"
+    restart: always
+    container_name: profile-management-db
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_DB: "profile-management"
+      POSTGRES_PASSWORD: password
+    volumes:
+      - profile-management-db-data:/var/lib/postgresql/data/
+    ports:
+      - 8007:5432
+
+
+volumes:
+  profile-management-db-data:
+
+# Networks to be created to facilitate communication between containers
+networks:
+  fullstack:
+    driver: bridge
