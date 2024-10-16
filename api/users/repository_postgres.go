@@ -63,7 +63,7 @@ func (repo *userRepositoryPostgres) DeleteUserByUserID(id uint) error {
 func (repo *userRepositoryPostgres) UpdateUserByUserID(id uint, user *User) (*User, error) {
 	if err := repo.db.Model(&User{}).Where("id = ?", id).Updates(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return &User{}, fmt.Errorf("organization meta data with ID %d not found", id)
+			return &User{}, fmt.Errorf("user with ID %d not found", id)
 		}
 		return &User{}, err
 	}
