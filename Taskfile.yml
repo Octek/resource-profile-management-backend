@@ -3,7 +3,7 @@ version: "3.0"
 tasks:
   default:
     cmds:
-#      - task: swagger
+      - task: swagger
       - go mod tidy
       - |     
         export DB_SERVICE_DIALECT=postgres

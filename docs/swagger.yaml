@@ -1,4 +1,119 @@
+definitions:
+  user.CreateUserRequest:
+    properties:
+      bio:
+        type: string
+      certifications:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      location:
+        type: string
+      mobile_number:
+        type: string
+      user_category_id:
+        type: integer
+      video_url:
+        type: string
+    required:
+    - email
+    - first_name
+    - last_name
+    - mobile_number
+    type: object
+  utils.ResponseMessage:
+    properties:
+      data: {}
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /user/get-all-user-list:
+    get:
+      consumes:
+      - application/json
+      description: get all user
+      operationId: get-all-user
+      parameters:
+      - description: example - 50
+        in: query
+        name: limit
+        type: integer
+      - description: example - godjilla
+        in: query
+        name: keyword
+        type: string
+      - description: example - 0
+        in: query
+        name: offset
+        type: integer
+      - description: example - created_at desc
+        in: query
+        name: orderBy
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all user
+      tags:
+      - user
+  /users/create-user:
+    post:
+      consumes:
+      - application/json
+      description: creates a new complete user
+      operationId: create-user
+      parameters:
+      - description: CreateUserRequest
+        in: body
+        name: CreateUserRequest
+        required: true
+        schema:
+          $ref: '#/definitions/user.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create user
+      tags:
+      - user
 swagger: "2.0"

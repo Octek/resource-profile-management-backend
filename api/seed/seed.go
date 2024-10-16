@@ -16,6 +16,7 @@ type Seed struct {
 
 type JsonData struct {
 	Categories []user.UserCategory
+	Role       []user.Role
 }
 
 func GetJSONFileData() JsonData {
@@ -36,4 +37,5 @@ func GetJSONFileData() JsonData {
 func SeedData(userService user.UserService) {
 	var jsonData = GetJSONFileData()
 	_ = userService.CreateCategories(jsonData.Categories)
+	_ = userService.CreateRoles(jsonData.Role)
 }
