@@ -5,6 +5,7 @@ import (
 	"github.com/Octek/resource-profile-management-backend.git/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
+	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 )
@@ -20,6 +21,15 @@ func Routes(router *gin.Engine, userSvc UserService) {
 		})
 		subRouter.GET("/get-all-user-list", func(c *gin.Context) {
 			GetAllUsersListHandler(userSvc, c)
+		})
+		subRouter.GET("/get-user-details/:id", func(c *gin.Context) {
+			GetUserDetailsByUserIdHandler(userSvc, c)
+		})
+		subRouter.DELETE("/delete-user/:id", func(c *gin.Context) {
+			DeleteUserByUserIdHandler(userSvc, c)
+		})
+		subRouter.PATCH("/update-user/:id", func(c *gin.Context) {
+			UpdateUserByUserIdHandler(userSvc, c)
 		})
 	}
 }
@@ -72,16 +82,16 @@ func CreateUserHandler(userSvc UserService, c *gin.Context) {
 		Certifications: createUserRequest.Certifications,
 		UserCategoryID: createUserRequest.UserCategoryID,
 	}
-	createdOrgMetaData, err := userSvc.CreateUser(&user)
+	createUser, err := userSvc.CreateUser(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: "Something went wrong while creating user.", Data: nil})
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "user created successfully.", Data: createdOrgMetaData})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "user created successfully.", Data: createUser})
 }
 
-type OrgMetaDataContent struct {
+type GetAllUsers struct {
 	RecordsFiltered int    `json:"records_filtered"`
 	Total           uint   `json:"total"`
 	User            []User `json:"user"`
@@ -135,5 +145,171 @@ func GetAllUsersListHandler(userSvc UserService, c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: OrgMetaDataContent{Total: total, User: allUsers, RecordsFiltered: len(allUsers)}})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: GetAllUsers{Total: total, User: allUsers, RecordsFiltered: len(allUsers)}})
+}
+
+// GetUserDetailsByUserIdHandler godoc
+// @Tags user
+// @Summary Get user details by id
+// @Description get user details by id
+// @ID get-user-details-by-id
+// @Accept  json
+// @Produce  json
+// @Param id path uint true "id"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /user/get-user-details/{id} [get]
+func GetUserDetailsByUserIdHandler(userSvc UserService, c *gin.Context) {
+	userId := c.Param("id")
+	userIdInt, _ := strconv.Atoi(userId)
+	userDetails, err := userSvc.GetUserDetailsByUserId(uint(userIdInt))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Cannot fetch user against provided ID:", err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: userDetails})
+}
+
+// DeleteUserByUserIdHandler godoc
+// @Tags user
+// @Summary Delete user by id
+// @Description delete user by id
+// @ID delete-user-by-id
+// @Accept  json
+// @Produce  json
+// @Param id path int true "id"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /user/delete-user{id} [delete]
+func DeleteUserByUserIdHandler(userSvc UserService, c *gin.Context) {
+	userId := c.Param("id")
+	userIdInt, _ := strconv.Atoi(userId)
+
+	statusCode := http.StatusInternalServerError
+	_, err := userSvc.GetUserDetailsByUserId(uint(userIdInt))
+	if err == gorm.ErrRecordNotFound {
+		statusCode = http.StatusNotFound
+	}
+	if err != nil {
+		c.JSON(statusCode, utils.ResponseMessage{StatusCode: statusCode, Message: fmt.Sprintf("Something went wrong while fetching data against given id: %v", err), Data: nil})
+		return
+	}
+
+	err = userSvc.DeleteUserByUserID(uint(userIdInt))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Unable to Delete user against provided id:", err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: nil})
+}
+
+type UpdateUser struct {
+	FirstName      string `json:"first_name"`
+	LastName       string `json:"last_name"`
+	Email          string `json:"email"`
+	MobileNumber   string `json:"mobile_number"`
+	Bio            string `json:"bio"`
+	Location       string `json:"location"`
+	VideoUrl       string `json:"video_url"`
+	Certifications string `json:"certifications"`
+	UserCategoryID uint   `json:"user_category_id"`
+}
+
+// UpdateUserByUserIdHandler godoc
+// @Tags user
+// @Summary Update user
+// @Description Updates user
+// @ID update-user
+// @Accept  json
+// @Produce  json
+// @Param id path uint true "id"
+// @Param UpdateUser body UpdateUser true "UpdateUser"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /user/update-user/{id} [patch]
+func UpdateUserByUserIdHandler(userSvc UserService, c *gin.Context) {
+	userId := c.Param("id")
+	userIdInt, _ := strconv.Atoi(userId)
+
+	updateUserRequest := UpdateUser{}
+	if err := c.ShouldBind(&updateUserRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Failed to bind user: %v", err), Data: nil})
+		return
+	}
+	if err := validate.Struct(updateUserRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
+		return
+	}
+	oldUserData, err := userSvc.GetUserDetailsByUserId(uint(userIdInt))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Something went wrong while fetching data against given id: %v", err), Data: nil})
+		return
+	}
+	hasChanges := false
+
+	if updateUserRequest.FirstName != "" && updateUserRequest.FirstName != oldUserData.FirstName {
+		oldUserData.FirstName = updateUserRequest.FirstName
+		hasChanges = true
+	}
+
+	if updateUserRequest.LastName != "" && updateUserRequest.LastName != oldUserData.LastName {
+		oldUserData.LastName = updateUserRequest.LastName
+		hasChanges = true
+	}
+
+	if updateUserRequest.Location != "" && updateUserRequest.Location != oldUserData.Location {
+		oldUserData.Location = updateUserRequest.Location
+		hasChanges = true
+	}
+
+	if updateUserRequest.Email != "" && updateUserRequest.Email != oldUserData.Email {
+		oldUserData.Email = updateUserRequest.Email
+		hasChanges = true
+	}
+
+	if updateUserRequest.VideoUrl != "" && updateUserRequest.VideoUrl != oldUserData.VideoUrl {
+		oldUserData.VideoUrl = updateUserRequest.VideoUrl
+		hasChanges = true
+	}
+
+	if updateUserRequest.MobileNumber != "" && updateUserRequest.MobileNumber != oldUserData.MobileNumber {
+		oldUserData.MobileNumber = updateUserRequest.MobileNumber
+		hasChanges = true
+	}
+
+	if updateUserRequest.Bio != "" && updateUserRequest.Bio != oldUserData.Bio {
+		oldUserData.Bio = updateUserRequest.Bio
+		hasChanges = true
+	}
+
+	if updateUserRequest.Certifications != "" && updateUserRequest.Certifications != oldUserData.Certifications {
+		oldUserData.Certifications = updateUserRequest.Certifications
+		hasChanges = true
+	}
+
+	if updateUserRequest.UserCategoryID != 0 && updateUserRequest.UserCategoryID != oldUserData.UserCategoryID {
+		oldUserData.UserCategoryID = updateUserRequest.UserCategoryID
+		hasChanges = true
+	}
+
+	if !hasChanges {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: " No updates made. The data already exists.", Data: nil})
+		return
+	}
+
+	updatedUser, err := userSvc.UpdateUserByUserID(oldUserData.ID, oldUserData)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: "Failed to update user.", Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "user updated successfully.", Data: updatedUser})
 }

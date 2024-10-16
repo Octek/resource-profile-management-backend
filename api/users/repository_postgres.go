@@ -1,6 +1,8 @@
 package user
 
 import (
+	"errors"
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"strings"
@@ -43,6 +45,30 @@ func (repo *userRepositoryPostgres) GetAllUser(keyword string, limit int, offset
 	}
 
 	return user, uint(total), nil
+}
+
+func (repo *userRepositoryPostgres) GetUserDetailsByUserId(id uint) (*User, error) {
+	var user User
+	err := repo.db.Model(&User{}).Where("id = ? AND deleted_at IS NULL", id).First(&user).Error
+
+	return &user, err
+}
+
+func (repo *userRepositoryPostgres) DeleteUserByUserID(id uint) error {
+	err := repo.db.Delete(&User{}, id).Error
+
+	return err
+}
+
+func (repo *userRepositoryPostgres) UpdateUserByUserID(id uint, user *User) (*User, error) {
+	if err := repo.db.Model(&User{}).Where("id = ?", id).Updates(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return &User{}, fmt.Errorf("organization meta data with ID %d not found", id)
+		}
+		return &User{}, err
+	}
+
+	return user, nil
 }
 
 func (repo *userRepositoryPostgres) createCategories(jsonData []UserCategory) error {

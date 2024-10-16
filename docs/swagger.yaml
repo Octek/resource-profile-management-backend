@@ -25,6 +25,27 @@ definitions:
     - last_name
     - mobile_number
     type: object
+  user.UpdateUser:
+    properties:
+      bio:
+        type: string
+      certifications:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      location:
+        type: string
+      mobile_number:
+        type: string
+      user_category_id:
+        type: integer
+      video_url:
+        type: string
+    type: object
   utils.ResponseMessage:
     properties:
       data: {}
@@ -36,6 +57,40 @@ definitions:
 info:
   contact: {}
 paths:
+  /user/delete-user{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user by id
+      operationId: delete-user-by-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete user by id
+      tags:
+      - user
   /user/get-all-user-list:
     get:
       consumes:
@@ -79,6 +134,80 @@ paths:
           schema:
             type: string
       summary: Get all user
+      tags:
+      - user
+  /user/get-user-details/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get user details by id
+      operationId: get-user-details-by-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get user details by id
+      tags:
+      - user
+  /user/update-user/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Updates user
+      operationId: update-user
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: UpdateUser
+        in: body
+        name: UpdateUser
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update user
       tags:
       - user
   /users/create-user:

@@ -20,3 +20,12 @@ func (svc *UserService) CreateUser(user *User) (*User, error) {
 func (svc *UserService) GetAllUser(keyword string, limit int, offset int, orderBy string) ([]User, uint, error) {
 	return svc.userRepository.GetAllUser(keyword, limit, offset, orderBy)
 }
+func (svc *UserService) GetUserDetailsByUserId(userId uint) (*User, error) {
+	return svc.userRepository.GetUserDetailsByUserId(userId)
+}
+func (svc *UserService) DeleteUserByUserID(userId uint) error {
+	return svc.userRepository.DeleteUserByUserID(userId)
+}
+func (svc *UserService) UpdateUserByUserID(userId uint, user *User) (*User, error) {
+	return svc.userRepository.UpdateUserByUserID(userId, user)
+}

@@ -6,4 +6,7 @@ type UserRepository interface {
 	createRoles(jsonData []Role) error
 	CreateUser(user *User) (*User, error)
 	GetAllUser(keyword string, limit int, offset int, orderBy string) ([]User, uint, error)
+	GetUserDetailsByUserId(userId uint) (*User, error)
+	DeleteUserByUserID(userId uint) error
+	UpdateUserByUserID(userId uint, user *User) (*User, error)
 }
