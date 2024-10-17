@@ -8,7 +8,7 @@ definitions:
     required:
     - name
     type: object
-  skills.SkillCategoryUpsertRequest:
+  skills.SkillCategoryUpdateRequest:
     properties:
       name:
         type: string
@@ -223,10 +223,10 @@ paths:
         type: integer
       - description: Skills Categories
         in: body
-        name: SkillCategoryUpsertRequest
+        name: SkillCategoryUpdateRequest
         required: true
         schema:
-          $ref: '#/definitions/skills.SkillCategoryUpsertRequest'
+          $ref: '#/definitions/skills.SkillCategoryUpdateRequest'
       responses:
         "200":
           description: OK

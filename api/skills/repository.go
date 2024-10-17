@@ -4,7 +4,6 @@ package skills
 type SkillRepository interface {
 	createCategories(jsonData []SkillCategory) error
 	createSkill(skillObj *Skill) error
-
 	createSkillCategories(skillCategories []SkillCategory) error
 	getSkillCategoryById(id uint) (SkillCategory, error)
 	deleteSkillCategoryById(id uint) error

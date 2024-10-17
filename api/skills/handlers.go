@@ -95,7 +95,7 @@ func HandlerToGetAllSkillCategories(c *gin.Context, skillSvc SkillService) {
 // @Security ApiAuthKey
 // @Accept json
 // @Param id path int true "Skill Category ID"
-// @Param SkillCategoryUpsertRequest body SkillCategoryUpsertRequest true "Skills Categories"
+// @Param SkillCategoryUpdateRequest body SkillCategoryUpdateRequest true "Skills Categories"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -110,12 +110,12 @@ func HandlerToUpdateSkillCategoryByID(c *gin.Context, skillSvc SkillService) {
 		return
 	}
 
-	var skillCategoryUpsertRequest SkillCategoryUpsertRequest
-	if err := c.ShouldBind(&skillCategoryUpsertRequest); err != nil {
+	var skillCategoryUpdateRequest SkillCategoryUpdateRequest
+	if err := c.ShouldBind(&skillCategoryUpdateRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
 		return
 	}
-	if err := validate.Struct(skillCategoryUpsertRequest); err != nil {
+	if err := validate.Struct(skillCategoryUpdateRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
 		return
 	}
@@ -124,7 +124,7 @@ func HandlerToUpdateSkillCategoryByID(c *gin.Context, skillSvc SkillService) {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileGettingSkillCategory, err), Data: nil})
 		return
 	}
-	utils.UpdateEntity(&fetchedSkillCategory, skillCategoryUpsertRequest)
+	utils.UpdateEntity(&fetchedSkillCategory, skillCategoryUpdateRequest)
 	err = skillSvc.UpdateSkillCategory(fetchedSkillCategory)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileUpdatingSkillCategory, err), Data: nil})
@@ -134,7 +134,7 @@ func HandlerToUpdateSkillCategoryByID(c *gin.Context, skillSvc SkillService) {
 
 }
 
-type SkillCategoryUpsertRequest struct {
+type SkillCategoryUpdateRequest struct {
 	Name string `json:"name" validate:"required"`
 }
 

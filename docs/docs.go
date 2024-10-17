@@ -266,11 +266,11 @@ const docTemplate = `{
                     },
                     {
                         "description": "Skills Categories",
-                        "name": "SkillCategoryUpsertRequest",
+                        "name": "SkillCategoryUpdateRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/skills.SkillCategoryUpsertRequest"
+                            "$ref": "#/definitions/skills.SkillCategoryUpdateRequest"
                         }
                     }
                 ],
@@ -595,7 +595,7 @@ const docTemplate = `{
                 }
             }
         },
-        "skills.SkillCategoryUpsertRequest": {
+        "skills.SkillCategoryUpdateRequest": {
             "type": "object",
             "required": [
                 "name"
