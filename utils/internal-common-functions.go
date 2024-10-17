@@ -10,6 +10,12 @@ type ResponseMessage struct {
 	Data       interface{} `json:"data"`
 }
 
+type RecordsResponse struct {
+	Total           int64       `json:"total"`
+	RecordsFiltered int         `json:"records_filtered"`
+	Data            interface{} `json:"data"`
+}
+
 func UpdateEntity(fetchedData interface{}, requestedData interface{}) bool {
 	valCategory := reflect.ValueOf(fetchedData).Elem()
 	valRequest := reflect.ValueOf(requestedData)

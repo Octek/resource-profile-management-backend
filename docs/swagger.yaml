@@ -1,29 +1,36 @@
 definitions:
+  skills.CreateSkillCategoryRequest:
+    properties:
+      name:
+        items:
+          type: string
+        type: array
+    required:
+    - name
+    type: object
+  skills.SkillCategoryUpsertRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
   user.CreateUserRequest:
     properties:
-      bio:
-        type: string
-      certifications:
-        type: string
       email:
         type: string
       first_name:
         type: string
       last_name:
         type: string
-      location:
-        type: string
       mobile_number:
         type: string
       user_category_id:
         type: integer
-      video_url:
-        type: string
     required:
     - email
     - first_name
     - last_name
-    - mobile_number
     type: object
   user.UpdateUser:
     properties:
@@ -57,6 +64,191 @@ definitions:
 info:
   contact: {}
 paths:
+  /skills/categories:
+    get:
+      consumes:
+      - application/json
+      description: Get all skill Categories
+      operationId: Get-skill-categories
+      parameters:
+      - description: example - 50
+        in: query
+        name: limit
+        type: integer
+      - description: example - 0
+        in: query
+        name: offset
+        type: integer
+      - description: example - created_at desc,updated_at desc
+        in: query
+        name: orderBy
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Get all skill Categories
+      tags:
+      - Skills Categories
+    post:
+      consumes:
+      - application/json
+      description: Create skill Categories
+      operationId: Create-skill-categories
+      parameters:
+      - description: Skills Categories
+        in: body
+        name: CreateSkillCategoryRequest
+        required: true
+        schema:
+          $ref: '#/definitions/skills.CreateSkillCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      security:
+      - ApiAuthKey: []
+      summary: Create skill Categories
+      tags:
+      - Skills Categories
+  /skills/categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete skill category
+      operationId: delete-skill-category
+      parameters:
+      - description: Skill Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Delete skill category
+      tags:
+      - Skills Categories
+    get:
+      consumes:
+      - application/json
+      description: Get skill category
+      operationId: get-skill-category
+      parameters:
+      - description: Skill Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Get skill category
+      tags:
+      - Skills Categories
+    patch:
+      consumes:
+      - application/json
+      description: Update skill category
+      operationId: update-skill-category
+      parameters:
+      - description: Skill Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Skills Categories
+        in: body
+        name: SkillCategoryUpsertRequest
+        required: true
+        schema:
+          $ref: '#/definitions/skills.SkillCategoryUpsertRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Update skill category
+      tags:
+      - Skills Categories
   /user/delete-user{id}:
     delete:
       consumes:
@@ -102,10 +294,6 @@ paths:
         in: query
         name: limit
         type: integer
-      - description: example - godjilla
-        in: query
-        name: keyword
-        type: string
       - description: example - 0
         in: query
         name: offset

@@ -10,6 +10,7 @@ import (
 	"github.com/Octek/resource-profile-management-backend.git/api/seed"
 	"github.com/Octek/resource-profile-management-backend.git/api/skills"
 	user "github.com/Octek/resource-profile-management-backend.git/api/users"
+	"github.com/Octek/resource-profile-management-backend.git/docs"
 	"github.com/Octek/resource-profile-management-backend.git/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -87,13 +88,13 @@ func main() {
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 
 	// programmatically set swagger info
-	/*	docs.SwaggerInfo.Title = "Profile Management"
-		docs.SwaggerInfo.Description = "Profile Management API"
-		docs.SwaggerInfo.Version = "1.0"
-		docs.SwaggerInfo.Host = utils.GetSwaggerHostUrl()
-		docs.SwaggerInfo.BasePath = "/"
-		docs.SwaggerInfo.Schemes = []string{"https", "http"}
-		docs.SwaggerInfo.InfoInstanceName = "swagger"*/
+	docs.SwaggerInfo.Title = "Profile Management"
+	docs.SwaggerInfo.Description = "Profile Management API"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = utils.GetSwaggerHostUrl()
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Schemes = []string{"https", "http"}
+	docs.SwaggerInfo.InfoInstanceName = "swagger"
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/health", func(c *gin.Context) {
