@@ -30,26 +30,32 @@ func (repo *userRepositoryPostgres) CreateUser(user *User) (*User, error) {
 }
 
 func (repo *userRepositoryPostgres) GetAllUser(keyword string, limit int, offset int, orderBy string) ([]User, uint, error) {
-	var user []User
+	var users []User
 	var total int64
 
-	err := repo.db.Model(&User{}).Where("LOWER(first_name) LIKE ? AND deleted_at IS NULL", "%"+strings.ToLower(keyword)+"%").Count(&total).Error
+	query := repo.db.Model(&User{}).Where("deleted_at IS NULL")
+	if keyword != "" {
+		query = query.Where("LOWER(first_name) LIKE ?", "%"+strings.ToLower(keyword)+"%")
+	}
+
+	err := query.Count(&total).Error
 	if err != nil {
 		return nil, 0, err
 	}
-
-	err = repo.db.Model(&User{}).Where("LOWER(first_name) LIKE ? AND deleted_at IS NULL", "%"+strings.ToLower(keyword)+"%").Order(orderBy).Limit(limit).Offset(offset).Find(&user).Error
-
+	err = query.Order(orderBy).Limit(limit).Offset(offset).Find(&users).Error
 	if err != nil {
 		return nil, uint(total), err
 	}
 
-	return user, uint(total), nil
+	return users, uint(total), nil
 }
 
 func (repo *userRepositoryPostgres) GetUserDetailsByUserId(id uint) (*User, error) {
 	var user User
-	err := repo.db.Model(&User{}).Where("id = ? AND deleted_at IS NULL", id).First(&user).Error
+	err := repo.db.Model(&User{}).Where("id = ? AND deleted_at IS NULL", id).
+		Preload("Educations").Preload("Bookings").Preload("Roles").Preload("Skills").
+		Preload("Experiences").Preload("Projects").Preload("UserCategory").
+		First(&user).Error
 
 	return &user, err
 }

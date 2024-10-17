@@ -13,10 +13,10 @@ import (
 
 type User struct {
 	ID             uint                    `json:"id" gorm:"PRIMARY_KEY;AUTO_INCREMENT;UNIQUE;"`
-	FirstName      string                  `json:"first_name" validate:"required"`
-	LastName       string                  `json:"last_name" validate:"required"`
-	Email          string                  `json:"email" validate:"required"`
-	MobileNumber   string                  `json:"mobile_number" validate:"required"`
+	FirstName      string                  `json:"first_name"`
+	LastName       string                  `json:"last_name"`
+	Email          string                  `json:"email" gorm:"constraint:UNIQUE;NOT NULL"`
+	MobileNumber   string                  `json:"mobile_number"`
 	Bio            string                  `json:"bio"`
 	Location       string                  `json:"location"`
 	VideoUrl       string                  `json:"video_url"`

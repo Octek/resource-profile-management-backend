@@ -89,7 +89,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "example - godjilla",
+                        "description": "example - abdullah",
                         "name": "keyword",
                         "in": "query"
                     },
@@ -305,16 +305,9 @@ const docTemplate = `{
             "required": [
                 "email",
                 "first_name",
-                "last_name",
-                "mobile_number"
+                "last_name"
             ],
             "properties": {
-                "bio": {
-                    "type": "string"
-                },
-                "certifications": {
-                    "type": "string"
-                },
                 "email": {
                     "type": "string"
                 },
@@ -324,17 +317,11 @@ const docTemplate = `{
                 "last_name": {
                     "type": "string"
                 },
-                "location": {
-                    "type": "string"
-                },
                 "mobile_number": {
                     "type": "string"
                 },
                 "user_category_id": {
                     "type": "integer"
-                },
-                "video_url": {
-                    "type": "string"
                 }
             }
         },
