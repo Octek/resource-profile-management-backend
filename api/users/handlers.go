@@ -247,7 +247,7 @@ func UpdateUserByUserIdHandler(userSvc UserService, c *gin.Context) {
 
 	_ = utils.UpdateEntity(existingUserData, updateUserRequest)
 
-	updatedUser, err := userSvc.UpdateUserByUserID(existingUserData.ID, existingUserData)
+	updatedUser, err := userSvc.UpdateUserByUserID(existingUserData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: "Failed to update user.", Data: nil})
 		return

@@ -66,10 +66,10 @@ func (repo *userRepositoryPostgres) DeleteUserByUserID(id uint) error {
 	return err
 }
 
-func (repo *userRepositoryPostgres) UpdateUserByUserID(id uint, user *User) (*User, error) {
-	if err := repo.db.Model(&User{}).Where("id = ?", id).Updates(&user).Error; err != nil {
+func (repo *userRepositoryPostgres) UpdateUserByUserID(user *User) (*User, error) {
+	if err := repo.db.Model(&User{}).Where("id = ?", user.ID).Updates(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return &User{}, fmt.Errorf("user with ID %d not found", id)
+			return &User{}, fmt.Errorf("user with ID %d not found", user.ID)
 		}
 		return &User{}, err
 	}

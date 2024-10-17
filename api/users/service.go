@@ -26,6 +26,6 @@ func (svc *UserService) GetUserDetailsByUserId(userId uint) (*User, error) {
 func (svc *UserService) DeleteUserByUserID(userId uint) error {
 	return svc.userRepository.DeleteUserByUserID(userId)
 }
-func (svc *UserService) UpdateUserByUserID(userId uint, user *User) (*User, error) {
-	return svc.userRepository.UpdateUserByUserID(userId, user)
+func (svc *UserService) UpdateUserByUserID(user *User) (*User, error) {
+	return svc.userRepository.UpdateUserByUserID(user)
 }
