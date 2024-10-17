@@ -9,4 +9,5 @@ type UserRepository interface {
 	GetUserDetailsByUserId(userId uint) (*User, error)
 	DeleteUserByUserID(userId uint) error
 	UpdateUserByUserID(user *User) (*User, error)
+	GetAllUserCategories(keyword string, limit int, offset int, orderBy string) ([]UserCategory, int64, error)
 }

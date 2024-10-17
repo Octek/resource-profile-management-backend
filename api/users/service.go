@@ -29,3 +29,6 @@ func (svc *UserService) DeleteUserByUserID(userId uint) error {
 func (svc *UserService) UpdateUserByUserID(user *User) (*User, error) {
 	return svc.userRepository.UpdateUserByUserID(user)
 }
+func (svc *UserService) GetAllUserCategories(keyword string, limit int, offset int, orderBy string) ([]UserCategory, int64, error) {
+	return svc.userRepository.GetAllUserCategories(keyword, limit, offset, orderBy)
+}
