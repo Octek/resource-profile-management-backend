@@ -97,7 +97,6 @@ type GetAllUsers struct {
 // @Accept  json
 // @Produce  json
 // @Param   limit    query     int     false  "example - 50"     limit(int)
-// @Param   keyword    query     string     false  "example - abdullah"     keyword(string)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc"  orderBy(string)
 // @Success 200 {object} string
@@ -240,19 +239,15 @@ func UpdateUserByUserIdHandler(userSvc UserService, c *gin.Context) {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
 		return
 	}
-	oldUserData, err := userSvc.GetUserDetailsByUserId(uint(userIdInt))
+	existingUserData, err := userSvc.GetUserDetailsByUserId(uint(userIdInt))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Something went wrong while fetching data against given id: %v", err), Data: nil})
 		return
 	}
 
-	hasChanges := utils.UpdateEntity(oldUserData, updateUserRequest)
-	if !hasChanges {
-		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: "No updates made. The data already exists.", Data: nil})
-		return
-	}
+	_ = utils.UpdateEntity(existingUserData, updateUserRequest)
 
-	updatedUser, err := userSvc.UpdateUserByUserID(oldUserData.ID, oldUserData)
+	updatedUser, err := userSvc.UpdateUserByUserID(existingUserData.ID, existingUserData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: "Failed to update user.", Data: nil})
 		return
