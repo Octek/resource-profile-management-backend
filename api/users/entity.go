@@ -15,7 +15,7 @@ type User struct {
 	ID             uint                    `json:"id" gorm:"PRIMARY_KEY;AUTO_INCREMENT;UNIQUE;"`
 	FirstName      string                  `json:"first_name"`
 	LastName       string                  `json:"last_name"`
-	Email          string                  `json:"email"`
+	Email          string                  `json:"email" gorm:"constraint:UNIQUE;NOT NULL"`
 	MobileNumber   string                  `json:"mobile_number"`
 	Bio            string                  `json:"bio"`
 	Location       string                  `json:"location"`
@@ -73,6 +73,16 @@ func asSha256Category(category UserCategory) string {
 	org := UserCategory{
 		ID:   category.ID,
 		Name: category.Name,
+	}
+	hash := sha256.New()
+	hash.Write([]byte(fmt.Sprintf("%v", org)))
+	return fmt.Sprintf("%x", hash.Sum(nil))
+}
+
+func asSha256Role(role Role) string {
+	org := Role{
+		ID:   role.ID,
+		Name: role.Name,
 	}
 	hash := sha256.New()
 	hash.Write([]byte(fmt.Sprintf("%v", org)))

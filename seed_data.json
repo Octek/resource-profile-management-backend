@@ -1,0 +1,46 @@
+{
+  "Roles": [
+    {
+      "id": 1,
+      "name": "Admin"
+    },
+    {
+      "id": 2,
+      "name": "User"
+    }
+  ],
+  "Categories": [
+    {
+      "id": 1,
+      "name": "Human Resources"
+    },
+    {
+      "id": 2,
+      "name": "Quality Assurance"
+    },
+    {
+      "id": 3,
+      "name": "Software Engineering"
+    },
+    {
+      "id": 4,
+      "name": "DevOps"
+    },
+    {
+      "id": 5,
+      "name": "Data Science"
+    },
+    {
+      "id": 6,
+      "name": "Cybersecurity"
+    },
+    {
+      "id": 7,
+      "name": "Network Administration"
+    },
+    {
+      "id": 8,
+      "name": "Project Management"
+    }
+  ]
+}
