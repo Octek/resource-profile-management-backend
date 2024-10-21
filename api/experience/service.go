@@ -12,7 +12,7 @@ func NewService(r ExperienceRepository) ExperienceService {
 //	return svc.userRepository.createCategories(jsonData)
 //}
 
-func (svc *ExperienceService) AddExperienceWithUserAndSkills(userID, skillId uint, experience Experience) (ExperienceResponse, error) {
+func (svc *ExperienceService) AddExperienceWithUserAndSkills(userID, skillId uint, experience Experience) (Experience, error) {
 	return svc.experienceRepository.AddExperienceWithUserAndSkills(userID, skillId, experience)
 }
 
@@ -28,7 +28,7 @@ func (svc *ExperienceService) UpdateExperience(experience *Experience) error {
 	return svc.experienceRepository.UpdateExperience(experience)
 }
 
-func (svc *ExperienceService) GetAllUserExperienceList(expID, userID uint) ([]Experience, error) {
+func (svc *ExperienceService) GetAllUserExperienceList(expID, userID uint) (Experience, error) {
 	return svc.experienceRepository.GetAllUserExperienceList(expID, userID)
 }
 

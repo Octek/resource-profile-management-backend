@@ -3,7 +3,6 @@ package experience
 import (
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
-	"strings"
 )
 
 type experienceRepositoryPostgres struct {
@@ -22,7 +21,7 @@ func NewExperienceRepositoryPostgres(db *gorm.DB) ExperienceRepository {
 	}
 }
 
-func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID, skillId uint, experience Experience) (ExperienceResponse, error) {
+func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID, skillId uint, experience Experience) (Experience, error) {
 
 	err := repo.db.Create(&experience).Error
 	userExperience := UserExperience{
@@ -38,17 +37,7 @@ func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID,
 	err = repo.db.Create(&userExperience).Error
 	err = repo.db.Create(&experienceSkill).Error
 
-	responsibilities := strings.Split(experience.Responsibilities, "|")
-	for j, resp := range responsibilities {
-		responsibilities[j] = strings.TrimSpace(resp)
-	}
-
-	response := ExperienceResponse{
-		Experience:       experience,
-		Responsibilities: responsibilities,
-	}
-
-	return response, err
+	return experience, err
 }
 
 func (repo *experienceRepositoryPostgres) GetExperienceById(id uint) (*Experience, error) {
@@ -71,17 +60,20 @@ func (repo *experienceRepositoryPostgres) UpdateExperience(experience *Experienc
 	return repo.db.Save(experience).Error
 }
 
-func (repo *experienceRepositoryPostgres) GetAllUserExperienceList(expID, userID uint) ([]Experience, error) {
-	var experiences []Experience
+func (repo *experienceRepositoryPostgres) GetAllUserExperienceList(expID, userID uint) (Experience, error) {
+	var experience Experience
 
-	err := repo.db.Model(Experience{}).
+	err := repo.db.Model(&Experience{}).
 		Joins("JOIN user_experiences ue ON ue.experience_id = experiences.id").
 		Where("ue.user_id = ? AND ue.experience_id = ?", userID, expID).
 		Preload("Skills").
 		Preload("Skills.SkillCategory").
-		Find(&experiences).Error
+		First(&experience).
+		Error
 
-	return experiences, err
+	experience.ParseResponsibilities()
+
+	return experience, err
 }
 
 func (repo *experienceRepositoryPostgres) DeleteUserExperienceByID(id uint) error {

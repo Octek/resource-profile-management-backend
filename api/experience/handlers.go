@@ -21,7 +21,7 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 			AddUserExperienceHandler(experienceSvc, c)
 		})
 		subRouter.GET("/:id", func(c *gin.Context) {
-			GetAllUserExperienceListHandler(experienceSvc, c)
+			GetUserExperienceByIdHandler(experienceSvc, c)
 		})
 		subRouter.DELETE("/:id", func(c *gin.Context) {
 			DeleteUserExperienceByUserIdHandler(experienceSvc, c)
@@ -107,6 +107,7 @@ type UpdateExpRequest struct {
 	StartDate          time.Time `json:"start_date" binding:"required"`
 	EndDate            time.Time `json:"end_date"`
 	IsCurrentlyWorking bool      `json:"is_currently_working"`
+	Responsibilities   string    `json:"responsibilities"`
 }
 
 // UpdateUserExperienceByIdHandler godoc
@@ -167,7 +168,7 @@ type GetExperienceRequest struct {
 	UserId uint `json:"user_id"`
 }
 
-// GetAllUserExperienceListHandler godoc
+// GetUserExperienceByIdHandler godoc
 // @Tags experience
 // @Summary Get user experience details by id
 // @Description get user experience details by id
@@ -181,7 +182,7 @@ type GetExperienceRequest struct {
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /experience/{id} [get]
-func GetAllUserExperienceListHandler(experienceSvc ExperienceService, c *gin.Context) {
+func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
 	expId := c.Param("id")
 	expIdInt, _ := strconv.Atoi(expId)
 	var getExpRequest GetExperienceRequest
