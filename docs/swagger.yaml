@@ -2,9 +2,7 @@ definitions:
   experience.AddUserExperienceRequest:
     properties:
       experiences:
-        items:
-          $ref: '#/definitions/experience.ExpRequest'
-        type: array
+        $ref: '#/definitions/experience.ExpRequest'
       skill_id:
         type: integer
       user_id:
@@ -24,6 +22,8 @@ definitions:
         type: boolean
       position:
         type: string
+      responsibilities:
+        type: string
       start_date:
         type: string
     required:
@@ -37,18 +37,7 @@ definitions:
         type: integer
     type: object
   experience.UpdateExpRequest:
-  skills.CreateSkillCategoryRequest:
     properties:
-      name:
-        items:
-          type: string
-        type: array
-    required:
-    - name
-    type: object
-  skills.SkillCategoryUpdateRequest:
-    properties:
-      name:
       company:
         type: string
       description:
@@ -61,17 +50,28 @@ definitions:
         type: string
       start_date:
         type: string
-    required:
-    - name
-    type: object
-  user.CreateUserRequest:
-    properties:
       user_id:
         type: integer
     required:
     - company
     - position
     - start_date
+    type: object
+  skills.CreateSkillCategoryRequest:
+    properties:
+      name:
+        items:
+          type: string
+        type: array
+    required:
+    - name
+    type: object
+  skills.SkillCategoryUpdateRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
     type: object
   user.CreateUserRequest:
     properties:
@@ -122,6 +122,159 @@ definitions:
 info:
   contact: {}
 paths:
+  /experience:
+    post:
+      consumes:
+      - application/json
+      description: Adds new experiences for a given user ID
+      operationId: add-experience
+      parameters:
+      - description: AddUserExperienceRequest
+        in: body
+        name: AddUserExperienceRequest
+        required: true
+        schema:
+          $ref: '#/definitions/experience.AddUserExperienceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      summary: Add experiences for user
+      tags:
+      - experience
+  /experience/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user experience by id
+      operationId: delete-user-experience-by-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: GetExperienceRequest
+        in: body
+        name: GetExperienceRequest
+        required: true
+        schema:
+          $ref: '#/definitions/experience.GetExperienceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete user experience by id
+      tags:
+      - experience
+    get:
+      consumes:
+      - application/json
+      description: get user experience details by id
+      operationId: get-user-experience-details-by-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: GetExperienceRequest
+        in: body
+        name: GetExperienceRequest
+        required: true
+        schema:
+          $ref: '#/definitions/experience.GetExperienceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get user experience details by id
+      tags:
+      - experience
+    patch:
+      consumes:
+      - application/json
+      description: Updates experience
+      operationId: update-experience
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: UpdateExpRequest
+        in: body
+        name: UpdateExpRequest
+        required: true
+        schema:
+          $ref: '#/definitions/experience.UpdateExpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update experience
+      tags:
+      - experience
   /skills/categories:
     get:
       consumes:
@@ -307,161 +460,6 @@ paths:
       summary: Update skill category
       tags:
       - Skills Categories
-  /experience/add-user-experience:
-    post:
-      consumes:
-      - application/json
-      description: Adds new experiences for a given user ID
-      operationId: add-experience
-      parameters:
-      - description: AddUserExperienceRequest
-        in: body
-        name: AddUserExperienceRequest
-        required: true
-        schema:
-          $ref: '#/definitions/experience.AddUserExperienceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Add experiences for user
-      tags:
-      - experience
-  /experience/delete-user-experience/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: delete user experience by id
-      operationId: delete-user-experience-by-id
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: GetExperienceRequest
-        in: body
-        name: GetExperienceRequest
-        required: true
-        schema:
-          $ref: '#/definitions/experience.GetExperienceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Delete user experience by id
-      tags:
-      - experience
-  /experience/get-user-experience-details/{id}:
-    get:
-      consumes:
-      - application/json
-      description: get user experience details by id
-      operationId: get-user-experience-details-by-id
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: GetExperienceRequest
-        in: body
-        name: GetExperienceRequest
-        required: true
-        schema:
-          $ref: '#/definitions/experience.GetExperienceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Get user experience details by id
-      tags:
-      - experience
-  /experience/update-user-experience/{id}:
-    patch:
-      consumes:
-      - application/json
-      description: Updates experience
-      operationId: update-experience
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: UpdateExpRequest
-        in: body
-        name: UpdateExpRequest
-        required: true
-        schema:
-          $ref: '#/definitions/experience.UpdateExpRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Update experience
-      tags:
-      - experience
   /user/delete-user{id}:
     delete:
       consumes:

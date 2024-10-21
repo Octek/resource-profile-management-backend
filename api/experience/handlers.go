@@ -14,11 +14,11 @@ import (
 var validate = validator.New()
 
 // Routes Exports all routes handled by this service
-func Routes(router *gin.Engine, experienceSvc ExperienceService /*, userSvc user.UserService*/) {
+func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 	subRouter := router.Group("/experience")
 	{
 		subRouter.POST("", func(c *gin.Context) {
-			AddUserExperienceHandler( /*userSvc,*/ experienceSvc, c)
+			AddUserExperienceHandler(experienceSvc, c)
 		})
 		subRouter.GET("/:id", func(c *gin.Context) {
 			GetAllUserExperienceListHandler(experienceSvc, c)
@@ -34,9 +34,9 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService /*, userSvc user
 }
 
 type AddUserExperienceRequest struct {
-	SkillID     uint         `json:"skill_id"`
-	UserID      uint         `json:"user_id" validate:"required"`
-	Experiences []ExpRequest `json:"experiences"`
+	SkillID     uint       `json:"skill_id"`
+	UserID      uint       `json:"user_id" validate:"required"`
+	Experiences ExpRequest `json:"experiences"`
 }
 
 type ExpRequest struct {
@@ -46,6 +46,7 @@ type ExpRequest struct {
 	StartDate          time.Time `json:"start_date" validate:"required"`
 	EndDate            time.Time `json:"end_date"`
 	IsCurrentlyWorking bool      `json:"is_currently_working"`
+	Responsibilities   string    `json:"responsibilities"`
 }
 
 // AddUserExperienceHandler godoc
@@ -60,8 +61,8 @@ type ExpRequest struct {
 // @Failure 400 {object} utils.ResponseMessage
 // @Failure 404 {object} utils.ResponseMessage
 // @Failure 500 {object} utils.ResponseMessage
-// @Router /experience/add-user-experience [post]
-func AddUserExperienceHandler( /*userSvc user.UserService,*/ experienceSvc ExperienceService, c *gin.Context) {
+// @Router /experience [post]
+func AddUserExperienceHandler(experienceSvc ExperienceService, c *gin.Context) {
 	addUserExpReq := AddUserExperienceRequest{}
 
 	if err := c.ShouldBindJSON(&addUserExpReq); err != nil {
@@ -69,37 +70,33 @@ func AddUserExperienceHandler( /*userSvc user.UserService,*/ experienceSvc Exper
 		return
 	}
 
-	for _, expReq := range addUserExpReq.Experiences {
-		if err := validate.Struct(&expReq); err != nil {
-			c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
-			return
-		}
-
-		if !expReq.IsCurrentlyWorking && expReq.EndDate.Before(expReq.StartDate) {
-			c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: "End date cannot be before the start date.", Data: nil})
-			return
-		}
+	if err := validate.Struct(&addUserExpReq); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
+		return
 	}
 
-	experiences := make([]Experience, len(addUserExpReq.Experiences))
-	for i, expReq := range addUserExpReq.Experiences {
-		experiences[i] = Experience{
-			Position:           expReq.Position,
-			Company:            expReq.Company,
-			Description:        expReq.Description,
-			StartDate:          expReq.StartDate,
-			EndDate:            expReq.EndDate,
-			IsCurrentlyWorking: expReq.IsCurrentlyWorking,
-		}
+	if !addUserExpReq.Experiences.IsCurrentlyWorking && addUserExpReq.Experiences.EndDate.Before(addUserExpReq.Experiences.StartDate) {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: "End date cannot be before the start date.", Data: nil})
+		return
 	}
 
-	createdExperiences, err := experienceSvc.AddExperienceWithUserAndSkills(addUserExpReq.UserID, addUserExpReq.SkillID, experiences)
+	experience := Experience{
+		Position:           addUserExpReq.Experiences.Position,
+		Company:            addUserExpReq.Experiences.Company,
+		Description:        addUserExpReq.Experiences.Description,
+		StartDate:          addUserExpReq.Experiences.StartDate,
+		EndDate:            addUserExpReq.Experiences.EndDate,
+		IsCurrentlyWorking: addUserExpReq.Experiences.IsCurrentlyWorking,
+		Responsibilities:   addUserExpReq.Experiences.Responsibilities,
+	}
+
+	createdExperiences, err := experienceSvc.AddExperienceWithUserAndSkills(addUserExpReq.UserID, addUserExpReq.SkillID, experience)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Failed to add experiences: %v", err), Data: nil})
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Experiences added successfully.", Data: createdExperiences})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Experience added successfully.", Data: createdExperiences})
 }
 
 type UpdateExpRequest struct {
@@ -125,7 +122,7 @@ type UpdateExpRequest struct {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /experience/update-user-experience/{id} [patch]
+// @Router /experience/{id} [patch]
 func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
 	var updateExpRequest UpdateExpRequest
 
@@ -183,7 +180,7 @@ type GetExperienceRequest struct {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /experience/get-user-experience-details/{id} [get]
+// @Router /experience/{id} [get]
 func GetAllUserExperienceListHandler(experienceSvc ExperienceService, c *gin.Context) {
 	expId := c.Param("id")
 	expIdInt, _ := strconv.Atoi(expId)
@@ -220,7 +217,7 @@ func GetAllUserExperienceListHandler(experienceSvc ExperienceService, c *gin.Con
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /experience/delete-user-experience/{id} [delete]
+// @Router /experience/{id} [delete]
 func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin.Context) {
 	expId := c.Param("id")
 	expIdInt, _ := strconv.Atoi(expId)

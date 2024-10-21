@@ -14,6 +14,7 @@ type Experience struct {
 	StartDate          time.Time      `json:"start_date"`
 	EndDate            time.Time      `json:"end_date"`
 	IsCurrentlyWorking bool           `json:"is_currently_working"`
+	Responsibilities   string         `json:"responsibilities"`
 	Skills             []skills.Skill `json:"skills" gorm:"many2many:experience_skills;"`
 	DeletedAt          gorm.DeletedAt `json:"deleted_at"`
 	CreatedAt          time.Time      `json:"created_at"`
@@ -34,4 +35,9 @@ type ExperienceSkill struct {
 	ExperienceID uint      `json:"experience_id" gorm:"NOT NULL;index:experience_id"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+type ExperienceResponse struct {
+	Experience       Experience `json:"experience"`
+	Responsibilities []string   `json:"responsibilities"`
 }

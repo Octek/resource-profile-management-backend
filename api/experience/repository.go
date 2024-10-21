@@ -2,7 +2,7 @@ package experience
 
 // ExperienceRepository Used to store and retrieve user experince
 type ExperienceRepository interface {
-	AddExperienceWithUserAndSkills(userID, skillId uint, experience []Experience) ([]Experience, error)
+	AddExperienceWithUserAndSkills(userID, skillId uint, experience Experience) (ExperienceResponse, error)
 	GetExperienceById(id uint) (*Experience, error)
 	GetUserExperienceByUserIdAndExperienceId(userId, experienceId uint) (*UserExperience, error)
 	UpdateExperience(experience *Experience) error

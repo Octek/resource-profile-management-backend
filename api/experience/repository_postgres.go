@@ -3,6 +3,7 @@ package experience
 import (
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type experienceRepositoryPostgres struct {
@@ -21,35 +22,33 @@ func NewExperienceRepositoryPostgres(db *gorm.DB) ExperienceRepository {
 	}
 }
 
-func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID, skillId uint, experiences []Experience) ([]Experience, error) {
+func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID, skillId uint, experience Experience) (ExperienceResponse, error) {
 
-	err := repo.db.Create(&experiences).Error
-	if err != nil {
-		return nil, err
-	}
-	userExperiences := make([]UserExperience, len(experiences))
-	for i, exp := range experiences {
-		userExperiences[i] = UserExperience{
-			UserID:       userID,
-			ExperienceID: exp.ID,
-		}
+	err := repo.db.Create(&experience).Error
+	userExperience := UserExperience{
+		UserID:       userID,
+		ExperienceID: experience.ID,
 	}
 
-	experienceSkills := make([]ExperienceSkill, len(experiences))
-	for i, exp := range experiences {
-		experienceSkills[i] = ExperienceSkill{
-			SkillID:      skillId,
-			ExperienceID: exp.ID,
-		}
-	}
-	if err = repo.db.Create(&userExperiences).Error; err != nil {
-		return nil, err
+	experienceSkill := ExperienceSkill{
+		SkillID:      skillId,
+		ExperienceID: experience.ID,
 	}
 
-	if err = repo.db.Create(&experienceSkills).Error; err != nil {
-		return nil, err
+	err = repo.db.Create(&userExperience).Error
+	err = repo.db.Create(&experienceSkill).Error
+
+	responsibilities := strings.Split(experience.Responsibilities, "|")
+	for j, resp := range responsibilities {
+		responsibilities[j] = strings.TrimSpace(resp)
 	}
-	return experiences, nil
+
+	response := ExperienceResponse{
+		Experience:       experience,
+		Responsibilities: responsibilities,
+	}
+
+	return response, err
 }
 
 func (repo *experienceRepositoryPostgres) GetExperienceById(id uint) (*Experience, error) {
@@ -79,6 +78,7 @@ func (repo *experienceRepositoryPostgres) GetAllUserExperienceList(expID, userID
 		Joins("JOIN user_experiences ue ON ue.experience_id = experiences.id").
 		Where("ue.user_id = ? AND ue.experience_id = ?", userID, expID).
 		Preload("Skills").
+		Preload("Skills.SkillCategory").
 		Find(&experiences).Error
 
 	return experiences, err
