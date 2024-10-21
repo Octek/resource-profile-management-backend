@@ -4,6 +4,7 @@ import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
+	"strings"
 )
 
 type skillRepositoryPostgres struct {
@@ -39,12 +40,28 @@ func (repo *skillRepositoryPostgres) createCategories(jsonData []SkillCategory) 
 	}
 	return nil
 }
-func (repo *skillRepositoryPostgres) createSkill(skillObj *Skill) error {
-	if err := repo.db.Create(&skillObj).Error; err != nil {
-		return err
+
+func (repo *skillRepositoryPostgres) createSkill(userSkillData *UserSkillRequest) error {
+	skillObj := Skill{
+		Name:            userSkillData.SkillData.Name,
+		Icon:            userSkillData.SkillData.Icon,
+		SkillCategoryID: userSkillData.SkillData.SkillCategoryID,
 	}
-	fmt.Println("Skill object has been stored")
-	return nil
+	return repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&skillObj).Error; err != nil {
+			return err
+		}
+		userSkillObj := UserSkill{
+			SkillLevel: userSkillData.SkillLevel,
+			SkillID:    skillObj.ID,
+			UserID:     userSkillData.UserID,
+		}
+		if err := tx.Create(&userSkillObj).Error; err != nil {
+			return err
+		}
+		fmt.Println("Skill and UserSkill objects have been stored")
+		return nil
+	})
 }
 
 func (repo *skillRepositoryPostgres) createSkillCategories(skillCategories []SkillCategory) error {
@@ -96,4 +113,56 @@ func (repo *skillRepositoryPostgres) fetchAllSkillCategories(limit, offset int, 
 	}
 
 	return skillCategoryList, totalRecords, nil
+}
+
+func (repo *skillRepositoryPostgres) getSkillById(id uint) (Skill, error) {
+	var skillObj Skill
+	if err := repo.db.Where("id = ?", id).Preload("SkillCategory").Preload("Bookings").First(&skillObj).Error; err != nil {
+		return Skill{}, err
+	}
+
+	fmt.Printf("Skill by id %d has been fetched\n", id)
+	return skillObj, nil
+}
+
+func (repo *skillRepositoryPostgres) updateSkill(skillObj Skill) error {
+	if err := repo.db.Save(&skillObj).Error; err != nil {
+		return err
+	}
+	fmt.Println("Skill has been updated")
+	return nil
+}
+
+func (repo *skillRepositoryPostgres) deleteSkillById(id uint) error {
+	result := repo.db.Where("id = ?", id).Delete(&Skill{})
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("skill with id %d not found", id)
+	}
+	if result.Error != nil {
+		return result.Error
+	}
+
+	fmt.Printf("Skill by id %d has been deleted\n", id)
+	return nil
+}
+
+func (repo *skillRepositoryPostgres) fetchAllSkill(limit, offset int, orderBy, keyword string) ([]Skill, int64, error) {
+	var skillList []Skill
+	var totalRecords int64
+
+	query := repo.db.Model(&Skill{}).Where("deleted_at IS NULL")
+	if keyword != "" {
+		query = query.Where("LOWER(name) LIKE ?", "%"+strings.ToLower(keyword)+"%")
+	}
+
+	err := query.Count(&totalRecords).Error
+	if err != nil {
+		return nil, 0, err
+	}
+	err = query.Order(orderBy).Limit(limit).Offset(offset).Preload("SkillCategory").Preload("Bookings").Find(&skillList).Error
+	if err != nil {
+		return nil, totalRecords, err
+	}
+
+	return skillList, totalRecords, nil
 }

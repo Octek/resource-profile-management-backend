@@ -33,6 +33,217 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 		})
 
 	}
+	skillsRouter.POST("", func(c *gin.Context) {
+		HandlerToCreateSkill(c, skillSvc)
+	})
+	skillsRouter.PATCH("/:id", func(c *gin.Context) {
+		HandlerToUpdateSkillByID(c, skillSvc)
+	})
+	skillsRouter.GET("", func(c *gin.Context) {
+		HandlerToGetAllSkills(c, skillSvc)
+	})
+	skillsRouter.GET("/:id", func(c *gin.Context) {
+		HandlerToGetSkillByID(c, skillSvc)
+	})
+	skillsRouter.DELETE("/:id", func(c *gin.Context) {
+		HandlerToDeleteSkillByID(c, skillSvc)
+	})
+}
+
+// HandlerToGetAllSkills godoc
+// @Tags Skills
+// @Summary Get all skills
+// @Description Get all skills
+// @ID Get-skills
+// @Security ApiAuthKey
+// @Accept  json
+// @Produce  json
+// @Param   limit    query     int     false  "example - 50"     limit(int)
+// @Param   offset     query     int     false  "example - 0"     offset(int)
+// @Param   orderBy     query     string     false  "example - created_at desc,updated_at desc"    orderBy(string)
+// @Param   keyword   query   string  false  "Search for a keyword in skill names"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /skills [get]
+func HandlerToGetAllSkills(c *gin.Context, skillSvc SkillService) {
+	fmt.Println("HandlerToGetAllSkills")
+	baseQuery := c.Request.URL.Query()
+	limit := baseQuery.Get("limit")
+	offset := baseQuery.Get("offset")
+	orderBy := baseQuery.Get("orderBy")
+	keyword := baseQuery.Get("keyword")
+
+	if limit == "" {
+		limit = utils.DefaultLimit
+	}
+	if offset == "" {
+		offset = utils.DefaultOffset
+	}
+	if orderBy == "" {
+		orderBy = utils.DefaultOrderBy
+	}
+
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidIntegerValueLimitMessage, err), Data: nil})
+		return
+	}
+	offsetInt, err := strconv.Atoi(offset)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidIntegerValueOffsetMessage, err), Data: nil})
+		return
+	}
+	skillList, totalRecords, err := skillSvc.FetchAllSkill(limitInt, offsetInt, orderBy, keyword)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileGettingSkill, err), Data: nil})
+		return
+	}
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: utils.Success, Data: utils.RecordsResponse{Total: totalRecords, RecordsFiltered: len(skillList), Data: skillList}})
+
+}
+
+// HandlerToDeleteSkillByID godoc
+// @Tags Skills
+// @Summary Delete skill
+// @Description Delete skill
+// @ID delete-skill
+// @Security ApiAuthKey
+// @Accept  json
+// @Param id path int true "Skill ID"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /skills/{id} [delete]
+func HandlerToDeleteSkillByID(c *gin.Context, skillSvc SkillService) {
+	fmt.Println("HandlerToDeleteSkillByID")
+	skillID := c.Param("id")
+	skillIDInt, err := strconv.Atoi(skillID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.SomethingWentWrong, err), Data: nil})
+		return
+	}
+	err = skillSvc.DeleteSkillById(uint(skillIDInt))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileDeletingSkill, err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: utils.SuccessfullyDeletedSkill, Data: nil})
+
+}
+
+// HandlerToGetSkillByID godoc
+// @Tags Skills
+// @Summary Get skill
+// @Description Get skill
+// @ID get-skill
+// @Security ApiAuthKey
+// @Accept  json
+// @Param id path int true "Skill ID"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /skills/{id} [get]
+func HandlerToGetSkillByID(c *gin.Context, skillSvc SkillService) {
+	fmt.Println("HandlerToGetSkillByID")
+	skillID := c.Param("id")
+	skillIDInt, err := strconv.Atoi(skillID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.SomethingWentWrong, err), Data: nil})
+		return
+	}
+	fetchedSkill, err := skillSvc.GetSkillById(uint(skillIDInt))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileGettingSkill, err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: utils.Success, Data: fetchedSkill})
+}
+
+// HandlerToUpdateSkillByID godoc
+// @Tags Skills
+// @Summary Update skill
+// @Description Update skill
+// @ID update-skill
+// @Security ApiAuthKey
+// @Accept json
+// @Param id path int true "Skill ID"
+// @Param SkillRequest body SkillRequest true "Skill"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /skills/{id} [patch]
+func HandlerToUpdateSkillByID(c *gin.Context, skillSvc SkillService) {
+	fmt.Println("HandlerToUpdateSkillByID")
+	skillID := c.Param("id")
+	skillIDInt, err := strconv.Atoi(skillID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.SomethingWentWrong, err), Data: nil})
+		return
+	}
+
+	var updateSkillRequest SkillRequest
+	if err := c.ShouldBind(&updateSkillRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
+		return
+	}
+	if err := validate.Struct(updateSkillRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
+		return
+	}
+	fetchedSkill, err := skillSvc.GetSkillById(uint(skillIDInt))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileGettingSkill, err), Data: nil})
+		return
+	}
+	utils.UpdateEntity(&fetchedSkill, updateSkillRequest)
+	err = skillSvc.UpdateSkill(fetchedSkill)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileUpdatingSkill, err), Data: nil})
+		return
+	}
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: utils.SuccessfullyUpdatedSkill, Data: nil})
+
+}
+
+// HandlerToCreateSkill godoc
+// @Tags Skills
+// @Summary Create skills
+// @Description Create skills
+// @ID Create-skills
+// @Security ApiAuthKey
+// @Accept json
+// @Produce json
+// @Param UserSkillRequest body UserSkillRequest true "Skill"
+// @Success 200 {object} utils.ResponseMessage
+// @Failure 400 {object} utils.ResponseMessage
+// @Failure 404 {object} utils.ResponseMessage
+// @Failure 500 {object} utils.ResponseMessage
+// @Router /skills [post]
+func HandlerToCreateSkill(c *gin.Context, skillSvc SkillService) {
+	fmt.Println("HandlerToCreateSkills")
+	var createUserSkillRequest UserSkillRequest
+	if err := c.ShouldBind(&createUserSkillRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
+		return
+	}
+
+	if err := validate.Struct(createUserSkillRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
+		return
+	}
+	err := skillSvc.createSkill(&createUserSkillRequest)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileCreatingSkill, err), Data: nil})
+		return
+	}
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyCreatedSkill), Data: nil})
 }
 
 // HandlerToGetAllSkillCategories godoc
@@ -132,10 +343,6 @@ func HandlerToUpdateSkillCategoryByID(c *gin.Context, skillSvc SkillService) {
 	}
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: utils.SuccessfullyUpdatedSkillsCategory, Data: nil})
 
-}
-
-type SkillCategoryUpdateRequest struct {
-	Name string `json:"name" validate:"required"`
 }
 
 // HandlerToDeleteSkillCategoryByID godoc
@@ -241,6 +448,23 @@ func HandlerToCreateSkillCategories(c *gin.Context, skillSvc SkillService) {
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyCreatedSkillsCategories), Data: nil})
 }
 
+// All requested and response structs
+
 type CreateSkillCategoryRequest struct {
 	Name []string `json:"name" validate:"required"`
+}
+
+type SkillCategoryUpdateRequest struct {
+	Name string `json:"name" validate:"required"`
+}
+
+type UserSkillRequest struct {
+	SkillData  SkillRequest `json:"skillData"`
+	UserID     uint         `json:"user_id"`
+	SkillLevel string       `json:"skill_level"`
+}
+type SkillRequest struct {
+	Name            string `json:"name"`
+	Icon            string `json:"icon"`
+	SkillCategoryID uint   `json:"skill_category_id"`
 }
