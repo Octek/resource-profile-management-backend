@@ -3,7 +3,7 @@ package skills
 // SkillRepository Used to store and retrieve skills based on experience and bookings
 type SkillRepository interface {
 	createCategories(jsonData []SkillCategory) error
-	createSkill(userSkillData *UserSkillRequest) error
+	createSkill(skillObj *Skill, userID uint, skillLevel string) error
 	createSkillCategories(skillCategories []SkillCategory) error
 	getSkillCategoryById(id uint) (SkillCategory, error)
 	deleteSkillCategoryById(id uint) error

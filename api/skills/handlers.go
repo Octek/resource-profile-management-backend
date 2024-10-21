@@ -238,7 +238,12 @@ func HandlerToCreateSkill(c *gin.Context, skillSvc SkillService) {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
 		return
 	}
-	err := skillSvc.createSkill(&createUserSkillRequest)
+	skillObj := Skill{
+		Name:            createUserSkillRequest.SkillData.Name,
+		Icon:            createUserSkillRequest.SkillData.Icon,
+		SkillCategoryID: createUserSkillRequest.SkillData.SkillCategoryID,
+	}
+	err := skillSvc.CreateSkill(&skillObj, createUserSkillRequest.UserID, createUserSkillRequest.SkillLevel)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileCreatingSkill, err), Data: nil})
 		return

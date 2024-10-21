@@ -41,20 +41,15 @@ func (repo *skillRepositoryPostgres) createCategories(jsonData []SkillCategory) 
 	return nil
 }
 
-func (repo *skillRepositoryPostgres) createSkill(userSkillData *UserSkillRequest) error {
-	skillObj := Skill{
-		Name:            userSkillData.SkillData.Name,
-		Icon:            userSkillData.SkillData.Icon,
-		SkillCategoryID: userSkillData.SkillData.SkillCategoryID,
-	}
+func (repo *skillRepositoryPostgres) createSkill(skillObj *Skill, userID uint, skillLevel string) error {
 	return repo.db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(&skillObj).Error; err != nil {
 			return err
 		}
 		userSkillObj := UserSkill{
-			SkillLevel: userSkillData.SkillLevel,
+			SkillLevel: skillLevel,
 			SkillID:    skillObj.ID,
-			UserID:     userSkillData.UserID,
+			UserID:     userID,
 		}
 		if err := tx.Create(&userSkillObj).Error; err != nil {
 			return err
