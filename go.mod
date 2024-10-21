@@ -8,8 +8,8 @@ require (
 	github.com/go-playground/validator/v10 v10.20.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/swaggo/files v1.0.1
-	github.com/swaggo/gin-swagger v1.6.0
-	github.com/swaggo/swag v1.8.12
+	github.com/swaggo/gin-swagger v1.3.2
+	github.com/swaggo/swag v1.16.2
 	github.com/toorop/gin-logrus v0.0.0-20210225092905-2c785434f26f
 	gopkg.in/matryer/try.v1 v1.0.0-20150601225556-312d2599e12e
 	gorm.io/driver/postgres v1.5.9
