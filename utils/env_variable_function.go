@@ -42,4 +42,11 @@ const (
 	SuccessfullyUpdatedSkillsCategory              = "Skill category has been successfully Updated"
 	Success                                        = "Success"
 	RequiredSkillCategoryNames                     = "Skill category Name(s) missing. Provide at least one ID."
+	SomethingWentWrongWhileCreatingSkill           = "Something went wrong  while creating the skill: %v"
+	SomethingWentWrongWhileGettingSkill            = "Something went wrong while getting the skill: %v"
+	SomethingWentWrongWhileDeletingSkill           = "Something went wrong while deleting the skill: %v"
+	SomethingWentWrongWhileUpdatingSkill           = "Something went wrong while updating the skill: %v"
+	SuccessfullyUpdatedSkill                       = "Skill has been successfully Updated"
+	SuccessfullyDeletedSkill                       = "Skill has been successfully deleted"
+	SuccessfullyCreatedSkill                       = "Skill has been created successfully"
 )
