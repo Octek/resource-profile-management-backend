@@ -15,19 +15,19 @@ var validate = validator.New()
 // Routes Exports all routes handled by this service
 func Routes(router *gin.Engine, projectSvc ProjectService) {
 	subRouter := router.Group("/projects")
-	subRouter.POST("/add-user-project/:id", func(c *gin.Context) {
+	subRouter.POST("/:id", func(c *gin.Context) {
 		AddUserProjectHandler(projectSvc, c)
 	})
-	subRouter.PATCH("/update-user-project/:id", func(c *gin.Context) {
+	subRouter.PATCH("/:id", func(c *gin.Context) {
 		UpdateProjectByIdHandler(projectSvc, c)
 	})
-	subRouter.DELETE("/delete-user-project/:id", func(c *gin.Context) {
+	subRouter.DELETE("/:id", func(c *gin.Context) {
 		DeleteUserProjectByUserIdHandler(projectSvc, c)
 	})
-	subRouter.GET("/get-project/:id", func(c *gin.Context) {
+	subRouter.GET("/:id", func(c *gin.Context) {
 		GetUserProjectByIdHandler(projectSvc, c)
 	})
-	subRouter.GET("/get-all-user-project/:id", func(c *gin.Context) {
+	subRouter.GET("/all/:id", func(c *gin.Context) {
 		GetAllUserProjectHandler(projectSvc, c)
 	})
 }
@@ -59,7 +59,7 @@ type UpdateProjectRequest struct {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /projects/add-user-project/{id} [post]
+// @Router /projects/{id} [post]
 func AddUserProjectHandler(projectSvc ProjectService, c *gin.Context) {
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -103,7 +103,7 @@ func AddUserProjectHandler(projectSvc ProjectService, c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /projects/update-user-project/{id} [patch]
+// @Router /projects/{id} [patch]
 func UpdateProjectByIdHandler(projectSvc ProjectService, c *gin.Context) {
 	projId := c.Param("id")
 	projIdInt, _ := strconv.Atoi(projId)
@@ -158,7 +158,7 @@ func UpdateProjectByIdHandler(projectSvc ProjectService, c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /projects/delete-user-project/{id} [delete]
+// @Router /projects/{id} [delete]
 func DeleteUserProjectByUserIdHandler(projectSvc ProjectService, c *gin.Context) {
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -183,7 +183,7 @@ func DeleteUserProjectByUserIdHandler(projectSvc ProjectService, c *gin.Context)
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /projects/get-project/{id} [get]
+// @Router /projects/{id} [get]
 func GetUserProjectByIdHandler(projectSvc ProjectService, c *gin.Context) {
 	projId := c.Param("id")
 	projIdInt, _ := strconv.Atoi(projId)
@@ -218,7 +218,7 @@ type AllUserProjects struct {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /projects/get-all-user-project/{id} [get]
+// @Router /projects/get-all/{id} [get]
 func GetAllUserProjectHandler(projectSvc ProjectService, c *gin.Context) {
 	limit := c.Request.URL.Query().Get("limit")
 	offset := c.Request.URL.Query().Get("offset")
