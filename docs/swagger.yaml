@@ -1,4 +1,32 @@
 definitions:
+  projects.AddProjectRequest:
+    properties:
+      description:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      technologies:
+        type: string
+    required:
+    - name
+    - technologies
+    type: object
+  projects.UpdateProjectRequest:
+    properties:
+      description:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      technologies:
+        type: string
+    required:
+    - name
+    - technologies
+    type: object
   skills.CreateSkillCategoryRequest:
     properties:
       name:
@@ -82,6 +110,205 @@ definitions:
 info:
   contact: {}
 paths:
+  /projects/add-user-project/{id}:
+    post:
+      consumes:
+      - application/json
+      description: create project
+      operationId: create-project
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AddProjectRequest
+        in: body
+        name: AddProjectRequest
+        required: true
+        schema:
+          $ref: '#/definitions/projects.AddProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create project
+      tags:
+      - projects
+  /projects/delete-user-project/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user project by user id
+      operationId: delete-user-project-by-user-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete user project by user id
+      tags:
+      - projects
+  /projects/get-all-user-project/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get all user project
+      operationId: get-all-user-project
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: example - 50
+        in: query
+        name: limit
+        type: integer
+      - description: example - 0
+        in: query
+        name: offset
+        type: integer
+      - description: example - created_at desc
+        in: query
+        name: orderBy
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all user project
+      tags:
+      - projects
+  /projects/get-project/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get user project details by user id
+      operationId: get-user-project-details-by-user-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get user project details by user id
+      tags:
+      - projects
+  /projects/update-user-project/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update user project
+      operationId: update-user-project
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: userId
+        in: query
+        name: userId
+        required: true
+        type: integer
+      - description: UpdateProjectRequest
+        in: body
+        name: UpdateProjectRequest
+        required: true
+        schema:
+          $ref: '#/definitions/projects.UpdateProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update user project
+      tags:
+      - projects
   /skills:
     get:
       consumes:
