@@ -498,42 +498,7 @@ paths:
       summary: Update skill category
       tags:
       - Skills Categories
-  /user/add-user-education:
-    post:
-      consumes:
-      - application/json
-      description: add user education
-      operationId: add-user-education
-      parameters:
-      - description: AddUserEducation
-        in: body
-        name: AddUserEducation
-        required: true
-        schema:
-          $ref: '#/definitions/user.AddUserEducation'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: add user education
-      tags:
-      - user
-  /user/create-user:
+  /user:
     post:
       consumes:
       - application/json
@@ -568,41 +533,7 @@ paths:
       summary: Create user
       tags:
       - user
-  /user/delete-user-education/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: delete user education by user id
-      operationId: delete-user-education-by-user-id
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Delete user education by user id
-      tags:
-      - user
-  /user/delete-user{id}:
+  /user/{id}:
     delete:
       consumes:
       - application/json
@@ -636,30 +567,17 @@ paths:
       summary: Delete user by id
       tags:
       - user
-  /user/get-all-user-education/{id}:
     get:
       consumes:
       - application/json
-      description: get all user education
-      operationId: get-all-user-education
+      description: get user details by id
+      operationId: get-user-details-by-id
       parameters:
       - description: id
         in: path
         name: id
         required: true
         type: integer
-      - description: example - 50
-        in: query
-        name: limit
-        type: integer
-      - description: example - 0
-        in: query
-        name: offset
-        type: integer
-      - description: example - created_at desc
-        in: query
-        name: orderBy
-        type: string
       produces:
       - application/json
       responses:
@@ -679,10 +597,49 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Get all user education
+      summary: Get user details by id
       tags:
       - user
-  /user/get-all-user-list:
+    patch:
+      consumes:
+      - application/json
+      description: Updates user
+      operationId: update-user
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: UpdateUser
+        in: body
+        name: UpdateUser
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update user
+      tags:
+      - user
+  /user/all:
     get:
       consumes:
       - application/json
@@ -723,12 +680,47 @@ paths:
       summary: Get all user
       tags:
       - user
-  /user/get-user-details/{id}:
-    get:
+  /user/education:
+    post:
       consumes:
       - application/json
-      description: get user details by id
-      operationId: get-user-details-by-id
+      description: add user education
+      operationId: add-user-education
+      parameters:
+      - description: AddUserEducation
+        in: body
+        name: AddUserEducation
+        required: true
+        schema:
+          $ref: '#/definitions/user.AddUserEducation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: add user education
+      tags:
+      - user
+  /user/education/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user education by user id
+      operationId: delete-user-education-by-user-id
       parameters:
       - description: id
         in: path
@@ -754,10 +746,9 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Get user details by id
+      summary: Delete user education by user id
       tags:
       - user
-  /user/get-user-education/{id}:
     get:
       consumes:
       - application/json
@@ -791,7 +782,6 @@ paths:
       summary: Get user education details by user id
       tags:
       - user
-  /user/update-user-education/{id}:
     patch:
       consumes:
       - application/json
@@ -836,24 +826,30 @@ paths:
       summary: Update user education
       tags:
       - user
-  /user/update-user/{id}:
-    patch:
+  /user/education/all/{id}:
+    get:
       consumes:
       - application/json
-      description: Updates user
-      operationId: update-user
+      description: get all user education
+      operationId: get-all-user-education
       parameters:
       - description: id
         in: path
         name: id
         required: true
         type: integer
-      - description: UpdateUser
-        in: body
-        name: UpdateUser
-        required: true
-        schema:
-          $ref: '#/definitions/user.UpdateUser'
+      - description: example - 50
+        in: query
+        name: limit
+        type: integer
+      - description: example - 0
+        in: query
+        name: offset
+        type: integer
+      - description: example - created_at desc
+        in: query
+        name: orderBy
+        type: string
       produces:
       - application/json
       responses:
@@ -873,7 +869,7 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      summary: Update user
+      summary: Get all user education
       tags:
       - user
 swagger: "2.0"

@@ -17,34 +17,37 @@ var validate = validator.New()
 func Routes(router *gin.Engine, userSvc UserService) {
 	subRouter := router.Group("/user")
 	{
-		subRouter.POST("/create-user", func(c *gin.Context) {
+		subRouter.POST("", func(c *gin.Context) {
 			CreateUserHandler(userSvc, c)
 		})
-		subRouter.GET("/get-all-user-list", func(c *gin.Context) {
+		subRouter.GET("/all", func(c *gin.Context) {
 			GetAllUsersListHandler(userSvc, c)
 		})
-		subRouter.GET("/get-user-details/:id", func(c *gin.Context) {
+		subRouter.GET("/:id", func(c *gin.Context) {
 			GetUserDetailsByUserIdHandler(userSvc, c)
 		})
-		subRouter.DELETE("/delete-user/:id", func(c *gin.Context) {
+		subRouter.DELETE("/:id", func(c *gin.Context) {
 			DeleteUserByUserIdHandler(userSvc, c)
 		})
-		subRouter.PATCH("/update-user/:id", func(c *gin.Context) {
+		subRouter.PATCH("/:id", func(c *gin.Context) {
 			UpdateUserByUserIdHandler(userSvc, c)
 		})
-		subRouter.POST("/add-user-education", func(c *gin.Context) {
+	}
+	subCodeRouter := router.Group("/user/education")
+	{
+		subCodeRouter.POST("", func(c *gin.Context) {
 			AddUserEducationHandler(userSvc, c)
 		})
-		subRouter.PATCH("/update-user-education/:id", func(c *gin.Context) {
+		subCodeRouter.PATCH("/:id", func(c *gin.Context) {
 			UpdateUserEducationByIdHandler(userSvc, c)
 		})
-		subRouter.DELETE("/delete-user-education/:id", func(c *gin.Context) {
+		subCodeRouter.DELETE("/:id", func(c *gin.Context) {
 			DeleteUserEducationByUserIdHandler(userSvc, c)
 		})
-		subRouter.GET("/get-user-education/:id", func(c *gin.Context) {
+		subCodeRouter.GET("/:id", func(c *gin.Context) {
 			GetUserEducationByUserIdHandler(userSvc, c)
 		})
-		subRouter.GET("/get-all-user-education/:id", func(c *gin.Context) {
+		subCodeRouter.GET("/all/:id", func(c *gin.Context) {
 			GetAllUserEducationHandler(userSvc, c)
 		})
 	}
@@ -71,7 +74,7 @@ type CreateUserRequest struct {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /user/create-user [post]
+// @Router /user [post]
 func CreateUserHandler(userSvc UserService, c *gin.Context) {
 	createUserRequest := CreateUserRequest{}
 	if err := c.ShouldBind(&createUserRequest); err != nil {
@@ -121,7 +124,7 @@ type GetAllUsers struct {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /user/get-all-user-list [get]
+// @Router /user/all [get]
 func GetAllUsersListHandler(userSvc UserService, c *gin.Context) {
 	limit := c.Request.URL.Query().Get("limit")
 	offset := c.Request.URL.Query().Get("offset")
@@ -169,7 +172,7 @@ func GetAllUsersListHandler(userSvc UserService, c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /user/get-user-details/{id} [get]
+// @Router /user/{id} [get]
 func GetUserDetailsByUserIdHandler(userSvc UserService, c *gin.Context) {
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -194,7 +197,7 @@ func GetUserDetailsByUserIdHandler(userSvc UserService, c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /user/delete-user{id} [delete]
+// @Router /user/{id} [delete]
 func DeleteUserByUserIdHandler(userSvc UserService, c *gin.Context) {
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -243,7 +246,7 @@ type UpdateUser struct {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /user/update-user/{id} [patch]
+// @Router /user/{id} [patch]
 func UpdateUserByUserIdHandler(userSvc UserService, c *gin.Context) {
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -305,7 +308,7 @@ type UpdateUserEducation struct {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /user/add-user-education [post]
+// @Router /user/education [post]
 func AddUserEducationHandler(userSvc UserService, c *gin.Context) {
 	addUserEducationReq := AddUserEducation{}
 
@@ -368,7 +371,7 @@ func AddUserEducationHandler(userSvc UserService, c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /user/update-user-education/{id} [patch]
+// @Router /user/education/{id} [patch]
 func UpdateUserEducationByIdHandler(userSvc UserService, c *gin.Context) {
 	eduId := c.Param("id")
 	eduIdInt, _ := strconv.Atoi(eduId)
@@ -423,7 +426,7 @@ func UpdateUserEducationByIdHandler(userSvc UserService, c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /user/delete-user-education/{id} [delete]
+// @Router /user/education/{id} [delete]
 func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -458,7 +461,7 @@ func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /user/get-user-education/{id} [get]
+// @Router /user/education/{id} [get]
 func GetUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -493,7 +496,7 @@ type GetAllUserEducation struct {
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /user/get-all-user-education/{id} [get]
+// @Router /user/education/all/{id} [get]
 func GetAllUserEducationHandler(userSvc UserService, c *gin.Context) {
 	limit := c.Request.URL.Query().Get("limit")
 	offset := c.Request.URL.Query().Get("offset")

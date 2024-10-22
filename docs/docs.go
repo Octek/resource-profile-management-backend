@@ -595,60 +595,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/add-user-education": {
-            "post": {
-                "description": "add user education",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "add user education",
-                "operationId": "add-user-education",
-                "parameters": [
-                    {
-                        "description": "AddUserEducation",
-                        "name": "AddUserEducation",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user.AddUserEducation"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/create-user": {
+        "/user": {
             "post": {
                 "description": "creates a new complete user",
                 "consumes": [
@@ -701,9 +648,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/delete-user-education/{id}": {
-            "delete": {
-                "description": "delete user education by user id",
+        "/user/all": {
+            "get": {
+                "description": "get all user",
                 "consumes": [
                     "application/json"
                 ],
@@ -713,15 +660,26 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Delete user education by user id",
-                "operationId": "delete-user-education-by-user-id",
+                "summary": "Get all user",
+                "operationId": "get-all-user",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "example - 50",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "example - 0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "example - created_at desc",
+                        "name": "orderBy",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -752,9 +710,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/delete-user{id}": {
-            "delete": {
-                "description": "delete user by id",
+        "/user/education": {
+            "post": {
+                "description": "add user education",
                 "consumes": [
                     "application/json"
                 ],
@@ -764,22 +722,24 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Delete user by id",
-                "operationId": "delete-user-by-id",
+                "summary": "add user education",
+                "operationId": "add-user-education",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "AddUserEducation",
+                        "name": "AddUserEducation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.AddUserEducation"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/utils.ResponseMessage"
                         }
                     },
                     "400": {
@@ -803,7 +763,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/get-all-user-education/{id}": {
+        "/user/education/all/{id}": {
             "get": {
                 "description": "get all user education",
                 "consumes": [
@@ -872,120 +832,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/get-all-user-list": {
-            "get": {
-                "description": "get all user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get all user",
-                "operationId": "get-all-user",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "example - 50",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "example - 0",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "example - created_at desc",
-                        "name": "orderBy",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/get-user-details/{id}": {
-            "get": {
-                "description": "get user details by id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get user details by id",
-                "operationId": "get-user-details-by-id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/get-user-education/{id}": {
+        "/user/education/{id}": {
             "get": {
                 "description": "get user education details by user id",
                 "consumes": [
@@ -1034,9 +881,56 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/user/update-user-education/{id}": {
+            },
+            "delete": {
+                "description": "delete user education by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete user education by user id",
+                "operationId": "delete-user-education-by-user-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "description": "Update user education",
                 "consumes": [
@@ -1103,7 +997,105 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/update-user/{id}": {
+        "/user/{id}": {
+            "get": {
+                "description": "get user details by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get user details by id",
+                "operationId": "get-user-details-by-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete user by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete user by id",
+                "operationId": "delete-user-by-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "description": "Updates user",
                 "consumes": [
