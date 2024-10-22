@@ -33,11 +33,35 @@ definitions:
       user_id:
         type: integer
     type: object
+  user.AddUserEducation:
+    properties:
+      achievements:
+        type: string
+      degree:
+        type: string
+      end_date:
+        type: string
+      field_of_study:
+        type: string
+      institution_name:
+        type: string
+      start_date:
+        type: string
+      user_id:
+        type: integer
+    required:
+    - end_date
+    - institution_name
+    - start_date
+    - user_id
+    type: object
   user.CreateUserRequest:
     properties:
       email:
         type: string
       first_name:
+        type: string
+      job_title:
         type: string
       last_name:
         type: string
@@ -70,6 +94,24 @@ definitions:
         type: integer
       video_url:
         type: string
+    type: object
+  user.UpdateUserEducation:
+    properties:
+      achievements:
+        type: string
+      degree:
+        type: string
+      end_date:
+        type: string
+      field_of_study:
+        type: string
+      institution_name:
+        type: string
+      start_date:
+        type: string
+    required:
+    - institution_name
+    - start_date
     type: object
   utils.ResponseMessage:
     properties:
@@ -456,6 +498,110 @@ paths:
       summary: Update skill category
       tags:
       - Skills Categories
+  /user/add-user-education:
+    post:
+      consumes:
+      - application/json
+      description: add user education
+      operationId: add-user-education
+      parameters:
+      - description: AddUserEducation
+        in: body
+        name: AddUserEducation
+        required: true
+        schema:
+          $ref: '#/definitions/user.AddUserEducation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: add user education
+      tags:
+      - user
+  /user/create-user:
+    post:
+      consumes:
+      - application/json
+      description: creates a new complete user
+      operationId: create-user
+      parameters:
+      - description: CreateUserRequest
+        in: body
+        name: CreateUserRequest
+        required: true
+        schema:
+          $ref: '#/definitions/user.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create user
+      tags:
+      - user
+  /user/delete-user-education/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user education by user id
+      operationId: delete-user-education-by-user-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Delete user education by user id
+      tags:
+      - user
   /user/delete-user{id}:
     delete:
       consumes:
@@ -488,6 +634,52 @@ paths:
           schema:
             type: string
       summary: Delete user by id
+      tags:
+      - user
+  /user/get-all-user-education/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get all user education
+      operationId: get-all-user-education
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: example - 50
+        in: query
+        name: limit
+        type: integer
+      - description: example - 0
+        in: query
+        name: offset
+        type: integer
+      - description: example - created_at desc
+        in: query
+        name: orderBy
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all user education
       tags:
       - user
   /user/get-all-user-list:
@@ -565,6 +757,85 @@ paths:
       summary: Get user details by id
       tags:
       - user
+  /user/get-user-education/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get user education details by user id
+      operationId: get-user-education-details-by-user-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get user education details by user id
+      tags:
+      - user
+  /user/update-user-education/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Update user education
+      operationId: update-user-education
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: userId
+        in: query
+        name: userId
+        required: true
+        type: integer
+      - description: UpdateUserEducation
+        in: body
+        name: UpdateUserEducation
+        required: true
+        schema:
+          $ref: '#/definitions/user.UpdateUserEducation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Update user education
+      tags:
+      - user
   /user/update-user/{id}:
     patch:
       consumes:
@@ -603,41 +874,6 @@ paths:
           schema:
             type: string
       summary: Update user
-      tags:
-      - user
-  /users/create-user:
-    post:
-      consumes:
-      - application/json
-      description: creates a new complete user
-      operationId: create-user
-      parameters:
-      - description: CreateUserRequest
-        in: body
-        name: CreateUserRequest
-        required: true
-        schema:
-          $ref: '#/definitions/user.CreateUserRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Create user
       tags:
       - user
 swagger: "2.0"
