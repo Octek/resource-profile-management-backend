@@ -25,7 +25,7 @@ func NewExperienceRepositoryPostgres(db *gorm.DB) ExperienceRepository {
 func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID, skillId uint, experience *Experience) (*Experience, error) {
 
 	err := repo.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&experience).Preload("Skills").Error; err != nil {
+		if err := tx.Create(&experience).Error; err != nil {
 			return err
 		}
 
@@ -89,29 +89,65 @@ func (repo *experienceRepositoryPostgres) GetAllUserExperienceList(expID, userID
 }
 
 func (repo *experienceRepositoryPostgres) DeleteUserExperienceByID(id uint) error {
-	result := repo.db.Delete(&Experience{}, id)
-	if result.RowsAffected == 0 {
-		return fmt.Errorf("no experience record found for id: %d", id)
-	}
+	return repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("experience_id = ?", id).Delete(&ExperienceSkill{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Where("experience_id = ?", id).Delete(&UserExperience{}).Error; err != nil {
+			return err
+		}
+		result := tx.Delete(&Experience{}, id)
+		if result.RowsAffected == 0 {
+			return fmt.Errorf("no experience record found for id: %d", id)
+		}
 
-	return result.Error
+		return result.Error
+	})
 }
 
 func (repo *experienceRepositoryPostgres) DeleteUserExperienceByUserID(userId uint) error {
 	return repo.db.Transaction(func(tx *gorm.DB) error {
 		var experienceIDs []uint
-
-		err := tx.Model(&UserExperience{}).
-			Where("user_id = ?", userId).
-			Pluck("experience_id", &experienceIDs).Error
+		if err := tx.Model(&UserExperience{}).Where("user_id = ?", userId).
+			Pluck("experience_id", &experienceIDs).Error; err != nil {
+			return err
+		}
 		if len(experienceIDs) == 0 {
 			return fmt.Errorf("no experience records found for user_id: %d", userId)
 		}
-
-		err = tx.Where("user_id = ?", userId).Delete(&UserExperience{}).Error
+		err := tx.Where("user_id = ?", userId).Delete(&UserExperience{}).Error
+		err = tx.Where("experience_id IN (?)", experienceIDs).Delete(&ExperienceSkill{}).Error
 
 		err = tx.Where("id IN (?)", experienceIDs).Delete(&Experience{}).Error
 
 		return err
 	})
+}
+
+func (repo *experienceRepositoryPostgres) GetAllUserExperience(userId uint, limit int, offset int, orderBy string) ([]Experience, uint, error) {
+	var experienceIDs []uint
+	var exp []Experience
+	var total int64
+
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&UserExperience{}).
+			Where("user_id = ?", userId).
+			Pluck("experience_id", &experienceIDs).Error; err != nil {
+			return err
+		}
+		if len(experienceIDs) == 0 {
+			return fmt.Errorf("no experience records found for user_id: %d", userId)
+		}
+
+		query := tx.Model(&Experience{}).Where("deleted_at IS NULL").Where("id IN (?)", experienceIDs)
+		err := query.Count(&total).Error
+		err = query.Order(orderBy).Limit(limit).Offset(offset).Find(&exp).Error
+		for i := range exp {
+			exp[i].ParseResponsibilities()
+		}
+
+		return err
+	})
+
+	return exp, uint(total), err
 }

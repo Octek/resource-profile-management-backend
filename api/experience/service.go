@@ -39,3 +39,6 @@ func (svc *ExperienceService) DeleteUserExperienceByID(id uint) error {
 func (svc *ExperienceService) DeleteUserExperienceByUserID(id uint) error {
 	return svc.experienceRepository.DeleteUserExperienceByUserID(id)
 }
+func (svc *ExperienceService) GetAllUserExperience(userId uint, limit int, offset int, orderBy string) ([]Experience, uint, error) {
+	return svc.experienceRepository.GetAllUserExperience(userId, limit, offset, orderBy)
+}

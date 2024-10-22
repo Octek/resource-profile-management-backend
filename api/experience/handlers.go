@@ -28,8 +28,11 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 		subRouter.PATCH("/:id", func(c *gin.Context) {
 			UpdateUserExperienceByIdHandler(experienceSvc, c)
 		})
-		subRouter.DELETE("/delete-exp-by-user-id/:id", func(c *gin.Context) {
+		subRouter.DELETE("/user/:id", func(c *gin.Context) {
 			DeleteUserExperienceByUserIdHandler(experienceSvc, c)
+		})
+		subRouter.GET("/user/:id", func(c *gin.Context) {
+			HandlerToGetAllUserExperience(experienceSvc, c)
 		})
 	}
 
@@ -236,7 +239,7 @@ func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /experience/delete-exp-by-user-id/{id} [delete]
+// @Router /experience/user/{id} [delete]
 func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin.Context) {
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -248,4 +251,57 @@ func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin
 	}
 
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: nil})
+}
+
+// HandlerToGetAllUserExperience godoc
+// @Tags experience
+// @Summary Get all user experience
+// @Description Get all user experience
+// @ID Get-all-user-experience
+// @Accept  json
+// @Produce  json
+// @Param   limit    query     int     false  "example - 50"     limit(int)
+// @Param   offset     query     int     false  "example - 0"     offset(int)
+// @Param   orderBy     query     string     false  "example - created_at desc,updated_at desc"    orderBy(string)
+// @Param id path int true "id"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /experience/user/{id} [get]
+func HandlerToGetAllUserExperience(expSvc ExperienceService, c *gin.Context) {
+	fmt.Println("HandlerToGetAllSkills")
+	baseQuery := c.Request.URL.Query()
+	limit := baseQuery.Get("limit")
+	offset := baseQuery.Get("offset")
+	orderBy := baseQuery.Get("orderBy")
+	userId := c.Param("id")
+	userIdInt, _ := strconv.Atoi(userId)
+	if limit == "" {
+		limit = utils.DefaultLimit
+	}
+	if offset == "" {
+		offset = utils.DefaultOffset
+	}
+	if orderBy == "" {
+		orderBy = utils.DefaultOrderBy
+	}
+
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidIntegerValueLimitMessage, err), Data: nil})
+		return
+	}
+	offsetInt, err := strconv.Atoi(offset)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidIntegerValueOffsetMessage, err), Data: nil})
+		return
+	}
+	expList, totalRecords, err := expSvc.GetAllUserExperience(uint(userIdInt), limitInt, offsetInt, orderBy)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileGettingSkill, err), Data: nil})
+		return
+	}
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: utils.Success, Data: utils.RecordsResponse{Total: int64(totalRecords), RecordsFiltered: len(expList), Data: expList}})
+
 }

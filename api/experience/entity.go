@@ -8,19 +8,19 @@ import (
 )
 
 type Experience struct {
-	ID                    uint           `json:"id" gorm:"PRIMARY_KEY;AUTO_INCREMENT;UNIQUE;"`
-	Position              string         `json:"position"`
-	Company               string         `json:"company"`
-	Description           string         `json:"description"`
-	StartDate             time.Time      `json:"start_date"`
-	EndDate               time.Time      `json:"end_date"`
-	IsCurrentlyWorking    bool           `json:"is_currently_working"`
-	Responsibilities      string         `json:"-"`
-	ResponsibilitiesArray []string       `json:"responsibilities" gorm:"-"`
-	Skills                []skills.Skill `json:"skills" gorm:"many2many:experience_skills;"`
-	DeletedAt             gorm.DeletedAt `json:"deleted_at"`
-	CreatedAt             time.Time      `json:"created_at"`
-	UpdatedAt             time.Time      `json:"updated_at"`
+	ID                 uint           `json:"id" gorm:"PRIMARY_KEY;AUTO_INCREMENT;UNIQUE;"`
+	Position           string         `json:"position"`
+	Company            string         `json:"company"`
+	Description        string         `json:"description"`
+	StartDate          time.Time      `json:"start_date"`
+	EndDate            time.Time      `json:"end_date"`
+	IsCurrentlyWorking bool           `json:"is_currently_working"`
+	Responsibilities   string         `json:"-"`
+	Responsibility     []string       `json:"responsibilities" gorm:"-"`
+	Skills             []skills.Skill `json:"skills" gorm:"many2many:experience_skills;"`
+	DeletedAt          gorm.DeletedAt `json:"deleted_at"`
+	CreatedAt          time.Time      `json:"created_at"`
+	UpdatedAt          time.Time      `json:"updated_at"`
 }
 
 type UserExperience struct {
@@ -39,15 +39,10 @@ type ExperienceSkill struct {
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 
-type ExperienceResponse struct {
-	Experience       Experience `json:"experience"`
-	Responsibilities []string   `json:"responsibilities"`
-}
-
 func (experience *Experience) ParseResponsibilities() {
 	responsibilities := strings.Split(experience.Responsibilities, "|")
 	for j, resp := range responsibilities {
 		responsibilities[j] = strings.TrimSpace(resp)
 	}
-	experience.ResponsibilitiesArray = responsibilities
+	experience.Responsibility = responsibilities
 }

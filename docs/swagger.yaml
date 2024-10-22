@@ -286,7 +286,7 @@ paths:
       summary: Update experience
       tags:
       - experience
-  /experience/delete-exp-by-user-id/{id}:
+  /experience/user/{id}:
     delete:
       consumes:
       - application/json
@@ -318,6 +318,51 @@ paths:
           schema:
             type: string
       summary: Delete user experience by user id
+      tags:
+      - experience
+    get:
+      consumes:
+      - application/json
+      description: Get all user experience
+      operationId: Get-all-user-experience
+      parameters:
+      - description: example - 50
+        in: query
+        name: limit
+        type: integer
+      - description: example - 0
+        in: query
+        name: offset
+        type: integer
+      - description: example - created_at desc,updated_at desc
+        in: query
+        name: orderBy
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all user experience
       tags:
       - experience
   /skills:
