@@ -640,4 +640,45 @@ paths:
       summary: Create user
       tags:
       - user
+  /users/get-all-user-categories:
+    get:
+      consumes:
+      - application/json
+      description: gets all user categories
+      operationId: get-all-user-categories
+      parameters:
+      - description: example - 50
+        in: query
+        name: limit
+        type: integer
+      - description: example - 0
+        in: query
+        name: offset
+        type: integer
+      - description: 'example - created_at desc '
+        in: query
+        name: orderBy
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all user categories
+      tags:
+      - user
 swagger: "2.0"
