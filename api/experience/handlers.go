@@ -5,7 +5,6 @@ import (
 	"github.com/Octek/resource-profile-management-backend.git/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"gorm.io/gorm"
 	"net/http"
 	"strconv"
 	"time"
@@ -24,10 +23,13 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 			GetUserExperienceByIdHandler(experienceSvc, c)
 		})
 		subRouter.DELETE("/:id", func(c *gin.Context) {
-			DeleteUserExperienceByUserIdHandler(experienceSvc, c)
+			DeleteUserExperienceByIdHandler(experienceSvc, c)
 		})
 		subRouter.PATCH("/:id", func(c *gin.Context) {
 			UpdateUserExperienceByIdHandler(experienceSvc, c)
+		})
+		subRouter.DELETE("/delete-exp-by-user-id/:id", func(c *gin.Context) {
+			DeleteUserExperienceByUserIdHandler(experienceSvc, c)
 		})
 	}
 
@@ -90,7 +92,7 @@ func AddUserExperienceHandler(experienceSvc ExperienceService, c *gin.Context) {
 		Responsibilities:   addUserExpReq.Experiences.Responsibilities,
 	}
 
-	createdExperiences, err := experienceSvc.AddExperienceWithUserAndSkills(addUserExpReq.UserID, addUserExpReq.SkillID, experience)
+	createdExperiences, err := experienceSvc.AddExperienceWithUserAndSkills(addUserExpReq.UserID, addUserExpReq.SkillID, &experience)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Failed to add experiences: %v", err), Data: nil})
 		return
@@ -100,11 +102,10 @@ func AddUserExperienceHandler(experienceSvc ExperienceService, c *gin.Context) {
 }
 
 type UpdateExpRequest struct {
-	UserId             uint      `json:"user_id"`
-	Position           string    `json:"position" binding:"required"`
-	Company            string    `json:"company" binding:"required"`
+	Position           string    `json:"position" validate:"required"`
+	Company            string    `json:"company" validate:"required"`
 	Description        string    `json:"description"`
-	StartDate          time.Time `json:"start_date" binding:"required"`
+	StartDate          time.Time `json:"start_date" validate:"required"`
 	EndDate            time.Time `json:"end_date"`
 	IsCurrentlyWorking bool      `json:"is_currently_working"`
 	Responsibilities   string    `json:"responsibilities"`
@@ -118,6 +119,7 @@ type UpdateExpRequest struct {
 // @Accept  json
 // @Produce  json
 // @Param id path uint true "id"
+// @Param userId query uint true "userId"
 // @Param UpdateExpRequest body UpdateExpRequest true "UpdateExpRequest"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -125,6 +127,8 @@ type UpdateExpRequest struct {
 // @Failure 500 {object} string
 // @Router /experience/{id} [patch]
 func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
+	userId := c.Request.URL.Query().Get("userId")
+	userIdInt, _ := strconv.Atoi(userId)
 	var updateExpRequest UpdateExpRequest
 
 	if err := c.ShouldBindJSON(&updateExpRequest); err != nil {
@@ -149,7 +153,7 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 		return
 	}
 
-	_, err = experienceSvc.GetUserExperienceByUserIdAndExperienceId(updateExpRequest.UserId, uint(experienceId))
+	_, err = experienceSvc.GetUserExperienceByUserIdAndExperienceId(uint(userIdInt), uint(experienceId))
 	if err != nil {
 		c.JSON(http.StatusForbidden, utils.ResponseMessage{StatusCode: http.StatusForbidden, Message: "You are not authorized to update this experience", Data: nil})
 		return
@@ -164,10 +168,6 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Experience updated successfully", Data: nil})
 }
 
-type GetExperienceRequest struct {
-	UserId uint `json:"user_id"`
-}
-
 // GetUserExperienceByIdHandler godoc
 // @Tags experience
 // @Summary Get user experience details by id
@@ -176,7 +176,7 @@ type GetExperienceRequest struct {
 // @Accept  json
 // @Produce  json
 // @Param id path uint true "id"
-// @Param GetExperienceRequest body GetExperienceRequest true "GetExperienceRequest"
+// @Param userId query uint true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -185,18 +185,10 @@ type GetExperienceRequest struct {
 func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
 	expId := c.Param("id")
 	expIdInt, _ := strconv.Atoi(expId)
-	var getExpRequest GetExperienceRequest
+	userId := c.Request.URL.Query().Get("userId")
+	userIdInt, _ := strconv.Atoi(userId)
 
-	if err := c.ShouldBindJSON(&getExpRequest); err != nil {
-		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
-		return
-	}
-
-	if err := validate.Struct(&getExpRequest); err != nil {
-		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
-		return
-	}
-	expDetails, err := experienceSvc.GetAllUserExperienceList(uint(expIdInt), getExpRequest.UserId)
+	expDetails, err := experienceSvc.GetAllUserExperienceList(uint(expIdInt), uint(userIdInt))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Cannot fetch user experience against provided ID:", err), Data: nil})
 		return
@@ -205,7 +197,7 @@ func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Contex
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: expDetails})
 }
 
-// DeleteUserExperienceByUserIdHandler godoc
+// DeleteUserExperienceByIdHandler godoc
 // @Tags experience
 // @Summary Delete user experience by id
 // @Description delete user experience by id
@@ -213,38 +205,16 @@ func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Contex
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id"
-// @Param GetExperienceRequest body GetExperienceRequest true "GetExperienceRequest"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /experience/{id} [delete]
-func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin.Context) {
+func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
 	expId := c.Param("id")
 	expIdInt, _ := strconv.Atoi(expId)
-	var getExpRequest GetExperienceRequest
 
-	if err := c.ShouldBindJSON(&getExpRequest); err != nil {
-		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
-		return
-	}
-
-	if err := validate.Struct(&getExpRequest); err != nil {
-		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
-		return
-	}
-
-	statusCode := http.StatusInternalServerError
-	_, err := experienceSvc.GetUserExperienceByUserIdAndExperienceId(getExpRequest.UserId, uint(expIdInt))
-	if err == gorm.ErrRecordNotFound {
-		statusCode = http.StatusNotFound
-	}
-	if err != nil {
-		c.JSON(statusCode, utils.ResponseMessage{StatusCode: statusCode, Message: fmt.Sprintf("Something went wrong while fetching user experience against given id: %v", err), Data: nil})
-		return
-	}
-
-	err = experienceSvc.DeleteUserExperienceByID(uint(expIdInt))
+	err := experienceSvc.DeleteUserExperienceByID(uint(expIdInt))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Unable to Delete user experience against provided id:", err), Data: nil})
 		return
@@ -252,4 +222,30 @@ func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin
 
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: nil})
 
+}
+
+// DeleteUserExperienceByUserIdHandler godoc
+// @Tags experience
+// @Summary Delete user experience by user id
+// @Description delete user experience by user id
+// @ID delete-user-experience-by-user-id
+// @Accept  json
+// @Produce  json
+// @Param id path int true "id"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /experience/delete-exp-by-user-id/{id} [delete]
+func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin.Context) {
+	userId := c.Param("id")
+	userIdInt, _ := strconv.Atoi(userId)
+	fmt.Println("userid", userIdInt)
+	err := experienceSvc.DeleteUserExperienceByUserID(uint(userIdInt))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Unable to Delete user experience against provided id:", err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: nil})
 }

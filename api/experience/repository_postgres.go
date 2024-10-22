@@ -1,6 +1,7 @@
 package experience
 
 import (
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
@@ -21,21 +22,32 @@ func NewExperienceRepositoryPostgres(db *gorm.DB) ExperienceRepository {
 	}
 }
 
-func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID, skillId uint, experience Experience) (Experience, error) {
+func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID, skillId uint, experience *Experience) (*Experience, error) {
 
-	err := repo.db.Create(&experience).Error
-	userExperience := UserExperience{
-		UserID:       userID,
-		ExperienceID: experience.ID,
-	}
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&experience).Preload("Skills").Error; err != nil {
+			return err
+		}
 
-	experienceSkill := ExperienceSkill{
-		SkillID:      skillId,
-		ExperienceID: experience.ID,
-	}
+		experience.ParseResponsibilities()
+		userExperience := UserExperience{
+			UserID:       userID,
+			ExperienceID: experience.ID,
+		}
+		if err := tx.Create(&userExperience).Error; err != nil {
+			return err
+		}
 
-	err = repo.db.Create(&userExperience).Error
-	err = repo.db.Create(&experienceSkill).Error
+		experienceSkill := ExperienceSkill{
+			SkillID:      skillId,
+			ExperienceID: experience.ID,
+		}
+		if err := tx.Create(&experienceSkill).Error; err != nil {
+			return err
+		}
+		fmt.Println("Experience, UserExperience, and ExperienceSkill have been created successfully.")
+		return nil
+	})
 
 	return experience, err
 }
@@ -77,7 +89,29 @@ func (repo *experienceRepositoryPostgres) GetAllUserExperienceList(expID, userID
 }
 
 func (repo *experienceRepositoryPostgres) DeleteUserExperienceByID(id uint) error {
-	err := repo.db.Delete(&Experience{}, id).Error
+	result := repo.db.Delete(&Experience{}, id)
+	if result.RowsAffected == 0 {
+		return fmt.Errorf("no experience record found for id: %d", id)
+	}
 
-	return err
+	return result.Error
+}
+
+func (repo *experienceRepositoryPostgres) DeleteUserExperienceByUserID(userId uint) error {
+	return repo.db.Transaction(func(tx *gorm.DB) error {
+		var experienceIDs []uint
+
+		err := tx.Model(&UserExperience{}).
+			Where("user_id = ?", userId).
+			Pluck("experience_id", &experienceIDs).Error
+		if len(experienceIDs) == 0 {
+			return fmt.Errorf("no experience records found for user_id: %d", userId)
+		}
+
+		err = tx.Where("user_id = ?", userId).Delete(&UserExperience{}).Error
+
+		err = tx.Where("id IN (?)", experienceIDs).Delete(&Experience{}).Error
+
+		return err
+	})
 }

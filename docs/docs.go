@@ -15,7 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-<<<<<<< HEAD
         "/experience": {
             "post": {
                 "description": "Adds new experiences for a given user ID",
@@ -69,19 +68,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/experience/{id}": {
-            "get": {
-                "description": "get user experience details by id",
-=======
-        "/skills": {
-            "get": {
-                "security": [
-                    {
-                        "ApiAuthKey": []
-                    }
-                ],
-                "description": "Get all skills",
->>>>>>> refs/heads/develop
+        "/experience/delete-exp-by-user-id/{id}": {
+            "delete": {
+                "description": "delete user experience by user id",
                 "consumes": [
                     "application/json"
                 ],
@@ -89,7 +78,57 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-<<<<<<< HEAD
+                    "experience"
+                ],
+                "summary": "Delete user experience by user id",
+                "operationId": "delete-user-experience-by-user-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/experience/{id}": {
+            "get": {
+                "description": "get user experience details by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
                     "experience"
                 ],
                 "summary": "Get user experience details by id",
@@ -103,43 +142,11 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "GetExperienceRequest",
-                        "name": "GetExperienceRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/experience.GetExperienceRequest"
-                        }
-=======
-                    "Skills"
-                ],
-                "summary": "Get all skills",
-                "operationId": "Get-skills",
-                "parameters": [
-                    {
                         "type": "integer",
-                        "description": "example - 50",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "example - 0",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "example - created_at desc,updated_at desc",
-                        "name": "orderBy",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Search for a keyword in skill names",
-                        "name": "keyword",
-                        "in": "query"
->>>>>>> refs/heads/develop
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -169,18 +176,8 @@ const docTemplate = `{
                     }
                 }
             },
-<<<<<<< HEAD
             "delete": {
                 "description": "delete user experience by id",
-=======
-            "post": {
-                "security": [
-                    {
-                        "ApiAuthKey": []
-                    }
-                ],
-                "description": "Create skills",
->>>>>>> refs/heads/develop
                 "consumes": [
                     "application/json"
                 ],
@@ -188,7 +185,6 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-<<<<<<< HEAD
                     "experience"
                 ],
                 "summary": "Delete user experience by id",
@@ -200,66 +196,30 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "GetExperienceRequest",
-                        "name": "GetExperienceRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/experience.GetExperienceRequest"
-=======
-                    "Skills"
-                ],
-                "summary": "Create skills",
-                "operationId": "Create-skills",
-                "parameters": [
-                    {
-                        "description": "Skill",
-                        "name": "UserSkillRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/skills.UserSkillRequest"
->>>>>>> refs/heads/develop
-                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-<<<<<<< HEAD
                             "type": "string"
-=======
-                            "$ref": "#/definitions/utils.ResponseMessage"
->>>>>>> refs/heads/develop
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-<<<<<<< HEAD
                             "type": "string"
-=======
-                            "$ref": "#/definitions/utils.ResponseMessage"
->>>>>>> refs/heads/develop
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-<<<<<<< HEAD
                             "type": "string"
-=======
-                            "$ref": "#/definitions/utils.ResponseMessage"
->>>>>>> refs/heads/develop
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-<<<<<<< HEAD
                             "type": "string"
                         }
                     }
@@ -284,6 +244,13 @@ const docTemplate = `{
                         "description": "id",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
                         "required": true
                     },
                     {
@@ -319,9 +286,135 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "type": "string"
-=======
+                        }
+                    }
+                }
+            }
+        },
+        "/skills": {
+            "get": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Get all skills",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Get all skills",
+                "operationId": "Get-skills",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "example - 50",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "example - 0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "example - created_at desc,updated_at desc",
+                        "name": "orderBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search for a keyword in skill names",
+                        "name": "keyword",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Create skills",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Create skills",
+                "operationId": "Create-skills",
+                "parameters": [
+                    {
+                        "description": "Skill",
+                        "name": "UserSkillRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/skills.UserSkillRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
                             "$ref": "#/definitions/utils.ResponseMessage"
->>>>>>> refs/heads/develop
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
                         }
                     }
                 }
@@ -1105,14 +1198,6 @@ const docTemplate = `{
                 }
             }
         },
-        "experience.GetExperienceRequest": {
-            "type": "object",
-            "properties": {
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "experience.UpdateExpRequest": {
             "type": "object",
             "required": [
@@ -1136,11 +1221,11 @@ const docTemplate = `{
                 "position": {
                     "type": "string"
                 },
-                "start_date": {
+                "responsibilities": {
                     "type": "string"
                 },
-                "user_id": {
-                    "type": "integer"
+                "start_date": {
+                    "type": "string"
                 }
             }
         },

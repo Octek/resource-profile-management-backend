@@ -57,6 +57,57 @@
                 }
             }
         },
+        "/experience/delete-exp-by-user-id/{id}": {
+            "delete": {
+                "description": "delete user experience by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Delete user experience by user id",
+                "operationId": "delete-user-experience-by-user-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/experience/{id}": {
             "get": {
                 "description": "get user experience details by id",
@@ -80,13 +131,11 @@
                         "required": true
                     },
                     {
-                        "description": "GetExperienceRequest",
-                        "name": "GetExperienceRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/experience.GetExperienceRequest"
-                        }
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -136,15 +185,6 @@
                         "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "GetExperienceRequest",
-                        "name": "GetExperienceRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/experience.GetExperienceRequest"
-                        }
                     }
                 ],
                 "responses": {
@@ -193,6 +233,13 @@
                         "description": "id",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
                         "required": true
                     },
                     {
@@ -1140,14 +1187,6 @@
                 }
             }
         },
-        "experience.GetExperienceRequest": {
-            "type": "object",
-            "properties": {
-                "user_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "experience.UpdateExpRequest": {
             "type": "object",
             "required": [
@@ -1171,11 +1210,11 @@
                 "position": {
                     "type": "string"
                 },
-                "start_date": {
+                "responsibilities": {
                     "type": "string"
                 },
-                "user_id": {
-                    "type": "integer"
+                "start_date": {
+                    "type": "string"
                 }
             }
         },
