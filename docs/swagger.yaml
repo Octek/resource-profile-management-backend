@@ -73,6 +73,24 @@ definitions:
     required:
     - name
     type: object
+  skills.SkillRequest:
+    properties:
+      icon:
+        type: string
+      name:
+        type: string
+      skill_category_id:
+        type: integer
+    type: object
+  skills.UserSkillRequest:
+    properties:
+      skill_level:
+        type: string
+      skillData:
+        $ref: '#/definitions/skills.SkillRequest'
+      user_id:
+        type: integer
+    type: object
   user.CreateUserRequest:
     properties:
       email:
@@ -275,6 +293,195 @@ paths:
       summary: Update experience
       tags:
       - experience
+  /skills:
+    get:
+      consumes:
+      - application/json
+      description: Get all skills
+      operationId: Get-skills
+      parameters:
+      - description: example - 50
+        in: query
+        name: limit
+        type: integer
+      - description: example - 0
+        in: query
+        name: offset
+        type: integer
+      - description: example - created_at desc,updated_at desc
+        in: query
+        name: orderBy
+        type: string
+      - description: Search for a keyword in skill names
+        in: query
+        name: keyword
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Get all skills
+      tags:
+      - Skills
+    post:
+      consumes:
+      - application/json
+      description: Create skills
+      operationId: Create-skills
+      parameters:
+      - description: Skill
+        in: body
+        name: UserSkillRequest
+        required: true
+        schema:
+          $ref: '#/definitions/skills.UserSkillRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      security:
+      - ApiAuthKey: []
+      summary: Create skills
+      tags:
+      - Skills
+  /skills/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete skill
+      operationId: delete-skill
+      parameters:
+      - description: Skill ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Delete skill
+      tags:
+      - Skills
+    get:
+      consumes:
+      - application/json
+      description: Get skill
+      operationId: get-skill
+      parameters:
+      - description: Skill ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Get skill
+      tags:
+      - Skills
+    patch:
+      consumes:
+      - application/json
+      description: Update skill
+      operationId: update-skill
+      parameters:
+      - description: Skill ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Skill
+        in: body
+        name: SkillRequest
+        required: true
+        schema:
+          $ref: '#/definitions/skills.SkillRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Update skill
+      tags:
+      - Skills
   /skills/categories:
     get:
       consumes:

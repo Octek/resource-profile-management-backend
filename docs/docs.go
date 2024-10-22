@@ -15,6 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+<<<<<<< HEAD
         "/experience": {
             "post": {
                 "description": "Adds new experiences for a given user ID",
@@ -71,6 +72,16 @@ const docTemplate = `{
         "/experience/{id}": {
             "get": {
                 "description": "get user experience details by id",
+=======
+        "/skills": {
+            "get": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Get all skills",
+>>>>>>> refs/heads/develop
                 "consumes": [
                     "application/json"
                 ],
@@ -78,6 +89,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
+<<<<<<< HEAD
                     "experience"
                 ],
                 "summary": "Get user experience details by id",
@@ -98,6 +110,36 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/experience.GetExperienceRequest"
                         }
+=======
+                    "Skills"
+                ],
+                "summary": "Get all skills",
+                "operationId": "Get-skills",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "example - 50",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "example - 0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "example - created_at desc,updated_at desc",
+                        "name": "orderBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search for a keyword in skill names",
+                        "name": "keyword",
+                        "in": "query"
+>>>>>>> refs/heads/develop
                     }
                 ],
                 "responses": {
@@ -127,8 +169,18 @@ const docTemplate = `{
                     }
                 }
             },
+<<<<<<< HEAD
             "delete": {
                 "description": "delete user experience by id",
+=======
+            "post": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Create skills",
+>>>>>>> refs/heads/develop
                 "consumes": [
                     "application/json"
                 ],
@@ -136,6 +188,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
+<<<<<<< HEAD
                     "experience"
                 ],
                 "summary": "Delete user experience by id",
@@ -155,6 +208,20 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/experience.GetExperienceRequest"
+=======
+                    "Skills"
+                ],
+                "summary": "Create skills",
+                "operationId": "Create-skills",
+                "parameters": [
+                    {
+                        "description": "Skill",
+                        "name": "UserSkillRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/skills.UserSkillRequest"
+>>>>>>> refs/heads/develop
                         }
                     }
                 ],
@@ -162,24 +229,37 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
+<<<<<<< HEAD
                             "type": "string"
+=======
+                            "$ref": "#/definitions/utils.ResponseMessage"
+>>>>>>> refs/heads/develop
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
+<<<<<<< HEAD
                             "type": "string"
+=======
+                            "$ref": "#/definitions/utils.ResponseMessage"
+>>>>>>> refs/heads/develop
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
+<<<<<<< HEAD
                             "type": "string"
+=======
+                            "$ref": "#/definitions/utils.ResponseMessage"
+>>>>>>> refs/heads/develop
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
+<<<<<<< HEAD
                             "type": "string"
                         }
                     }
@@ -239,6 +319,9 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "type": "string"
+=======
+                            "$ref": "#/definitions/utils.ResponseMessage"
+>>>>>>> refs/heads/develop
                         }
                     }
                 }
@@ -500,6 +583,170 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/skills.SkillCategoryUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/skills/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Get skill",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Get skill",
+                "operationId": "get-skill",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Skill ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Delete skill",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Delete skill",
+                "operationId": "delete-skill",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Skill ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Update skill",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Update skill",
+                "operationId": "update-skill",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Skill ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Skill",
+                        "name": "SkillRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/skills.SkillRequest"
                         }
                     }
                 ],
@@ -919,6 +1166,34 @@ const docTemplate = `{
             "properties": {
                 "name": {
                     "type": "string"
+                }
+            }
+        },
+        "skills.SkillRequest": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "skill_category_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "skills.UserSkillRequest": {
+            "type": "object",
+            "properties": {
+                "skillData": {
+                    "$ref": "#/definitions/skills.SkillRequest"
+                },
+                "skill_level": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
