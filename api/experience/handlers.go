@@ -270,7 +270,6 @@ func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin
 // @Failure 500 {object} string
 // @Router /experience/user/{id} [get]
 func HandlerToGetAllUserExperience(expSvc ExperienceService, c *gin.Context) {
-	fmt.Println("HandlerToGetAllSkills")
 	baseQuery := c.Request.URL.Query()
 	limit := baseQuery.Get("limit")
 	offset := baseQuery.Get("offset")
@@ -299,7 +298,7 @@ func HandlerToGetAllUserExperience(expSvc ExperienceService, c *gin.Context) {
 	}
 	expList, totalRecords, err := expSvc.GetAllUserExperience(uint(userIdInt), limitInt, offsetInt, orderBy)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileGettingSkill, err), Data: nil})
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileGettingExperience, err), Data: nil})
 		return
 	}
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: utils.Success, Data: utils.RecordsResponse{Total: int64(totalRecords), RecordsFiltered: len(expList), Data: expList}})
