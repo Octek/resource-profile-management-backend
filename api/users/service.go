@@ -56,3 +56,7 @@ func (svc *UserService) DeleteUserEducationByID(userId uint) error {
 func (svc *UserService) GetAllUserEducation(userId uint, limit int, offset int, orderBy string) ([]Education, uint, error) {
 	return svc.userRepository.GetAllUserEducation(userId, limit, offset, orderBy)
 }
+
+func (svc *UserService) GetAllUserCategories(keyword string, limit int, offset int, orderBy string) ([]UserCategory, int64, error) {
+	return svc.userRepository.GetAllUserCategories(keyword, limit, offset, orderBy)
+}

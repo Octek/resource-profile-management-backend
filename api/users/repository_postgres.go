@@ -175,3 +175,23 @@ func (repo *userRepositoryPostgres) GetAllUserEducation(userId uint, limit int, 
 
 	return educations, uint(total), nil
 }
+
+func (repo *userRepositoryPostgres) GetAllUserCategories(keyword string, limit int, offset int, orderBy string) ([]UserCategory, int64, error) {
+	users := make([]UserCategory, 0)
+	var count int64
+	if keyword == "" {
+		_ = repo.db.Model(&UserCategory{}).Count(&count)
+		results := repo.db.Model(&UserCategory{}).Select("id,name").Limit(limit).Offset(offset).Order(orderBy).Find(&users)
+		if err := results.Error; err != nil {
+			return users, count, err
+		}
+	} else {
+		keyword = "%" + strings.ToLower(keyword) + "%"
+		_ = repo.db.Model(&UserCategory{}).Where("Lower(name) LIKE ?", keyword).Count(&count)
+		results := repo.db.Model(&UserCategory{}).Select("id,name").Where("LOWER(name) LIKE ?", keyword).Limit(limit).Offset(offset).Order(orderBy).Find(&users)
+		if err := results.Error; err != nil {
+			return users, count, err
+		}
+	}
+	return users, count, nil
+}

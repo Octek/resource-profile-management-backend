@@ -32,6 +32,9 @@ func Routes(router *gin.Engine, userSvc UserService) {
 		subRouter.PATCH("/:id", func(c *gin.Context) {
 			UpdateUserByUserIdHandler(userSvc, c)
 		})
+		subRouter.GET("/get-all-user-categories", func(c *gin.Context) {
+			GetAllUserCategoriesHandler(userSvc, c)
+		})
 	}
 	subCodeRouter := router.Group("/user/education")
 	{
@@ -538,4 +541,59 @@ func GetAllUserEducationHandler(userSvc UserService, c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: GetAllUserEducation{Total: total, Education: allUserEducation, RecordsFiltered: len(allUserEducation)}})
+}
+
+type CategoriesResponse struct {
+	Total           int64          `json:"total"`
+	RecordsFiltered int            `json:"records_filtered"`
+	UserCategories  []UserCategory `json:"user_categories"`
+}
+
+// GetAllUserCategoriesHandler godoc
+// @Tags user
+// @Summary Get all user categories
+// @Description gets all user categories
+// @ID get-all-user-categories
+// @Accept  json
+// @Produce  json
+// @Param   limit    query     int     false  "example - 50"     limit(int)
+// @Param   offset     query     int     false  "example - 0"     offset(int)
+// @Param   orderBy     query     string     false  "example - created_at desc "     orderBy(string)
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /users/get-all-user-categories [get]
+func GetAllUserCategoriesHandler(userSvc UserService, c *gin.Context) {
+	limit := c.Request.URL.Query().Get("limit")
+	offset := c.Request.URL.Query().Get("offset")
+	orderBy := c.Request.URL.Query().Get("orderBy")
+	//keyword := c.Request.URL.Query().Get("keyword")
+
+	if limit == "" {
+		limit = utils.DefaultLimit // default limit
+	}
+	if offset == "" {
+		offset = utils.DefaultOffset // default offset
+	}
+	if orderBy == "" {
+		orderBy = utils.DefaultOrderBy // default orderBy
+	}
+
+	limitInt, err := strconv.Atoi(limit)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidIntegerValueLimitMessage, err), Data: nil})
+		return
+	}
+	offsetInt, err := strconv.Atoi(offset)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidIntegerValueOffsetMessage, err), Data: nil})
+		return
+	}
+	categoriesList, count, err := userSvc.GetAllUserCategories("", limitInt, offsetInt, orderBy)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Something went wrong while getting the categories", err), Data: nil})
+		return
+	}
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "success", Data: CategoriesResponse{Total: count, UserCategories: categoriesList, RecordsFiltered: len(categoriesList)}})
 }
