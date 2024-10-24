@@ -595,9 +595,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/delete-user{id}": {
-            "delete": {
-                "description": "delete user by id",
+        "/user": {
+            "post": {
+                "description": "creates a new complete user",
                 "consumes": [
                     "application/json"
                 ],
@@ -607,22 +607,24 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Delete user by id",
-                "operationId": "delete-user-by-id",
+                "summary": "Create user",
+                "operationId": "create-user",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
+                        "description": "CreateUserRequest",
+                        "name": "CreateUserRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.CreateUserRequest"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/utils.ResponseMessage"
                         }
                     },
                     "400": {
@@ -646,7 +648,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/get-all-user-list": {
+        "/user/all": {
             "get": {
                 "description": "get all user",
                 "consumes": [
@@ -708,7 +710,294 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/get-user-details/{id}": {
+        "/user/education": {
+            "post": {
+                "description": "add user education",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "add user education",
+                "operationId": "add-user-education",
+                "parameters": [
+                    {
+                        "description": "AddUserEducation",
+                        "name": "AddUserEducation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.AddUserEducation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/education/all/{id}": {
+            "get": {
+                "description": "get all user education",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get all user education",
+                "operationId": "get-all-user-education",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "example - 50",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "example - 0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "example - created_at desc",
+                        "name": "orderBy",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/education/{id}": {
+            "get": {
+                "description": "get user education details by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get user education details by user id",
+                "operationId": "get-user-education-details-by-user-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "delete user education by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete user education by user id",
+                "operationId": "delete-user-education-by-user-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "description": "Update user education",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update user education",
+                "operationId": "update-user-education",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "UpdateUserEducation",
+                        "name": "UpdateUserEducation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UpdateUserEducation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}": {
             "get": {
                 "description": "get user details by id",
                 "consumes": [
@@ -757,9 +1046,56 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/user/update-user/{id}": {
+            },
+            "delete": {
+                "description": "delete user by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete user by id",
+                "operationId": "delete-user-by-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "description": "Updates user",
                 "consumes": [
@@ -818,6 +1154,8 @@ const docTemplate = `{
                     }
                 }
             }
+<<<<<<< HEAD
+=======
         },
         "/users/create-user": {
             "post": {
@@ -933,6 +1271,7 @@ const docTemplate = `{
                     }
                 }
             }
+>>>>>>> develop
         }
     },
     "definitions": {
@@ -989,6 +1328,38 @@ const docTemplate = `{
                 }
             }
         },
+        "user.AddUserEducation": {
+            "type": "object",
+            "required": [
+                "end_date",
+                "institution_name",
+                "start_date",
+                "user_id"
+            ],
+            "properties": {
+                "achievements": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "field_of_study": {
+                    "type": "string"
+                },
+                "institution_name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "user.CreateUserRequest": {
             "type": "object",
             "required": [
@@ -1001,6 +1372,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "first_name": {
+                    "type": "string"
+                },
+                "job_title": {
                     "type": "string"
                 },
                 "last_name": {
@@ -1042,6 +1416,33 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "video_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UpdateUserEducation": {
+            "type": "object",
+            "required": [
+                "institution_name",
+                "start_date"
+            ],
+            "properties": {
+                "achievements": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "field_of_study": {
+                    "type": "string"
+                },
+                "institution_name": {
+                    "type": "string"
+                },
+                "start_date": {
                     "type": "string"
                 }
             }
