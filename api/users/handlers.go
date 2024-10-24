@@ -300,7 +300,7 @@ type UpdateUserEducation struct {
 }
 
 // AddUserEducationHandler godoc
-// @Tags user
+// @Tags education
 // @Summary add user education
 // @Description add user education
 // @ID add-user-education
@@ -322,16 +322,6 @@ func AddUserEducationHandler(userSvc UserService, c *gin.Context) {
 
 	if err := validate.Struct(&addUserEducationReq); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
-		return
-	}
-
-	statusCode := http.StatusInternalServerError
-	_, err := userSvc.GetUserEducationByUserId(addUserEducationReq.UserID)
-	if err == gorm.ErrRecordNotFound {
-		statusCode = http.StatusNotFound
-	}
-	if err != nil {
-		c.JSON(statusCode, utils.ResponseMessage{StatusCode: statusCode, Message: fmt.Sprintf("Something went wrong while fetching user education: %v", err), Data: nil})
 		return
 	}
 
@@ -361,7 +351,7 @@ func AddUserEducationHandler(userSvc UserService, c *gin.Context) {
 }
 
 // UpdateUserEducationByIdHandler godoc
-// @Tags user
+// @Tags education
 // @Summary Update user education
 // @Description Update user education
 // @ID update-user-education
@@ -418,7 +408,7 @@ func UpdateUserEducationByIdHandler(userSvc UserService, c *gin.Context) {
 }
 
 // DeleteUserEducationByUserIdHandler godoc
-// @Tags user
+// @Tags education
 // @Summary Delete user education by user id
 // @Description delete user education by user id
 // @ID delete-user-education-by-user-id
@@ -453,7 +443,7 @@ func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
 }
 
 // GetUserEducationByUserIdHandler godoc
-// @Tags user
+// @Tags education
 // @Summary Get user education details by user id
 // @Description get user education details by user id
 // @ID get-user-education-details-by-user-id
@@ -485,7 +475,7 @@ type GetAllUserEducation struct {
 }
 
 // GetAllUserEducationHandler godoc
-// @Tags user
+// @Tags education
 // @Summary Get all user education
 // @Description get all user education
 // @ID get-all-user-education

@@ -997,7 +997,7 @@ paths:
             type: string
       summary: add user education
       tags:
-      - user
+      - education
   /user/education/{id}:
     delete:
       consumes:
@@ -1031,7 +1031,7 @@ paths:
             type: string
       summary: Delete user education by user id
       tags:
-      - user
+      - education
     get:
       consumes:
       - application/json
@@ -1064,7 +1064,7 @@ paths:
             type: string
       summary: Get user education details by user id
       tags:
-      - user
+      - education
     patch:
       consumes:
       - application/json
@@ -1108,7 +1108,7 @@ paths:
             type: string
       summary: Update user education
       tags:
-      - user
+      - education
   /user/education/all/{id}:
     get:
       consumes:
@@ -1154,7 +1154,7 @@ paths:
             type: string
       summary: Get all user education
       tags:
-      - user
+      - education
   /users/get-all-user-categories:
     get:
       consumes:
