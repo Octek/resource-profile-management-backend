@@ -3,6 +3,7 @@ package experience
 import (
 	"github.com/Octek/resource-profile-management-backend.git/api/skills"
 	"gorm.io/gorm"
+	"strings"
 	"time"
 )
 
@@ -14,6 +15,8 @@ type Experience struct {
 	StartDate          time.Time      `json:"start_date"`
 	EndDate            time.Time      `json:"end_date"`
 	IsCurrentlyWorking bool           `json:"is_currently_working"`
+	Responsibilities   string         `json:"-"`
+	Responsibility     []string       `json:"responsibilities" gorm:"-"`
 	Skills             []skills.Skill `json:"skills" gorm:"many2many:experience_skills;"`
 	DeletedAt          gorm.DeletedAt `json:"deleted_at"`
 	CreatedAt          time.Time      `json:"created_at"`
@@ -34,4 +37,12 @@ type ExperienceSkill struct {
 	ExperienceID uint      `json:"experience_id" gorm:"NOT NULL;index:experience_id"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+func (experience *Experience) ParseResponsibilities() {
+	responsibilities := strings.Split(experience.Responsibilities, "|")
+	for j, resp := range responsibilities {
+		responsibilities[j] = strings.TrimSpace(resp)
+	}
+	experience.Responsibility = responsibilities
 }
