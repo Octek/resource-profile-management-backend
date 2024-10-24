@@ -1063,7 +1063,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "education"
                 ],
                 "summary": "add user education",
                 "operationId": "add-user-education",
@@ -1116,7 +1116,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "education"
                 ],
                 "summary": "Get all user education",
                 "operationId": "get-all-user-education",
@@ -1185,7 +1185,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "education"
                 ],
                 "summary": "Get user education details by user id",
                 "operationId": "get-user-education-details-by-user-id",
@@ -1234,7 +1234,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "education"
                 ],
                 "summary": "Delete user education by user id",
                 "operationId": "delete-user-education-by-user-id",
@@ -1283,7 +1283,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "education"
                 ],
                 "summary": "Update user education",
                 "operationId": "update-user-education",
@@ -1497,61 +1497,6 @@ const docTemplate = `{
                     }
                 }
             }
-<<<<<<< HEAD
-=======
-        },
-        "/users/create-user": {
-            "post": {
-                "description": "creates a new complete user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Create user",
-                "operationId": "create-user",
-                "parameters": [
-                    {
-                        "description": "CreateUserRequest",
-                        "name": "CreateUserRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user.CreateUserRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
         },
         "/users/get-all-user-categories": {
             "get": {
@@ -1614,7 +1559,6 @@ const docTemplate = `{
                     }
                 }
             }
->>>>>>> develop
         }
     },
     "definitions": {
