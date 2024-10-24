@@ -3,7 +3,6 @@ package user
 import (
 	"errors"
 	"fmt"
-	"github.com/Octek/resource-profile-management-backend.git/api/experience"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"strings"
@@ -53,14 +52,14 @@ func (repo *userRepositoryPostgres) GetAllUser(keyword string, limit int, offset
 
 func (repo *userRepositoryPostgres) GetUserDetailsByUserId(id uint) (*User, error) {
 	var user User
-	var experienceObj experience.Experience
 	err := repo.db.Model(&User{}).Where("id = ? AND deleted_at IS NULL", id).
 		Preload("Educations").Preload("Bookings").Preload("Roles").Preload("Skills").
 		Preload("Skills.SkillCategory").
 		Preload("Experiences").Preload("Projects").Preload("UserCategory").
 		First(&user).Error
-
-	experienceObj.ParseResponsibilities()
+	for i := range user.Experiences {
+		user.Experiences[i].ParseResponsibilities()
+	}
 
 	return &user, err
 }

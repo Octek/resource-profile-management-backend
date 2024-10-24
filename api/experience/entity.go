@@ -41,8 +41,5 @@ type ExperienceSkill struct {
 
 func (experience *Experience) ParseResponsibilities() {
 	responsibilities := strings.Split(experience.Responsibilities, "|")
-	for j, resp := range responsibilities {
-		responsibilities[j] = strings.TrimSpace(resp)
-	}
 	experience.Responsibility = responsibilities
 }
