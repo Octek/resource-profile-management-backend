@@ -1,6 +1,7 @@
 package bookings
 
 import (
+	"fmt"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
@@ -19,4 +20,130 @@ func NewBookingRepositoryPostgres(db *gorm.DB) BookingRepository {
 	return &bookingRepositoryPostgres{
 		db: db,
 	}
+}
+
+func (repo *bookingRepositoryPostgres) AddBooking(Booking *Booking, skillId, questionOptId uint) (*Booking, error) {
+
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&Booking).Error; err != nil {
+			return err
+		}
+
+		bookingQuestion := BookingQuestion{
+			QuestionOptionID: questionOptId,
+			BookingID:        Booking.ID,
+		}
+		if err := tx.Create(&bookingQuestion).Error; err != nil {
+			return err
+		}
+
+		bookingSkill := BookingSkill{
+			SkillID:   skillId,
+			BookingID: Booking.ID,
+		}
+		if err := tx.Create(&bookingSkill).Error; err != nil {
+			return err
+		}
+		fmt.Println("Booking, bookingQuestion, and BookingSkill have been created successfully.")
+		return nil
+	})
+
+	return Booking, err
+}
+
+func (repo *bookingRepositoryPostgres) GetBookingById(id uint) (*Booking, error) {
+	var booking Booking
+	if err := repo.db.First(&booking, id).Error; err != nil {
+		return nil, err
+	}
+	return &booking, nil
+}
+
+func (repo *bookingRepositoryPostgres) GetUserBookingByUserIdAndBookingId(userId, BookingId uint) (*Booking, error) {
+	var booking Booking
+	if err := repo.db.Where("user_id = ? AND id = ?", userId, BookingId).First(&booking).Error; err != nil {
+		return nil, err
+	}
+	return &booking, nil
+}
+
+func (repo *bookingRepositoryPostgres) UpdateBooking(Booking *Booking) error {
+	return repo.db.Save(Booking).Error
+}
+
+func (repo *bookingRepositoryPostgres) GetAllUserBookingList(bookingID, userID uint) (Booking, error) {
+	var booking Booking
+
+	err := repo.db.Model(&Booking{}).
+		Where("bookings.id = ? AND bookings.user_id = ?", bookingID, userID).
+		Joins("JOIN booking_skills ON booking_skills.booking_id = bookings.id").
+		Where("booking_skills.booking_id = ?", bookingID).
+		Joins("JOIN booking_questions ON booking_questions.booking_id = bookings.id").
+		Where("booking_questions.booking_id = ?", bookingID).
+		Preload("QuestionOptions").
+		First(&booking).
+		Error
+
+	return booking, err
+}
+
+func (repo *bookingRepositoryPostgres) DeleteUserBookingByID(id uint) error {
+	return repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("booking_id = ?", id).Delete(&BookingSkill{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Where("booking_id = ?", id).Delete(&BookingQuestion{}).Error; err != nil {
+			return err
+		}
+		result := tx.Delete(&Booking{}, id)
+		if result.RowsAffected == 0 {
+			return fmt.Errorf("no Booking record found for id: %d", id)
+		}
+
+		return result.Error
+	})
+}
+
+func (repo *bookingRepositoryPostgres) DeleteUserBookingByUserID(userId uint) error {
+	return repo.db.Transaction(func(tx *gorm.DB) error {
+		var bookingIDs []uint
+		if err := tx.Model(&Booking{}).Where("user_id = ?", userId).
+			Pluck("id", &bookingIDs).Error; err != nil {
+			return err
+		}
+		if len(bookingIDs) == 0 {
+			return fmt.Errorf("no Booking records found for user_id: %d", userId)
+		}
+		err := tx.Where("booking_id IN (?)", bookingIDs).Delete(&BookingQuestion{}).Error
+		err = tx.Where("booking_id IN (?)", bookingIDs).Delete(&BookingSkill{}).Error
+
+		err = tx.Where("id IN (?)", bookingIDs).Delete(&Booking{}).Error
+
+		return err
+	})
+}
+
+func (repo *bookingRepositoryPostgres) GetAllUserBooking(userId uint, limit int, offset int, orderBy string) ([]Booking, uint, error) {
+	var BookingIDs []uint
+	var exp []Booking
+	var total int64
+
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&Booking{}).
+			Where("user_id = ?", userId).
+			Pluck("id", &BookingIDs).Error; err != nil {
+			return err
+		}
+		if len(BookingIDs) == 0 {
+			return fmt.Errorf("no Booking records found for user_id: %d", userId)
+		}
+
+		query := tx.Model(&Booking{}).Where("deleted_at IS NULL").Where("id IN (?)", BookingIDs).Preload("QuestionOptions")
+		err := query.Count(&total).Error
+		err = query.Order(orderBy).Limit(limit).Offset(offset).Find(&exp).Error
+
+		return err
+	})
+
+	return exp, uint(total), err
 }
