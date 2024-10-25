@@ -49,6 +49,7 @@ const (
 	SuccessfullyUpdatedSkill                       = "Skill has been successfully Updated"
 	SuccessfullyDeletedSkill                       = "Skill has been successfully deleted"
 	SuccessfullyCreatedSkill                       = "Skill has been created successfully"
+	SomethingWentWrongWhileGettingExperience       = "Something went wrong while getting the experience: %v"
 	SomethingWentWrongWhileAddingBooking           = "Something went wrong  while adding the booking: %v"
 	SuccessfullyAddedBooking                       = "Booking has been added successfully"
 	SomethingWentWrongWhileGettingBooking          = "Something went wrong while getting the booking: %v"
