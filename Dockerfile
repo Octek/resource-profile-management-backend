@@ -36,7 +36,7 @@ WORKDIR /app/
 
 # Copy the Pre-built binary file from the previous stage. Observe we also copied the .env file
 COPY --from=builder /app/seed_data.json ./seed_data.json
-COPY --from=builder /app/locales/en-US.json ./locales/en-US.json
+#COPY --from=builder /app/locales/en-US.json ./locales/en-US.json
 COPY --from=builder /app/main .
 #COPY --from=builder /app/.env .
 
