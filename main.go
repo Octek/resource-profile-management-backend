@@ -97,7 +97,7 @@ func main() {
 	docs.SwaggerInfo.InfoInstanceName = "swagger"
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.GET("/health", func(c *gin.Context) {
+	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "OK", "statusCode": http.StatusOK})
 	})
 
