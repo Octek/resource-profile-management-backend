@@ -7,18 +7,12 @@ RUN apk update && apk add --no-cache git make gcc libtool musl-dev ca-certificat
 # Set the current working directory inside the container
 WORKDIR /app
 
-# Copy go mod files (adjusted to avoid go.sum issue if it's missing)
-COPY go.mod ./
-# Copy go.sum if it exists
-COPY go.sum ./
-# Download all dependencies. `go mod tidy` will create go.sum if it's missing.
-RUN go mod tidy && go mod download
-
-# Initialize and update submodules (optional if submodules aren’t accessible in Docker)
-# RUN git submodule update --init --recursive
-
 # Copy the source code
 COPY . .
+
+# Download all dependencies. Dependencies will be cached if the go.mod and the go.sum files are not changed
+RUN go mod tidy
+RUN go mod download
 
 # Build the Go app
 RUN GOOS=linux go build -o main .
