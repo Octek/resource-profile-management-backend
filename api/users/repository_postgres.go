@@ -24,8 +24,18 @@ func NewUserRepositoryPostgres(db *gorm.DB) UserRepository {
 	}
 }
 
-func (repo *userRepositoryPostgres) CreateUser(user *User) (*User, error) {
-	err := repo.db.Create(user).Error
+func (repo *userRepositoryPostgres) CreateUser(user *User, roleID uint) (*User, error) {
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(user).Error; err != nil {
+			return err
+		}
+		if err := tx.Exec("INSERT INTO user_roles (user_id, role_id) VALUES (?, ?)", user.ID, roleID).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
 	return user, err
 }
 

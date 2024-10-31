@@ -64,11 +64,8 @@ type Role struct {
 }
 
 type UserRole struct {
-	ID        uint      `json:"id" gorm:"PRIMARY_KEY;AUTO_INCREMENT;UNIQUE;"`
-	UserID    uint      `json:"user_id" gorm:"NOT NULL;index:user_id"`
-	RoleID    uint      `json:"role_id" gorm:"NOT NULL;index:role_id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	UserID uint `json:"user_id" gorm:"NOT NULL;index:user_id"`
+	RoleID uint `json:"role_id" gorm:"NOT NULL;index:role_id"`
 }
 
 func asSha256Category(category UserCategory) string {

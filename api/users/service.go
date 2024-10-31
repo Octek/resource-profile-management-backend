@@ -14,8 +14,8 @@ func (svc *UserService) CreateCategories(jsonData []UserCategory) error {
 func (svc *UserService) CreateRoles(jsonData []Role) error {
 	return svc.userRepository.createRoles(jsonData)
 }
-func (svc *UserService) CreateUser(user *User) (*User, error) {
-	return svc.userRepository.CreateUser(user)
+func (svc *UserService) CreateUser(user *User, roleID uint) (*User, error) {
+	return svc.userRepository.CreateUser(user, roleID)
 }
 func (svc *UserService) GetAllUser(keyword string, limit int, offset int, orderBy string) ([]User, uint, error) {
 	return svc.userRepository.GetAllUser(keyword, limit, offset, orderBy)
