@@ -255,7 +255,7 @@ type UpdateUser struct {
 // @Produce  json
 // @Param id path uint true "id"
 // @Param UpdateUser body UpdateUser true "UpdateUser"
-// @Success 200 {object} User
+// @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -281,13 +281,13 @@ func UpdateUserByUserIdHandler(userSvc UserService, c *gin.Context) {
 
 	_ = utils.UpdateEntity(existingUserData, updateUserRequest)
 
-	updatedUser, err := userSvc.UpdateUserByUserID(existingUserData)
+	_, err = userSvc.UpdateUserByUserID(existingUserData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: "Failed to update user.", Data: nil})
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "User updated successfully.", Data: updatedUser})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "User updated successfully.", Data: nil})
 }
 
 type AddUserEducation struct {
