@@ -20,7 +20,7 @@ type User struct {
 	Bio            string                  `json:"bio"`
 	JobTitle       string                  `json:"job_title"`
 	Location       string                  `json:"location"`
-	ProfileLink    string                  `json:"profile_link"`
+	ProfilePicture string                  `json:"profile_picture"`
 	VideoUrl       string                  `json:"video_url"`
 	Certifications string                  `json:"certifications"`
 	UserCategoryID uint                    `json:"user_category_id" gorm:"NOT NULL;index:user_category_id"`

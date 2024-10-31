@@ -60,7 +60,7 @@ type CreateUserRequest struct {
 	FirstName      string `json:"first_name" validate:"required"`
 	LastName       string `json:"last_name" validate:"required"`
 	Email          string `json:"email" validate:"required"`
-	ProfileLink    string `json:"profile_link"`
+	ProfilePicture string `json:"profile_picture"`
 	MobileNumber   string `json:"mobile_number"`
 	UserCategoryID uint   `json:"user_category_id"`
 	JobTitle       string `json:"job_title"`
@@ -108,7 +108,7 @@ func CreateUserHandler(userSvc UserService, c *gin.Context) {
 		Bio:            createUserRequest.Bio,
 		VideoUrl:       createUserRequest.VideoUrl,
 		Roles:          createUserRequest.Roles,
-		ProfileLink:    createUserRequest.ProfileLink,
+		ProfilePicture: createUserRequest.ProfilePicture,
 	}
 	_, err := userSvc.CreateUser(&user)
 	if err != nil {
