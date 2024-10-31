@@ -1,4 +1,25 @@
 definitions:
+  bookings.Booking:
+    properties:
+      booking_date_time:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      meeting_link:
+        type: string
+      question_options:
+        items:
+          $ref: '#/definitions/questions.QuestionOption'
+        type: array
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
   experience.AddUserExperienceRequest:
     properties:
       experiences:
@@ -31,6 +52,37 @@ definitions:
     - position
     - start_date
     type: object
+  experience.Experience:
+    properties:
+      company:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      is_currently_working:
+        type: boolean
+      position:
+        type: string
+      responsibilities:
+        items:
+          type: string
+        type: array
+      skills:
+        items:
+          $ref: '#/definitions/skills.Skill'
+        type: array
+      start_date:
+        type: string
+      updated_at:
+        type: string
+    type: object
   experience.UpdateExpRequest:
     properties:
       company:
@@ -52,6 +104,46 @@ definitions:
     - position
     - start_date
     type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  projects.Project:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      description:
+        type: string
+      id:
+        type: integer
+      link:
+        type: string
+      name:
+        type: string
+      technologies:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  questions.QuestionOption:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      question_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
   skills.CreateSkillCategoryRequest:
     properties:
       name:
@@ -60,6 +152,40 @@ definitions:
         type: array
     required:
     - name
+    type: object
+  skills.Skill:
+    properties:
+      bookings:
+        items:
+          $ref: '#/definitions/bookings.Booking'
+        type: array
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      icon:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      skill_category:
+        $ref: '#/definitions/skills.SkillCategory'
+      skill_category_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  skills.SkillCategory:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
     type: object
   skills.SkillCategoryUpdateRequest:
     properties:
@@ -108,6 +234,17 @@ definitions:
     - start_date
     - user_id
     type: object
+  user.CategoriesResponse:
+    properties:
+      records_filtered:
+        type: integer
+      total:
+        type: integer
+      user_categories:
+        items:
+          $ref: '#/definitions/user.UserCategory'
+        type: array
+    type: object
   user.CreateUserRequest:
     properties:
       email:
@@ -126,6 +263,62 @@ definitions:
     - email
     - first_name
     - last_name
+    type: object
+  user.Education:
+    properties:
+      achievements:
+        type: string
+      created_at:
+        type: string
+      degree:
+        type: string
+      end_date:
+        type: string
+      field_of_study:
+        type: string
+      id:
+        type: integer
+      institution_name:
+        type: string
+      start_date:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  user.GetAllUserEducation:
+    properties:
+      education:
+        items:
+          $ref: '#/definitions/user.Education'
+        type: array
+      records_filtered:
+        type: integer
+      total:
+        type: integer
+    type: object
+  user.GetAllUsers:
+    properties:
+      records_filtered:
+        type: integer
+      total:
+        type: integer
+      user:
+        items:
+          $ref: '#/definitions/user.User'
+        type: array
+    type: object
+  user.Role:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
     type: object
   user.UpdateUser:
     properties:
@@ -165,6 +358,74 @@ definitions:
     required:
     - institution_name
     - start_date
+    type: object
+  user.User:
+    properties:
+      bio:
+        type: string
+      bookings:
+        items:
+          $ref: '#/definitions/bookings.Booking'
+        type: array
+      certifications:
+        type: string
+      created_at:
+        type: string
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+      educations:
+        items:
+          $ref: '#/definitions/user.Education'
+        type: array
+      email:
+        type: string
+      experiences:
+        items:
+          $ref: '#/definitions/experience.Experience'
+        type: array
+      first_name:
+        type: string
+      id:
+        type: integer
+      job_title:
+        type: string
+      last_name:
+        type: string
+      location:
+        type: string
+      mobile_number:
+        type: string
+      projects:
+        items:
+          $ref: '#/definitions/projects.Project'
+        type: array
+      roles:
+        items:
+          $ref: '#/definitions/user.Role'
+        type: array
+      skills:
+        items:
+          $ref: '#/definitions/skills.Skill'
+        type: array
+      updated_at:
+        type: string
+      user_category:
+        $ref: '#/definitions/user.UserCategory'
+      user_category_id:
+        type: integer
+      video_url:
+        type: string
+    type: object
+  user.UserCategory:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
     type: object
   utils.ResponseMessage:
     properties:
@@ -867,7 +1128,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/user.User'
         "400":
           description: Bad Request
           schema:
@@ -906,7 +1167,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/user.User'
         "400":
           description: Bad Request
           schema:
@@ -947,7 +1208,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/user.GetAllUsers'
         "400":
           description: Bad Request
           schema:
@@ -1049,7 +1310,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/user.Education'
         "400":
           description: Bad Request
           schema:
@@ -1139,7 +1400,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/user.GetAllUserEducation'
         "400":
           description: Bad Request
           schema:
@@ -1180,7 +1441,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/user.CategoriesResponse'
         "400":
           description: Bad Request
           schema:

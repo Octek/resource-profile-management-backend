@@ -60,9 +60,14 @@ type CreateUserRequest struct {
 	FirstName      string `json:"first_name" validate:"required"`
 	LastName       string `json:"last_name" validate:"required"`
 	Email          string `json:"email" validate:"required"`
+	ProfilePicture string `json:"profile_picture"`
 	MobileNumber   string `json:"mobile_number"`
 	UserCategoryID uint   `json:"user_category_id"`
 	JobTitle       string `json:"job_title"`
+	Location       string `json:"location"`
+	VideoUrl       string `json:"video_url"`
+	Certifications string `json:"certifications"`
+	Bio            string `json:"bio"`
 }
 
 // CreateUserHandler godoc
@@ -97,14 +102,19 @@ func CreateUserHandler(userSvc UserService, c *gin.Context) {
 		MobileNumber:   createUserRequest.MobileNumber,
 		UserCategoryID: createUserRequest.UserCategoryID,
 		JobTitle:       createUserRequest.JobTitle,
+		Location:       createUserRequest.Location,
+		Certifications: createUserRequest.Certifications,
+		Bio:            createUserRequest.Bio,
+		VideoUrl:       createUserRequest.VideoUrl,
+		ProfilePicture: createUserRequest.ProfilePicture,
 	}
-	createUser, err := userSvc.CreateUser(&user)
+	_, err := userSvc.CreateUser(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: "Something went wrong while creating user.", Data: nil})
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "user created successfully.", Data: createUser})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "user created successfully.", Data: nil})
 }
 
 type GetAllUsers struct {
@@ -123,7 +133,7 @@ type GetAllUsers struct {
 // @Param   limit    query     int     false  "example - 50"     limit(int)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc"  orderBy(string)
-// @Success 200 {object} string
+// @Success 200 {object} GetAllUsers
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -171,7 +181,7 @@ func GetAllUsersListHandler(userSvc UserService, c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path uint true "id"
-// @Success 200 {object} string
+// @Success 200 {object} User
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -229,6 +239,7 @@ type UpdateUser struct {
 	LastName       string `json:"last_name"`
 	Email          string `json:"email"`
 	MobileNumber   string `json:"mobile_number"`
+	ProfilePicture string `json:"profile_picture"`
 	Bio            string `json:"bio"`
 	Location       string `json:"location"`
 	VideoUrl       string `json:"video_url"`
@@ -271,13 +282,13 @@ func UpdateUserByUserIdHandler(userSvc UserService, c *gin.Context) {
 
 	_ = utils.UpdateEntity(existingUserData, updateUserRequest)
 
-	updatedUser, err := userSvc.UpdateUserByUserID(existingUserData)
+	_, err = userSvc.UpdateUserByUserID(existingUserData)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: "Failed to update user.", Data: nil})
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "User updated successfully.", Data: updatedUser})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "User updated successfully.", Data: nil})
 }
 
 type AddUserEducation struct {
@@ -340,13 +351,13 @@ func AddUserEducationHandler(userSvc UserService, c *gin.Context) {
 		EndDate:         addUserEducationReq.EndDate,
 	}
 
-	createdExperiences, err := userSvc.AddUserEducation(education)
+	_, err := userSvc.AddUserEducation(education)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Failed to add education: %v", err), Data: nil})
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "education added successfully.", Data: createdExperiences})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "education added successfully.", Data: nil})
 
 }
 
@@ -450,7 +461,7 @@ func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path uint true "id"
-// @Success 200 {object} string
+// @Success 200 {object} Education
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -485,7 +496,7 @@ type GetAllUserEducation struct {
 // @Param   limit    query     int     false  "example - 50"     limit(int)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc"  orderBy(string)
-// @Success 200 {object} string
+// @Success 200 {object} GetAllUserEducation
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
@@ -549,7 +560,7 @@ type CategoriesResponse struct {
 // @Param   limit    query     int     false  "example - 50"     limit(int)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc "     orderBy(string)
-// @Success 200 {object} string
+// @Success 200 {object} CategoriesResponse
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
