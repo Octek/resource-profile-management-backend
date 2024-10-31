@@ -247,6 +247,10 @@ definitions:
     type: object
   user.CreateUserRequest:
     properties:
+      bio:
+        type: string
+      certifications:
+        type: string
       email:
         type: string
       first_name:
@@ -255,10 +259,18 @@ definitions:
         type: string
       last_name:
         type: string
+      location:
+        type: string
       mobile_number:
         type: string
+      profile_picture:
+        type: string
+      role_id:
+        type: integer
       user_category_id:
         type: integer
+      video_url:
+        type: string
     required:
     - email
     - first_name
@@ -336,6 +348,8 @@ definitions:
         type: string
       mobile_number:
         type: string
+      profile_picture:
+        type: string
       user_category_id:
         type: integer
       video_url:
@@ -394,6 +408,8 @@ definitions:
       location:
         type: string
       mobile_number:
+        type: string
+      profile_picture:
         type: string
       projects:
         items:
@@ -1167,7 +1183,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/user.User'
+            type: string
         "400":
           description: Bad Request
           schema:

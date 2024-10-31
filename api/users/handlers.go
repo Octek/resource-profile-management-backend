@@ -64,6 +64,7 @@ type CreateUserRequest struct {
 	MobileNumber   string `json:"mobile_number"`
 	UserCategoryID uint   `json:"user_category_id"`
 	JobTitle       string `json:"job_title"`
+	RoleId         uint   `json:"role_id"`
 	Location       string `json:"location"`
 	VideoUrl       string `json:"video_url"`
 	Certifications string `json:"certifications"`
@@ -108,7 +109,7 @@ func CreateUserHandler(userSvc UserService, c *gin.Context) {
 		VideoUrl:       createUserRequest.VideoUrl,
 		ProfilePicture: createUserRequest.ProfilePicture,
 	}
-	_, err := userSvc.CreateUser(&user)
+	_, err := userSvc.CreateUser(&user, createUserRequest.RoleId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: "Something went wrong while creating user.", Data: nil})
 		return
