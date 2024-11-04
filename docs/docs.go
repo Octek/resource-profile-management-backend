@@ -1474,7 +1474,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/user.User"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -1943,6 +1943,12 @@ const docTemplate = `{
                 "last_name"
             ],
             "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "certifications": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -1955,11 +1961,20 @@ const docTemplate = `{
                 "last_name": {
                     "type": "string"
                 },
+                "location": {
+                    "type": "string"
+                },
                 "mobile_number": {
+                    "type": "string"
+                },
+                "profile_picture": {
                     "type": "string"
                 },
                 "user_category_id": {
                     "type": "integer"
+                },
+                "video_url": {
+                    "type": "string"
                 }
             }
         },
@@ -2073,6 +2088,9 @@ const docTemplate = `{
                 "mobile_number": {
                     "type": "string"
                 },
+                "profile_picture": {
+                    "type": "string"
+                },
                 "user_category_id": {
                     "type": "integer"
                 },
@@ -2160,6 +2178,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "mobile_number": {
+                    "type": "string"
+                },
+                "profile_picture": {
                     "type": "string"
                 },
                 "projects": {

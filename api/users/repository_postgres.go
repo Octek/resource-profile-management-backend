@@ -55,7 +55,7 @@ func (repo *userRepositoryPostgres) GetUserDetailsByUserId(id uint) (*User, erro
 	err := repo.db.Model(&User{}).Where("id = ? AND deleted_at IS NULL", id).
 		Preload("Educations").Preload("Bookings").Preload("Roles").Preload("Skills").
 		Preload("Skills.SkillCategory").
-		Preload("Experiences").Preload("Projects").Preload("UserCategory").
+		Preload("Experiences").Preload("Experiences.Skills").Preload("Projects").Preload("UserCategory").
 		First(&user).Error
 	for i := range user.Experiences {
 		user.Experiences[i].ParseResponsibilities()
