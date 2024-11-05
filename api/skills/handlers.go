@@ -2,6 +2,7 @@ package skills
 
 import (
 	"fmt"
+	"github.com/Octek/resource-profile-management-backend.git/api/middleware"
 	"github.com/Octek/resource-profile-management-backend.git/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -19,7 +20,7 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 		categoriesRouter.POST("", func(c *gin.Context) {
 			HandlerToCreateSkillCategories(c, skillSvc)
 		})
-		categoriesRouter.PATCH("/:id", func(c *gin.Context) {
+		categoriesRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			HandlerToUpdateSkillCategoryByID(c, skillSvc)
 		})
 		categoriesRouter.GET("", func(c *gin.Context) {
@@ -28,7 +29,7 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 		categoriesRouter.GET("/:id", func(c *gin.Context) {
 			HandlerToGetSkillCategoryByID(c, skillSvc)
 		})
-		categoriesRouter.DELETE("/:id", func(c *gin.Context) {
+		categoriesRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			HandlerToDeleteSkillCategoryByID(c, skillSvc)
 		})
 
@@ -36,7 +37,7 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 	skillsRouter.POST("", func(c *gin.Context) {
 		HandlerToCreateSkill(c, skillSvc)
 	})
-	skillsRouter.PATCH("/:id", func(c *gin.Context) {
+	skillsRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 		HandlerToUpdateSkillByID(c, skillSvc)
 	})
 	skillsRouter.GET("", func(c *gin.Context) {
@@ -45,7 +46,7 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 	skillsRouter.GET("/:id", func(c *gin.Context) {
 		HandlerToGetSkillByID(c, skillSvc)
 	})
-	skillsRouter.DELETE("/:id", func(c *gin.Context) {
+	skillsRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 		HandlerToDeleteSkillByID(c, skillSvc)
 	})
 }

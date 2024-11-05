@@ -10,7 +10,7 @@ tasks:
         export DB_SERVICE_CONNECTION_STRING="host=localhost port=8007 user=postgres dbname=profile-management password=password sslmode=disable"
         export S3_BUCKET_NAME=skoopsignage-dev
         export SERVER_PORT=4001
-        export BEARER_TOKEN_STRING="kmWCIMkEUE4I7thvO8X6shsDee4AA04ATrIvQxBgps7fKOTfX3p83Rj5g0EpxA9D"
+        export AUTH_TOKEN="kmWCIMkEUE4I7thvO8X6shsDee4AA04ATrIvQxBgps7fKOTfX3p83Rj5g0EpxA9D"
         
         export SWAGGER_HOST_URL=localhost:4001
         go run .

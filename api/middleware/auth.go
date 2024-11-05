@@ -22,7 +22,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		StaticToken := utils.GetBearerTokenString()
+		StaticToken := utils.GetAuthToken()
 		tokenParts := strings.Split(authHeader, "Bearer ")
 		if len(tokenParts) != 2 {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid Authorization format"})

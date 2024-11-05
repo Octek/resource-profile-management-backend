@@ -2,6 +2,7 @@ package experience
 
 import (
 	"fmt"
+	"github.com/Octek/resource-profile-management-backend.git/api/middleware"
 	"github.com/Octek/resource-profile-management-backend.git/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -22,13 +23,13 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 		subRouter.GET("/:id", func(c *gin.Context) {
 			GetUserExperienceByIdHandler(experienceSvc, c)
 		})
-		subRouter.DELETE("/:id", func(c *gin.Context) {
+		subRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			DeleteUserExperienceByIdHandler(experienceSvc, c)
 		})
 		subRouter.PATCH("/:id", func(c *gin.Context) {
 			UpdateUserExperienceByIdHandler(experienceSvc, c)
 		})
-		subRouter.DELETE("/user/:id", func(c *gin.Context) {
+		subRouter.DELETE("/user/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			DeleteUserExperienceByUserIdHandler(experienceSvc, c)
 		})
 		subRouter.GET("/user/:id", func(c *gin.Context) {
