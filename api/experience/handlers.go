@@ -26,7 +26,7 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 		subRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			DeleteUserExperienceByIdHandler(experienceSvc, c)
 		})
-		subRouter.PATCH("/:id", func(c *gin.Context) {
+		subRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			UpdateUserExperienceByIdHandler(experienceSvc, c)
 		})
 		subRouter.DELETE("/user/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
@@ -120,6 +120,7 @@ type UpdateExpRequest struct {
 // @Summary Update experience
 // @Description Updates experience
 // @ID update-experience
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path uint true "id"
@@ -206,6 +207,7 @@ func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Contex
 // @Summary Delete user experience by id
 // @Description delete user experience by id
 // @ID delete-user-experience-by-id
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id"
@@ -233,6 +235,7 @@ func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @Summary Delete user experience by user id
 // @Description delete user experience by user id
 // @ID delete-user-experience-by-user-id
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id"
