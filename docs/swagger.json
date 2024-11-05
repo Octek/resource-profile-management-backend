@@ -1215,6 +1215,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user education by user id",
                 "consumes": [
                     "application/json"
@@ -1264,6 +1269,11 @@
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "Update user education",
                 "consumes": [
                     "application/json"
@@ -1380,6 +1390,11 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user by id",
                 "consumes": [
                     "application/json"
@@ -1429,6 +1444,11 @@
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "Updates user",
                 "consumes": [
                     "application/json"

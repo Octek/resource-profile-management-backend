@@ -1122,6 +1122,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Delete user by id
       tags:
       - user
@@ -1194,6 +1196,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Update user
       tags:
       - user
@@ -1304,6 +1308,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Delete user education by user id
       tags:
       - education
@@ -1381,6 +1387,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Update user education
       tags:
       - education

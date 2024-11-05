@@ -2,6 +2,7 @@ package user
 
 import (
 	"fmt"
+	"github.com/Octek/resource-profile-management-backend.git/api/middleware"
 	"github.com/Octek/resource-profile-management-backend.git/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -26,10 +27,10 @@ func Routes(router *gin.Engine, userSvc UserService) {
 		subRouter.GET("/:id", func(c *gin.Context) {
 			GetUserDetailsByUserIdHandler(userSvc, c)
 		})
-		subRouter.DELETE("/:id", func(c *gin.Context) {
+		subRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			DeleteUserByUserIdHandler(userSvc, c)
 		})
-		subRouter.PATCH("/:id", func(c *gin.Context) {
+		subRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			UpdateUserByUserIdHandler(userSvc, c)
 		})
 		subRouter.GET("/get-all-user-categories", func(c *gin.Context) {
@@ -41,10 +42,10 @@ func Routes(router *gin.Engine, userSvc UserService) {
 		subCodeRouter.POST("", func(c *gin.Context) {
 			AddUserEducationHandler(userSvc, c)
 		})
-		subCodeRouter.PATCH("/:id", func(c *gin.Context) {
+		subCodeRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			UpdateUserEducationByIdHandler(userSvc, c)
 		})
-		subCodeRouter.DELETE("/:id", func(c *gin.Context) {
+		subCodeRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			DeleteUserEducationByUserIdHandler(userSvc, c)
 		})
 		subCodeRouter.GET("/:id", func(c *gin.Context) {
@@ -203,6 +204,7 @@ func GetUserDetailsByUserIdHandler(userSvc UserService, c *gin.Context) {
 // @Summary Delete user by id
 // @Description delete user by id
 // @ID delete-user-by-id
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id"
@@ -252,6 +254,7 @@ type UpdateUser struct {
 // @Summary Update user
 // @Description Updates user
 // @ID update-user
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path uint true "id"
@@ -366,6 +369,7 @@ func AddUserEducationHandler(userSvc UserService, c *gin.Context) {
 // @Summary Update user education
 // @Description Update user education
 // @ID update-user-education
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path uint true "id"
@@ -423,6 +427,7 @@ func UpdateUserEducationByIdHandler(userSvc UserService, c *gin.Context) {
 // @Summary Delete user education by user id
 // @Description delete user education by user id
 // @ID delete-user-education-by-user-id
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id"
