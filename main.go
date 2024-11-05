@@ -37,6 +37,10 @@ func init() {
 	// logger.SetFormatter(&log.JSONFormatter{})
 }
 
+// @securityDefinitions.apikey ApiAuthKey
+// @in header
+// @name Authorization
+
 func SetupDatabase(connString string) (*gorm.DB, error) {
 	var db *gorm.DB
 	const attempts = 5

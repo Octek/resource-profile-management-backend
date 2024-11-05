@@ -137,6 +137,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user experience by user id",
                 "consumes": [
                     "application/json"
@@ -244,6 +249,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user experience by id",
                 "consumes": [
                     "application/json"
@@ -293,6 +303,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "Updates experience",
                 "consumes": [
                     "application/json"
@@ -1226,6 +1241,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user education by user id",
                 "consumes": [
                     "application/json"
@@ -1275,6 +1295,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "Update user education",
                 "consumes": [
                     "application/json"
@@ -1391,6 +1416,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user by id",
                 "consumes": [
                     "application/json"
@@ -1440,6 +1470,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "Updates user",
                 "consumes": [
                     "application/json"
@@ -2243,6 +2278,13 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiAuthKey": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

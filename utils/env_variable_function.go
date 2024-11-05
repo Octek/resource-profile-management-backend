@@ -6,6 +6,7 @@ const (
 	EnvironmentVariableNotSet    = " environment variable not set"
 	DB_SERVICE_CONNECTION_STRING = "DB_SERVICE_CONNECTION_STRING"
 	SWAGGER_HOST_URL             = "SWAGGER_HOST_URL"
+	AUTH_TOKEN                   = "AUTH_TOKEN"
 )
 
 func GetConnectionString() string {
@@ -22,6 +23,14 @@ func GetSwaggerHostUrl() string {
 		panic(SWAGGER_HOST_URL + EnvironmentVariableNotSet)
 	}
 	return swaggerHostUrl
+}
+
+func GetAuthToken() string {
+	bearerTokenString, ok := os.LookupEnv(AUTH_TOKEN)
+	if !ok {
+		panic(AUTH_TOKEN + EnvironmentVariableNotSet)
+	}
+	return bearerTokenString
 }
 
 const (

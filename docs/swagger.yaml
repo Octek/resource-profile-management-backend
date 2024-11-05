@@ -518,6 +518,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Delete user experience by id
       tags:
       - experience
@@ -600,6 +602,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Update experience
       tags:
       - experience
@@ -634,6 +638,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Delete user experience by user id
       tags:
       - experience
@@ -1122,6 +1128,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Delete user by id
       tags:
       - user
@@ -1194,6 +1202,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Update user
       tags:
       - user
@@ -1304,6 +1314,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Delete user education by user id
       tags:
       - education
@@ -1381,6 +1393,8 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Update user education
       tags:
       - education
@@ -1471,4 +1485,9 @@ paths:
       summary: Get all user categories
       tags:
       - user
+securityDefinitions:
+  ApiAuthKey:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
