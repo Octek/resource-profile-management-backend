@@ -48,9 +48,6 @@ func Routes(router *gin.Engine, userSvc UserService) {
 		subCodeRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			DeleteUserEducationByUserIdHandler(userSvc, c)
 		})
-		subCodeRouter.GET("/:id", func(c *gin.Context) {
-			GetUserEducationByUserIdHandler(userSvc, c)
-		})
 		subCodeRouter.GET("/all/:id", func(c *gin.Context) {
 			GetAllUserEducationHandler(userSvc, c)
 		})
@@ -430,17 +427,17 @@ func UpdateUserEducationByIdHandler(userSvc UserService, c *gin.Context) {
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path int false "educationId"
-// @Param userId query uint true "userId"
+// @Param id query int false "educationId"
+// @Param id path uint true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /user/education/{id} [delete]
 func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
-	educationId := c.Param("id")
+	educationId := c.Request.URL.Query().Get("id")
 	educationIdInt, _ := strconv.Atoi(educationId)
-	userId := c.Request.URL.Query().Get("userId")
+	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
 	statusCode := http.StatusInternalServerError
 	_, err := userSvc.GetUserEducationByUserId(uint(userIdInt))
@@ -461,35 +458,6 @@ func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: nil})
 }
 
-// GetUserEducationByUserIdHandler godoc
-// @Tags education
-// @Summary Get user education details by user id
-// @Description get user education details by user id
-// @ID get-user-education-details-by-user-id
-// @Accept  json
-// @Produce  json
-// @Param id path uint true "educationId"
-// @Param userId query uint true "userId"
-// @Success 200 {object} Education
-// @Failure 400 {object} string
-// @Failure 404 {object} string
-// @Failure 500 {object} string
-// @Router /user/education/{id} [get]
-func GetUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
-	educationId := c.Param("id")
-	educationIdInt, _ := strconv.Atoi(educationId)
-	userId := c.Request.URL.Query().Get("userId")
-	userIdInt, _ := strconv.Atoi(userId)
-
-	expDetails, err := userSvc.GetUserEducationByUserAndEducationId(uint(userIdInt), uint(educationIdInt))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Cannot fetch user education against provided ID:", err), Data: nil})
-		return
-	}
-
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: expDetails})
-}
-
 type GetAllUserEducation struct {
 	RecordsFiltered int         `json:"records_filtered"`
 	Total           uint        `json:"total"`
@@ -504,6 +472,7 @@ type GetAllUserEducation struct {
 // @Accept  json
 // @Produce  json
 // @Param id path uint true "userId"
+// @Param id query uint false "educationId"
 // @Param   limit    query     int     false  "example - 50"     limit(int)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc"  orderBy(string)
@@ -516,6 +485,8 @@ func GetAllUserEducationHandler(userSvc UserService, c *gin.Context) {
 	limit := c.Request.URL.Query().Get("limit")
 	offset := c.Request.URL.Query().Get("offset")
 	orderBy := c.Request.URL.Query().Get("orderBy")
+	educationId := c.Request.URL.Query().Get("id")
+	educationIdInt, _ := strconv.Atoi(educationId)
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
 	fmt.Println("userID", userIdInt)
@@ -540,7 +511,7 @@ func GetAllUserEducationHandler(userSvc UserService, c *gin.Context) {
 		return
 	}
 
-	allUserEducation, total, err := userSvc.GetAllUserEducation(uint(userIdInt), limitInt, offsetInt, orderBy)
+	allUserEducation, total, err := userSvc.GetAllUserEducation(uint(userIdInt), uint(educationIdInt), limitInt, offsetInt, orderBy)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Cannot fetch Users:", err), Data: nil})
 		return
