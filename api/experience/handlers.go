@@ -123,7 +123,7 @@ type UpdateExpRequest struct {
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
+// @Param experienceId path uint true "experienceId"
 // @Param userId query uint true "userId"
 // @Param UpdateExpRequest body UpdateExpRequest true "UpdateExpRequest"
 // @Success 200 {object} string
@@ -146,7 +146,7 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 		return
 	}
 
-	experienceId, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	experienceId, err := strconv.ParseUint(c.Param("experienceId"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: "Invalid experience ID", Data: nil})
 		return
@@ -180,7 +180,7 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @ID get-user-experience-details-by-id
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
+// @Param experienceId path uint true "experienceId"
 // @Param userId query uint true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -188,7 +188,7 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @Failure 500 {object} string
 // @Router /experience/{id} [get]
 func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	expId := c.Param("id")
+	expId := c.Param("experienceId")
 	expIdInt, _ := strconv.Atoi(expId)
 	userId := c.Request.URL.Query().Get("userId")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -210,14 +210,14 @@ func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Contex
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path int true "id"
+// @Param experienceId path int true "experienceId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /experience/{id} [delete]
 func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	expId := c.Param("id")
+	expId := c.Param("experienceId")
 	expIdInt, _ := strconv.Atoi(expId)
 
 	err := experienceSvc.DeleteUserExperienceByID(uint(expIdInt))

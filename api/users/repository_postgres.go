@@ -148,14 +148,16 @@ func (repo *userRepositoryPostgres) UpdateEducation(education *Education) error 
 
 func (repo *userRepositoryPostgres) GetUserEducationByUserId(userId uint) (*Education, error) {
 	var education Education
-	err := repo.db.Model(Education{}).Where("user_id = ? ", userId).First(&education).Error
+	err := repo.db.Model(Education{}).Where("user_id = ? and  ", userId).First(&education).Error
 	return &education, err
 }
 
-func (repo *userRepositoryPostgres) DeleteUserEducationByID(userId uint) error {
-	err := repo.db.Model(Education{}).Where("user_id = ?", userId).Delete(&Education{}).Error
+func (repo *userRepositoryPostgres) DeleteUserEducationByID(userId, id uint) error {
+	if id != 0 {
+		return repo.db.Where("user_id = ? AND id = ?", userId, id).Delete(&Education{}).Error
+	}
 
-	return err
+	return repo.db.Where("user_id = ?", userId).Delete(&Education{}).Error
 }
 
 func (repo *userRepositoryPostgres) GetAllUserEducation(userId uint, limit int, offset int, orderBy string) ([]Education, uint, error) {

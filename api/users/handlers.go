@@ -372,7 +372,7 @@ func AddUserEducationHandler(userSvc UserService, c *gin.Context) {
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
+// @Param educationId path uint true "educationId"
 // @Param userId query uint true "userId"
 // @Param UpdateUserEducation body UpdateUserEducation true "UpdateUserEducation"
 // @Success 200 {object} string
@@ -381,7 +381,7 @@ func AddUserEducationHandler(userSvc UserService, c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /user/education/{id} [patch]
 func UpdateUserEducationByIdHandler(userSvc UserService, c *gin.Context) {
-	eduId := c.Param("id")
+	eduId := c.Param("educationId")
 	eduIdInt, _ := strconv.Atoi(eduId)
 	userId := c.Request.URL.Query().Get("userId")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -430,14 +430,17 @@ func UpdateUserEducationByIdHandler(userSvc UserService, c *gin.Context) {
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param userId path int true "userId"
+// @Param educationId path int false "educationId"
+// @Param userId query uint true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /user/education/{id} [delete]
 func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
-	userId := c.Param("userId")
+	educationId := c.Param("educationId")
+	educationIdInt, _ := strconv.Atoi(educationId)
+	userId := c.Request.URL.Query().Get("userId")
 	userIdInt, _ := strconv.Atoi(userId)
 	statusCode := http.StatusInternalServerError
 	_, err := userSvc.GetUserEducationByUserId(uint(userIdInt))
@@ -449,7 +452,7 @@ func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
 		return
 	}
 
-	err = userSvc.DeleteUserEducationByID(uint(userIdInt))
+	err = userSvc.DeleteUserEducationByID(uint(userIdInt), uint(educationIdInt))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Unable to delete user education: %v", err), Data: nil})
 		return
@@ -465,17 +468,20 @@ func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
 // @ID get-user-education-details-by-user-id
 // @Accept  json
 // @Produce  json
-// @Param userId path uint true "userId"
+// @Param educationId path uint true "educationId"
+// @Param userId query uint true "userId"
 // @Success 200 {object} Education
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /user/education/{id} [get]
 func GetUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
-	userId := c.Param("userId")
+	educationId := c.Param("educationId")
+	educationIdInt, _ := strconv.Atoi(educationId)
+	userId := c.Request.URL.Query().Get("userId")
 	userIdInt, _ := strconv.Atoi(userId)
 
-	expDetails, err := userSvc.GetUserEducationByUserId(uint(userIdInt))
+	expDetails, err := userSvc.GetUserEducationByUserAndEducationId(uint(userIdInt), uint(educationIdInt))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Cannot fetch user education against provided ID:", err), Data: nil})
 		return

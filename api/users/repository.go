@@ -14,7 +14,7 @@ type UserRepository interface {
 	GetUserEducationByUserAndEducationId(userId, id uint) (*Education, error)
 	UpdateEducation(education *Education) error
 	GetUserEducationByUserId(userId uint) (*Education, error)
-	DeleteUserEducationByID(userId uint) error
+	DeleteUserEducationByID(userId, id uint) error
 	GetAllUserEducation(userId uint, limit int, offset int, orderBy string) ([]Education, uint, error)
 	GetAllUserCategories(keyword string, limit int, offset int, orderBy string) ([]UserCategory, int64, error)
 }

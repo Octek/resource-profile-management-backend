@@ -494,9 +494,9 @@ paths:
       description: delete user experience by id
       operationId: delete-user-experience-by-id
       parameters:
-      - description: id
+      - description: experienceId
         in: path
-        name: id
+        name: experienceId
         required: true
         type: integer
       produces:
@@ -529,9 +529,9 @@ paths:
       description: get user experience details by id
       operationId: get-user-experience-details-by-id
       parameters:
-      - description: id
+      - description: experienceId
         in: path
-        name: id
+        name: experienceId
         required: true
         type: integer
       - description: userId
@@ -567,9 +567,9 @@ paths:
       description: Updates experience
       operationId: update-experience
       parameters:
-      - description: id
+      - description: experienceId
         in: path
-        name: id
+        name: experienceId
         required: true
         type: integer
       - description: userId
@@ -1290,8 +1290,12 @@ paths:
       description: delete user education by user id
       operationId: delete-user-education-by-user-id
       parameters:
-      - description: userId
+      - description: educationId
         in: path
+        name: educationId
+        type: integer
+      - description: userId
+        in: query
         name: userId
         required: true
         type: integer
@@ -1325,8 +1329,13 @@ paths:
       description: get user education details by user id
       operationId: get-user-education-details-by-user-id
       parameters:
-      - description: userId
+      - description: educationId
         in: path
+        name: educationId
+        required: true
+        type: integer
+      - description: userId
+        in: query
         name: userId
         required: true
         type: integer
@@ -1358,9 +1367,9 @@ paths:
       description: Update user education
       operationId: update-user-education
       parameters:
-      - description: id
+      - description: educationId
         in: path
-        name: id
+        name: educationId
         required: true
         type: integer
       - description: userId

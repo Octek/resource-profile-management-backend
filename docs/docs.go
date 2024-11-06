@@ -208,8 +208,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "experienceId",
+                        "name": "experienceId",
                         "in": "path",
                         "required": true
                     },
@@ -269,8 +269,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "experienceId",
+                        "name": "experienceId",
                         "in": "path",
                         "required": true
                     }
@@ -323,8 +323,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "experienceId",
+                        "name": "experienceId",
                         "in": "path",
                         "required": true
                     },
@@ -1207,9 +1207,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "educationId",
+                        "name": "educationId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
                         "description": "userId",
                         "name": "userId",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1261,9 +1268,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "educationId",
+                        "name": "educationId",
+                        "in": "path"
+                    },
+                    {
+                        "type": "integer",
                         "description": "userId",
                         "name": "userId",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1315,8 +1328,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "educationId",
+                        "name": "educationId",
                         "in": "path",
                         "required": true
                     },
