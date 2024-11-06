@@ -11,8 +11,8 @@ func NewService(r SkillRepository) SkillService {
 func (svc *SkillService) CreateCategories(jsonData []SkillCategory) error {
 	return svc.skillRepository.createCategories(jsonData)
 }
-func (svc *SkillService) CreateSkill(skillObj *Skill, userID uint, skillLevel string) error {
-	return svc.skillRepository.createSkill(skillObj, userID, skillLevel)
+func (svc *SkillService) CreateSkill(skillObj *Skill) error {
+	return svc.skillRepository.createSkill(skillObj)
 }
 func (svc *SkillService) CreateSkillCategories(skillCategoryObj []SkillCategory) error {
 	return svc.skillRepository.createSkillCategories(skillCategoryObj)
@@ -41,4 +41,7 @@ func (svc *SkillService) DeleteSkillById(id uint) error {
 }
 func (svc *SkillService) FetchAllSkill(limit, offset int, orderBy, keyword string) ([]Skill, int64, error) {
 	return svc.skillRepository.fetchAllSkill(limit, offset, orderBy, keyword)
+}
+func (svc *SkillService) CreateUserSkill(id uint, userSkillObj *UserSkill) error {
+	return svc.skillRepository.CreateUserSkill(id, userSkillObj)
 }
