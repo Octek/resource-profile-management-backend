@@ -92,8 +92,8 @@
                     },
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }
@@ -146,8 +146,8 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }
@@ -1127,8 +1127,8 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     },
@@ -1196,8 +1196,8 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }
@@ -1250,8 +1250,8 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }

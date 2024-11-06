@@ -238,14 +238,14 @@ func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path int true "id"
+// @Param userId path int true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /experience/user/{id} [delete]
 func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	userId := c.Param("id")
+	userId := c.Param("userId")
 	userIdInt, _ := strconv.Atoi(userId)
 	fmt.Println("userid", userIdInt)
 	err := experienceSvc.DeleteUserExperienceByUserID(uint(userIdInt))
@@ -267,7 +267,7 @@ func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin
 // @Param   limit    query     int     false  "example - 50"     limit(int)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc,updated_at desc"    orderBy(string)
-// @Param id path int true "id"
+// @Param userId path int true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -278,7 +278,7 @@ func HandlerToGetAllUserExperience(expSvc ExperienceService, c *gin.Context) {
 	limit := baseQuery.Get("limit")
 	offset := baseQuery.Get("offset")
 	orderBy := baseQuery.Get("orderBy")
-	userId := c.Param("id")
+	userId := c.Param("userId")
 	userIdInt, _ := strconv.Atoi(userId)
 	if limit == "" {
 		limit = utils.DefaultLimit

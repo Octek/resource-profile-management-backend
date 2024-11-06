@@ -614,9 +614,9 @@ paths:
       description: delete user experience by user id
       operationId: delete-user-experience-by-user-id
       parameters:
-      - description: id
+      - description: userId
         in: path
-        name: id
+        name: userId
         required: true
         type: integer
       produces:
@@ -661,9 +661,9 @@ paths:
         in: query
         name: orderBy
         type: string
-      - description: id
+      - description: userId
         in: path
-        name: id
+        name: userId
         required: true
         type: integer
       produces:
@@ -1290,9 +1290,9 @@ paths:
       description: delete user education by user id
       operationId: delete-user-education-by-user-id
       parameters:
-      - description: id
+      - description: userId
         in: path
-        name: id
+        name: userId
         required: true
         type: integer
       produces:
@@ -1325,9 +1325,9 @@ paths:
       description: get user education details by user id
       operationId: get-user-education-details-by-user-id
       parameters:
-      - description: id
+      - description: userId
         in: path
-        name: id
+        name: userId
         required: true
         type: integer
       produces:
@@ -1405,9 +1405,9 @@ paths:
       description: get all user education
       operationId: get-all-user-education
       parameters:
-      - description: id
+      - description: userId
         in: path
-        name: id
+        name: userId
         required: true
         type: integer
       - description: example - 50

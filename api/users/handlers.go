@@ -430,14 +430,14 @@ func UpdateUserEducationByIdHandler(userSvc UserService, c *gin.Context) {
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path int true "id"
+// @Param userId path int true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /user/education/{id} [delete]
 func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
-	userId := c.Param("id")
+	userId := c.Param("userId")
 	userIdInt, _ := strconv.Atoi(userId)
 	statusCode := http.StatusInternalServerError
 	_, err := userSvc.GetUserEducationByUserId(uint(userIdInt))
@@ -465,14 +465,14 @@ func DeleteUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
 // @ID get-user-education-details-by-user-id
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
+// @Param userId path uint true "userId"
 // @Success 200 {object} Education
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /user/education/{id} [get]
 func GetUserEducationByUserIdHandler(userSvc UserService, c *gin.Context) {
-	userId := c.Param("id")
+	userId := c.Param("userId")
 	userIdInt, _ := strconv.Atoi(userId)
 
 	expDetails, err := userSvc.GetUserEducationByUserId(uint(userIdInt))
@@ -497,7 +497,7 @@ type GetAllUserEducation struct {
 // @ID get-all-user-education
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
+// @Param userId path uint true "userId"
 // @Param   limit    query     int     false  "example - 50"     limit(int)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc"  orderBy(string)
@@ -510,7 +510,7 @@ func GetAllUserEducationHandler(userSvc UserService, c *gin.Context) {
 	limit := c.Request.URL.Query().Get("limit")
 	offset := c.Request.URL.Query().Get("offset")
 	orderBy := c.Request.URL.Query().Get("orderBy")
-	userId := c.Param("id")
+	userId := c.Param("userId")
 	userIdInt, _ := strconv.Atoi(userId)
 	fmt.Println("userID", userIdInt)
 

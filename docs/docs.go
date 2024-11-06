@@ -103,8 +103,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }
@@ -157,8 +157,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }
@@ -1138,8 +1138,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     },
@@ -1207,8 +1207,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }
@@ -1261,8 +1261,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
-                        "name": "id",
+                        "description": "userId",
+                        "name": "userId",
                         "in": "path",
                         "required": true
                     }
