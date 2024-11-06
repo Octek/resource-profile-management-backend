@@ -59,4 +59,6 @@ const (
 	SuccessfullyDeletedSkill                       = "Skill has been successfully deleted"
 	SuccessfullyCreatedSkill                       = "Skill has been created successfully"
 	SomethingWentWrongWhileGettingExperience       = "Something went wrong while getting the experience: %v"
+	SomethingWentWrongWhileCreatingUserSkill       = "Something went wrong  while creating the user skill: %v"
+	SuccessfullyCreatedUserSkill                   = "User Skill has been created successfully"
 )

@@ -466,11 +466,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Skill",
-                        "name": "UserSkillRequest",
+                        "name": "SkillRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/skills.UserSkillRequest"
+                            "$ref": "#/definitions/skills.SkillRequest"
                         }
                     }
                 ],
@@ -812,6 +812,66 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Add user skill",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Add user skill",
+                "operationId": "add-user-skill",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Skill ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Skill",
+                        "name": "UserSkillRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/skills.UserSkillRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -1910,9 +1970,6 @@ const docTemplate = `{
         "skills.UserSkillRequest": {
             "type": "object",
             "properties": {
-                "skillData": {
-                    "$ref": "#/definitions/skills.SkillRequest"
-                },
                 "skill_level": {
                     "type": "string"
                 },
