@@ -2,6 +2,7 @@ package bookings
 
 import (
 	"fmt"
+	"github.com/Octek/resource-profile-management-backend.git/api/middleware"
 	"github.com/Octek/resource-profile-management-backend.git/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -22,13 +23,13 @@ func Routes(router *gin.Engine, bookingSvc BookingService) {
 		subRouter.GET("/:id", func(c *gin.Context) {
 			GetUserBookingByIdHandler(bookingSvc, c)
 		})
-		subRouter.DELETE("/:id", func(c *gin.Context) {
+		subRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			DeleteUserBookingByIdHandler(bookingSvc, c)
 		})
-		subRouter.PATCH("/:id", func(c *gin.Context) {
+		subRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			UpdateUserBookingByIdHandler(bookingSvc, c)
 		})
-		subRouter.DELETE("/user/:id", func(c *gin.Context) {
+		subRouter.DELETE("/user/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			DeleteUserBookingByUserIdHandler(bookingSvc, c)
 		})
 		subRouter.GET("/user/:id", func(c *gin.Context) {
@@ -97,6 +98,7 @@ func AddUserBookingHandler(bookingSvc BookingService, c *gin.Context) {
 // @Summary Update booking
 // @Description Update booking
 // @ID update-booking
+// @Security ApiAuthKey
 // @Accept json
 // @Param id path int true "booking ID"
 // @Param userId query uint true "userId"
@@ -233,6 +235,7 @@ func HandlerToGetAllUserBookings(bookingSvc BookingService, c *gin.Context) {
 // @Summary Delete user booking by id
 // @Description delete user booking by id
 // @ID delete-user-booking-by-id
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id"
@@ -259,6 +262,7 @@ func DeleteUserBookingByIdHandler(bookingSvc BookingService, c *gin.Context) {
 // @Summary Delete user booking by user id
 // @Description delete user booking by user id
 // @ID delete-booking-by-user-id
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id"
