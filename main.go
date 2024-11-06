@@ -37,6 +37,10 @@ func init() {
 	// logger.SetFormatter(&log.JSONFormatter{})
 }
 
+// @securityDefinitions.apikey ApiAuthKey
+// @in header
+// @name Authorization
+
 func SetupDatabase(connString string) (*gorm.DB, error) {
 	var db *gorm.DB
 	const attempts = 5
@@ -97,7 +101,7 @@ func main() {
 	docs.SwaggerInfo.InfoInstanceName = "swagger"
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	router.GET("/health", func(c *gin.Context) {
+	router.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"status": "OK", "statusCode": http.StatusOK})
 	})
 

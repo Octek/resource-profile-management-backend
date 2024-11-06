@@ -137,6 +137,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user experience by user id",
                 "consumes": [
                     "application/json"
@@ -244,6 +249,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user experience by id",
                 "consumes": [
                     "application/json"
@@ -293,6 +303,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "Updates experience",
                 "consumes": [
                     "application/json"
@@ -1300,7 +1315,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/user.GetAllUsers"
                         }
                     },
                     "400": {
@@ -1422,7 +1437,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/user.GetAllUserEducation"
                         }
                     },
                     "400": {
@@ -1473,7 +1488,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/user.Education"
                         }
                     },
                     "400": {
@@ -1497,6 +1512,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user education by user id",
                 "consumes": [
                     "application/json"
@@ -1546,6 +1566,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "Update user education",
                 "consumes": [
                     "application/json"
@@ -1638,7 +1663,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/user.User"
                         }
                     },
                     "400": {
@@ -1662,6 +1687,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user by id",
                 "consumes": [
                     "application/json"
@@ -1711,6 +1741,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "Updates user",
                 "consumes": [
                     "application/json"
@@ -1807,7 +1842,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/user.CategoriesResponse"
                         }
                     },
                     "400": {
@@ -1833,6 +1868,38 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "bookings.Booking": {
+            "type": "object",
+            "properties": {
+                "booking_date_time": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "meeting_link": {
+                    "type": "string"
+                },
+                "question_options": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/questions.QuestionOption"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "experience.AddUserExperienceRequest": {
             "type": "object",
             "required": [
@@ -1877,6 +1944,53 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "start_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "experience.Experience": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_currently_working": {
+                    "type": "boolean"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "responsibilities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "skills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/skills.Skill"
+                    }
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -1940,6 +2054,67 @@ const docTemplate = `{
                 }
             }
         },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "projects.Project": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "technologies": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "questions.QuestionOption": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "question_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "skills.CreateSkillCategoryRequest": {
             "type": "object",
             "required": [
@@ -1951,6 +2126,58 @@ const docTemplate = `{
                     "items": {
                         "type": "string"
                     }
+                }
+            }
+        },
+        "skills.Skill": {
+            "type": "object",
+            "properties": {
+                "bookings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/bookings.Booking"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "skill_category": {
+                    "$ref": "#/definitions/skills.SkillCategory"
+                },
+                "skill_category_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "skills.SkillCategory": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -2025,6 +2252,23 @@ const docTemplate = `{
                 }
             }
         },
+        "user.CategoriesResponse": {
+            "type": "object",
+            "properties": {
+                "records_filtered": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "user_categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.UserCategory"
+                    }
+                }
+            }
+        },
         "user.CreateUserRequest": {
             "type": "object",
             "required": [
@@ -2033,6 +2277,12 @@ const docTemplate = `{
                 "last_name"
             ],
             "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "certifications": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -2045,11 +2295,106 @@ const docTemplate = `{
                 "last_name": {
                     "type": "string"
                 },
+                "location": {
+                    "type": "string"
+                },
                 "mobile_number": {
+                    "type": "string"
+                },
+                "profile_picture": {
                     "type": "string"
                 },
                 "user_category_id": {
                     "type": "integer"
+                },
+                "video_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.Education": {
+            "type": "object",
+            "properties": {
+                "achievements": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "field_of_study": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "institution_name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "user.GetAllUserEducation": {
+            "type": "object",
+            "properties": {
+                "education": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.Education"
+                    }
+                },
+                "records_filtered": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "user.GetAllUsers": {
+            "type": "object",
+            "properties": {
+                "records_filtered": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "user": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.User"
+                    }
+                }
+            }
+        },
+        "user.Role": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -2075,6 +2420,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "mobile_number": {
+                    "type": "string"
+                },
+                "profile_picture": {
                     "type": "string"
                 },
                 "user_category_id": {
@@ -2112,6 +2460,112 @@ const docTemplate = `{
                 }
             }
         },
+        "user.User": {
+            "type": "object",
+            "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "bookings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/bookings.Booking"
+                    }
+                },
+                "certifications": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "educations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.Education"
+                    }
+                },
+                "email": {
+                    "type": "string"
+                },
+                "experiences": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/experience.Experience"
+                    }
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "job_title": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "mobile_number": {
+                    "type": "string"
+                },
+                "profile_picture": {
+                    "type": "string"
+                },
+                "projects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/projects.Project"
+                    }
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.Role"
+                    }
+                },
+                "skills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/skills.Skill"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_category": {
+                    "$ref": "#/definitions/user.UserCategory"
+                },
+                "user_category_id": {
+                    "type": "integer"
+                },
+                "video_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserCategory": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "utils.ResponseMessage": {
             "type": "object",
             "properties": {
@@ -2123,6 +2577,13 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiAuthKey": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
