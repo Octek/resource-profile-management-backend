@@ -2,6 +2,7 @@ package questions
 
 import (
 	"fmt"
+	"github.com/Octek/resource-profile-management-backend.git/api/middleware"
 	"github.com/Octek/resource-profile-management-backend.git/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -19,7 +20,7 @@ func Routes(router *gin.Engine, questionSvc QuestionService) {
 		subRouter.POST("", func(c *gin.Context) {
 			HandlerToCreateQuestions(questionSvc, c)
 		})
-		subRouter.PATCH("/:id", func(c *gin.Context) {
+		subRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			HandlerToUpdateQuestions(questionSvc, c)
 		})
 		subRouter.GET("/:id", func(c *gin.Context) {
@@ -28,7 +29,7 @@ func Routes(router *gin.Engine, questionSvc QuestionService) {
 		subRouter.GET("", func(c *gin.Context) {
 			HandlerToGetAllQuestions(questionSvc, c)
 		})
-		subRouter.DELETE("/:id", func(c *gin.Context) {
+		subRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			HandlerToDeleteQuestionById(questionSvc, c)
 		})
 	}
@@ -89,6 +90,7 @@ func HandlerToCreateQuestions(questionSvc QuestionService, c *gin.Context) {
 // @Summary update questions
 // @Description update a question
 // @ID update-question
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path uint true "id"
@@ -214,6 +216,7 @@ func HandlerToGetAllQuestions(questionSvc QuestionService, c *gin.Context) {
 // @Summary Delete question by id
 // @Description delete question by id
 // @ID delete-question-by-id
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id"
