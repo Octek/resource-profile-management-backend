@@ -148,7 +148,7 @@ func (repo *userRepositoryPostgres) UpdateEducation(education *Education) error 
 
 func (repo *userRepositoryPostgres) GetUserEducationByUserId(userId uint) (*Education, error) {
 	var education Education
-	err := repo.db.Model(Education{}).Where("user_id = ? and  ", userId).First(&education).Error
+	err := repo.db.Model(Education{}).Where("user_id = ?", userId).First(&education).Error
 	return &education, err
 }
 
