@@ -104,7 +104,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "userId",
-                        "name": "userId",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -158,7 +158,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "userId",
-                        "name": "userId",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -209,7 +209,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "experienceId",
-                        "name": "experienceId",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },
@@ -270,7 +270,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "experienceId",
-                        "name": "experienceId",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -324,14 +324,14 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "experienceId",
-                        "name": "experienceId",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "userId",
-                        "name": "userId",
+                        "name": "id",
                         "in": "query",
                         "required": true
                     },
@@ -1139,7 +1139,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "userId",
-                        "name": "userId",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },
@@ -1208,7 +1208,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "educationId",
-                        "name": "educationId",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },
@@ -1269,7 +1269,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "educationId",
-                        "name": "educationId",
+                        "name": "id",
                         "in": "path"
                     },
                     {
@@ -1329,7 +1329,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "educationId",
-                        "name": "educationId",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     },

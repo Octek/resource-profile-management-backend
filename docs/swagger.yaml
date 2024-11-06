@@ -496,7 +496,7 @@ paths:
       parameters:
       - description: experienceId
         in: path
-        name: experienceId
+        name: id
         required: true
         type: integer
       produces:
@@ -531,7 +531,7 @@ paths:
       parameters:
       - description: experienceId
         in: path
-        name: experienceId
+        name: id
         required: true
         type: integer
       - description: userId
@@ -569,12 +569,12 @@ paths:
       parameters:
       - description: experienceId
         in: path
-        name: experienceId
+        name: id
         required: true
         type: integer
       - description: userId
         in: query
-        name: userId
+        name: id
         required: true
         type: integer
       - description: UpdateExpRequest
@@ -616,7 +616,7 @@ paths:
       parameters:
       - description: userId
         in: path
-        name: userId
+        name: id
         required: true
         type: integer
       produces:
@@ -663,7 +663,7 @@ paths:
         type: string
       - description: userId
         in: path
-        name: userId
+        name: id
         required: true
         type: integer
       produces:
@@ -1292,7 +1292,7 @@ paths:
       parameters:
       - description: educationId
         in: path
-        name: educationId
+        name: id
         type: integer
       - description: userId
         in: query
@@ -1331,7 +1331,7 @@ paths:
       parameters:
       - description: educationId
         in: path
-        name: educationId
+        name: id
         required: true
         type: integer
       - description: userId
@@ -1369,7 +1369,7 @@ paths:
       parameters:
       - description: educationId
         in: path
-        name: educationId
+        name: id
         required: true
         type: integer
       - description: userId
@@ -1416,7 +1416,7 @@ paths:
       parameters:
       - description: userId
         in: path
-        name: userId
+        name: id
         required: true
         type: integer
       - description: example - 50

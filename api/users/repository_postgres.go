@@ -163,20 +163,11 @@ func (repo *userRepositoryPostgres) DeleteUserEducationByID(userId, id uint) err
 func (repo *userRepositoryPostgres) GetAllUserEducation(userId uint, limit int, offset int, orderBy string) ([]Education, uint, error) {
 	var educations []Education
 	var total int64
+	fmt.Println("userId:", userId, "limit:", limit, "offset:", offset, "orderBy:", orderBy)
 
-	query := repo.db.Model(Education{})
-	query = query.Where("user_id = ?", userId)
-
-	err := query.Count(&total).Error
-	if err != nil {
-		return nil, 0, err
-	}
-	err = query.Order(orderBy).Limit(limit).Offset(offset).Find(&educations).Error
-	if err != nil {
-		return nil, uint(total), err
-	}
-
-	return educations, uint(total), nil
+	err := repo.db.Model(Education{}).Where("user_id = ?", userId).Count(&total).Error
+	err = repo.db.Model(Education{}).Where("user_id = ?", userId).Order(orderBy).Limit(limit).Offset(offset).Find(&educations).Error
+	return educations, uint(total), err
 }
 
 func (repo *userRepositoryPostgres) GetAllUserCategories(keyword string, limit int, offset int, orderBy string) ([]UserCategory, int64, error) {

@@ -123,8 +123,8 @@ type UpdateExpRequest struct {
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param experienceId path uint true "experienceId"
-// @Param userId query uint true "userId"
+// @Param id path uint true "experienceId"
+// @Param id query uint true "userId"
 // @Param UpdateExpRequest body UpdateExpRequest true "UpdateExpRequest"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -132,7 +132,7 @@ type UpdateExpRequest struct {
 // @Failure 500 {object} string
 // @Router /experience/{id} [patch]
 func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	userId := c.Request.URL.Query().Get("userId")
+	userId := c.Request.URL.Query().Get("id")
 	userIdInt, _ := strconv.Atoi(userId)
 	var updateExpRequest UpdateExpRequest
 
@@ -146,7 +146,7 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 		return
 	}
 
-	experienceId, err := strconv.ParseUint(c.Param("experienceId"), 10, 64)
+	experienceId, err := strconv.ParseUint(c.Param("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: "Invalid experience ID", Data: nil})
 		return
@@ -180,7 +180,7 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @ID get-user-experience-details-by-id
 // @Accept  json
 // @Produce  json
-// @Param experienceId path uint true "experienceId"
+// @Param id path uint true "experienceId"
 // @Param userId query uint true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -188,7 +188,7 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @Failure 500 {object} string
 // @Router /experience/{id} [get]
 func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	expId := c.Param("experienceId")
+	expId := c.Param("id")
 	expIdInt, _ := strconv.Atoi(expId)
 	userId := c.Request.URL.Query().Get("userId")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -210,14 +210,14 @@ func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Contex
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param experienceId path int true "experienceId"
+// @Param id path int true "experienceId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /experience/{id} [delete]
 func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	expId := c.Param("experienceId")
+	expId := c.Param("id")
 	expIdInt, _ := strconv.Atoi(expId)
 
 	err := experienceSvc.DeleteUserExperienceByID(uint(expIdInt))
@@ -238,14 +238,14 @@ func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param userId path int true "userId"
+// @Param id path int true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
 // @Router /experience/user/{id} [delete]
 func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	userId := c.Param("userId")
+	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
 	fmt.Println("userid", userIdInt)
 	err := experienceSvc.DeleteUserExperienceByUserID(uint(userIdInt))
@@ -267,7 +267,7 @@ func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin
 // @Param   limit    query     int     false  "example - 50"     limit(int)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc,updated_at desc"    orderBy(string)
-// @Param userId path int true "userId"
+// @Param id path int true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -278,7 +278,7 @@ func HandlerToGetAllUserExperience(expSvc ExperienceService, c *gin.Context) {
 	limit := baseQuery.Get("limit")
 	offset := baseQuery.Get("offset")
 	orderBy := baseQuery.Get("orderBy")
-	userId := c.Param("userId")
+	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
 	if limit == "" {
 		limit = utils.DefaultLimit
