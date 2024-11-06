@@ -2,6 +2,7 @@ package projects
 
 import (
 	"fmt"
+	"github.com/Octek/resource-profile-management-backend.git/api/middleware"
 	"github.com/Octek/resource-profile-management-backend.git/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
@@ -18,10 +19,10 @@ func Routes(router *gin.Engine, projectSvc ProjectService) {
 	subRouter.POST("/:id", func(c *gin.Context) {
 		AddUserProjectHandler(projectSvc, c)
 	})
-	subRouter.PATCH("/:id", func(c *gin.Context) {
+	subRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 		UpdateProjectByIdHandler(projectSvc, c)
 	})
-	subRouter.DELETE("/:id", func(c *gin.Context) {
+	subRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 		DeleteUserProjectByUserIdHandler(projectSvc, c)
 	})
 	subRouter.GET("/:id", func(c *gin.Context) {
@@ -94,6 +95,7 @@ func AddUserProjectHandler(projectSvc ProjectService, c *gin.Context) {
 // @Summary Update user project
 // @Description Update user project
 // @ID update-user-project
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path uint true "id"
@@ -151,6 +153,7 @@ func UpdateProjectByIdHandler(projectSvc ProjectService, c *gin.Context) {
 // @Summary Delete user project by user id
 // @Description delete user project by user id
 // @ID delete-user-project-by-user-id
+// @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
 // @Param id path int true "id"
