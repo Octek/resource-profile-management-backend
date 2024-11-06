@@ -18,7 +18,9 @@ type User struct {
 	Email          string                  `json:"email" gorm:"constraint:UNIQUE;NOT NULL"`
 	MobileNumber   string                  `json:"mobile_number"`
 	Bio            string                  `json:"bio"`
+	JobTitle       string                  `json:"job_title"`
 	Location       string                  `json:"location"`
+	ProfilePicture string                  `json:"profile_picture"`
 	VideoUrl       string                  `json:"video_url"`
 	Certifications string                  `json:"certifications"`
 	UserCategoryID uint                    `json:"user_category_id" gorm:"NOT NULL;index:user_category_id"`

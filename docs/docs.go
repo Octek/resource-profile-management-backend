@@ -313,6 +313,364 @@ const docTemplate = `{
                 }
             }
         },
+        "/experience": {
+            "post": {
+                "description": "Adds new experiences for a given user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Add experiences for user",
+                "operationId": "add-experience",
+                "parameters": [
+                    {
+                        "description": "AddUserExperienceRequest",
+                        "name": "AddUserExperienceRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/experience.AddUserExperienceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/experience/user/{id}": {
+            "get": {
+                "description": "Get all user experience",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Get all user experience",
+                "operationId": "Get-all-user-experience",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "example - 50",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "example - 0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "example - created_at desc,updated_at desc",
+                        "name": "orderBy",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "delete user experience by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Delete user experience by user id",
+                "operationId": "delete-user-experience-by-user-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/experience/{id}": {
+            "get": {
+                "description": "get user experience details by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Get user experience details by id",
+                "operationId": "get-user-experience-details-by-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "delete user experience by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Delete user experience by id",
+                "operationId": "delete-user-experience-by-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Updates experience",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Update experience",
+                "operationId": "update-experience",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "UpdateExpRequest",
+                        "name": "UpdateExpRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/experience.UpdateExpRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/skills": {
             "get": {
                 "security": [
@@ -893,8 +1251,474 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/delete-user{id}": {
+        "/user": {
+            "post": {
+                "description": "creates a new complete user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Create user",
+                "operationId": "create-user",
+                "parameters": [
+                    {
+                        "description": "CreateUserRequest",
+                        "name": "CreateUserRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/all": {
+            "get": {
+                "description": "get all user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get all user",
+                "operationId": "get-all-user",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "example - 50",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "example - 0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "example - created_at desc",
+                        "name": "orderBy",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.GetAllUsers"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/education": {
+            "post": {
+                "description": "add user education",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "add user education",
+                "operationId": "add-user-education",
+                "parameters": [
+                    {
+                        "description": "AddUserEducation",
+                        "name": "AddUserEducation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.AddUserEducation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/education/all/{id}": {
+            "get": {
+                "description": "get all user education",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "Get all user education",
+                "operationId": "get-all-user-education",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "example - 50",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "example - 0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "example - created_at desc",
+                        "name": "orderBy",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.GetAllUserEducation"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/education/{id}": {
+            "get": {
+                "description": "get user education details by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "Get user education details by user id",
+                "operationId": "get-user-education-details-by-user-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.Education"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "delete user education by user id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "Delete user education by user id",
+                "operationId": "delete-user-education-by-user-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Update user education",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "Update user education",
+                "operationId": "update-user-education",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "UpdateUserEducation",
+                        "name": "UpdateUserEducation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UpdateUserEducation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/{id}": {
+            "get": {
+                "description": "get user details by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Get user details by id",
+                "operationId": "get-user-details-by-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/user.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete user by id",
                 "consumes": [
                     "application/json"
@@ -942,123 +1766,13 @@ const docTemplate = `{
                         }
                     }
                 }
-            }
-        },
-        "/user/get-all-user-list": {
-            "get": {
-                "description": "get all user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get all user",
-                "operationId": "get-all-user",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "example - 50",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "example - 0",
-                        "name": "offset",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "example - created_at desc",
-                        "name": "orderBy",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/get-user-details/{id}": {
-            "get": {
-                "description": "get user details by id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get user details by id",
-                "operationId": "get-user-details-by-id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/update-user/{id}": {
+            },
             "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "Updates user",
                 "consumes": [
                     "application/json"
@@ -1117,9 +1831,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/create-user": {
-            "post": {
-                "description": "creates a new complete user",
+        "/users/get-all-user-categories": {
+            "get": {
+                "description": "gets all user categories",
                 "consumes": [
                     "application/json"
                 ],
@@ -1129,24 +1843,33 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Create user",
-                "operationId": "create-user",
+                "summary": "Get all user categories",
+                "operationId": "get-all-user-categories",
                 "parameters": [
                     {
-                        "description": "CreateUserRequest",
-                        "name": "CreateUserRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user.CreateUserRequest"
-                        }
+                        "type": "integer",
+                        "description": "example - 50",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "example - 0",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "example - created_at desc ",
+                        "name": "orderBy",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
+                            "$ref": "#/definitions/user.CategoriesResponse"
                         }
                     },
                     "400": {
@@ -1172,6 +1895,225 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "bookings.Booking": {
+            "type": "object",
+            "properties": {
+                "booking_date_time": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "meeting_link": {
+                    "type": "string"
+                },
+                "question_options": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/questions.QuestionOption"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "experience.AddUserExperienceRequest": {
+            "type": "object",
+            "required": [
+                "user_id"
+            ],
+            "properties": {
+                "experiences": {
+                    "$ref": "#/definitions/experience.ExpRequest"
+                },
+                "skill_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "experience.ExpRequest": {
+            "type": "object",
+            "required": [
+                "company",
+                "position",
+                "start_date"
+            ],
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "is_currently_working": {
+                    "type": "boolean"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "responsibilities": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "experience.Experience": {
+            "type": "object",
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "is_currently_working": {
+                    "type": "boolean"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "responsibilities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "skills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/skills.Skill"
+                    }
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "experience.UpdateExpRequest": {
+            "type": "object",
+            "required": [
+                "company",
+                "position",
+                "start_date"
+            ],
+            "properties": {
+                "company": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "is_currently_working": {
+                    "type": "boolean"
+                },
+                "position": {
+                    "type": "string"
+                },
+                "responsibilities": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "gorm.DeletedAt": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "projects.Project": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "technologies": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "questions.QuestionOption": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "question_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "projects.AddProjectRequest": {
             "type": "object",
             "required": [
@@ -1228,6 +2170,58 @@ const docTemplate = `{
                 }
             }
         },
+        "skills.Skill": {
+            "type": "object",
+            "properties": {
+                "bookings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/bookings.Booking"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "skill_category": {
+                    "$ref": "#/definitions/skills.SkillCategory"
+                },
+                "skill_category_id": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "skills.SkillCategory": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "skills.SkillCategoryUpdateRequest": {
             "type": "object",
             "required": [
@@ -1267,6 +2261,55 @@ const docTemplate = `{
                 }
             }
         },
+        "user.AddUserEducation": {
+            "type": "object",
+            "required": [
+                "end_date",
+                "institution_name",
+                "start_date",
+                "user_id"
+            ],
+            "properties": {
+                "achievements": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "field_of_study": {
+                    "type": "string"
+                },
+                "institution_name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "user.CategoriesResponse": {
+            "type": "object",
+            "properties": {
+                "records_filtered": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "user_categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.UserCategory"
+                    }
+                }
+            }
+        },
         "user.CreateUserRequest": {
             "type": "object",
             "required": [
@@ -1275,20 +2318,124 @@ const docTemplate = `{
                 "last_name"
             ],
             "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "certifications": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
                 "first_name": {
                     "type": "string"
                 },
+                "job_title": {
+                    "type": "string"
+                },
                 "last_name": {
+                    "type": "string"
+                },
+                "location": {
                     "type": "string"
                 },
                 "mobile_number": {
                     "type": "string"
                 },
+                "profile_picture": {
+                    "type": "string"
+                },
                 "user_category_id": {
                     "type": "integer"
+                },
+                "video_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.Education": {
+            "type": "object",
+            "properties": {
+                "achievements": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "field_of_study": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "institution_name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "user.GetAllUserEducation": {
+            "type": "object",
+            "properties": {
+                "education": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.Education"
+                    }
+                },
+                "records_filtered": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "user.GetAllUsers": {
+            "type": "object",
+            "properties": {
+                "records_filtered": {
+                    "type": "integer"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "user": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.User"
+                    }
+                }
+            }
+        },
+        "user.Role": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -1316,10 +2463,146 @@ const docTemplate = `{
                 "mobile_number": {
                     "type": "string"
                 },
+                "profile_picture": {
+                    "type": "string"
+                },
                 "user_category_id": {
                     "type": "integer"
                 },
                 "video_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UpdateUserEducation": {
+            "type": "object",
+            "required": [
+                "institution_name",
+                "start_date"
+            ],
+            "properties": {
+                "achievements": {
+                    "type": "string"
+                },
+                "degree": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "field_of_study": {
+                    "type": "string"
+                },
+                "institution_name": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.User": {
+            "type": "object",
+            "properties": {
+                "bio": {
+                    "type": "string"
+                },
+                "bookings": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/bookings.Booking"
+                    }
+                },
+                "certifications": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "educations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.Education"
+                    }
+                },
+                "email": {
+                    "type": "string"
+                },
+                "experiences": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/experience.Experience"
+                    }
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "job_title": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "location": {
+                    "type": "string"
+                },
+                "mobile_number": {
+                    "type": "string"
+                },
+                "profile_picture": {
+                    "type": "string"
+                },
+                "projects": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/projects.Project"
+                    }
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.Role"
+                    }
+                },
+                "skills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/skills.Skill"
+                    }
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_category": {
+                    "$ref": "#/definitions/user.UserCategory"
+                },
+                "user_category_id": {
+                    "type": "integer"
+                },
+                "video_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserCategory": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
                     "type": "string"
                 }
             }
@@ -1335,6 +2618,13 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "ApiAuthKey": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`
