@@ -49,7 +49,7 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 	skillsRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 		HandlerToDeleteSkillByID(c, skillSvc)
 	})
-	skillsRouter.POST("/:id", func(c *gin.Context) {
+	skillsRouter.POST("add-user-skill/", func(c *gin.Context) {
 		HandlerToAddUserSkills(c, skillSvc)
 	})
 }
@@ -262,18 +262,15 @@ func HandlerToCreateSkill(c *gin.Context, skillSvc SkillService) {
 // @ID add-user-skill
 // @Security ApiAuthKey
 // @Accept json
-// @Param id path int true "Skill ID"
-// @Param UserSkillRequest body UserSkillRequest true "Skill"
+// @Param UserSkillRequest body UserSkillRequest true "User Skill"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /skills/{id} [post]
+// @Router /skills/add-user-skill [post]
 func HandlerToAddUserSkills(c *gin.Context, skillSvc SkillService) {
-	fmt.Println("HandlerToCreateSkills")
-	var createUserSkillRequest UserSkill
-	skillID := c.Param("id")
-	skillIDInt, err := strconv.Atoi(skillID)
+	fmt.Println("HandlerToAddUserSkills")
+	var createUserSkillRequest UserSkillRequest
 	if err := c.ShouldBind(&createUserSkillRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
 		return
@@ -288,7 +285,7 @@ func HandlerToAddUserSkills(c *gin.Context, skillSvc SkillService) {
 		SkillID:    createUserSkillRequest.SkillID,
 		UserID:     createUserSkillRequest.UserID,
 	}
-	err = skillSvc.CreateUserSkill(uint(skillIDInt), &userSkill)
+	err := skillSvc.CreateUserSkill(&userSkill)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileCreatingUserSkill, err), Data: nil})
 		return
@@ -510,6 +507,7 @@ type SkillCategoryUpdateRequest struct {
 
 type UserSkillRequest struct {
 	UserID     uint   `json:"user_id"`
+	SkillID    uint   `json:"skill_id"`
 	SkillLevel string `json:"skill_level"`
 }
 type SkillRequest struct {

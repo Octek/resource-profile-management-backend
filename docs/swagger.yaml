@@ -205,6 +205,8 @@ definitions:
     type: object
   skills.UserSkillRequest:
     properties:
+      skill_id:
+        type: integer
       skill_level:
         type: string
       user_id:
@@ -875,18 +877,14 @@ paths:
       summary: Update skill
       tags:
       - Skills
+  /skills/add-user-skill:
     post:
       consumes:
       - application/json
       description: Add user skill
       operationId: add-user-skill
       parameters:
-      - description: Skill ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Skill
+      - description: User Skill
         in: body
         name: UserSkillRequest
         required: true
