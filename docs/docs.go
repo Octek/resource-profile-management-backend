@@ -2285,6 +2285,9 @@ const docTemplate = `{
                         "$ref": "#/definitions/user.Role"
                     }
                 },
+                "showcase": {
+                    "type": "boolean"
+                },
                 "skills": {
                     "type": "array",
                     "items": {

@@ -417,6 +417,8 @@ definitions:
         items:
           $ref: '#/definitions/user.Role'
         type: array
+      showcase:
+        type: boolean
       skills:
         items:
           $ref: '#/definitions/skills.Skill'
