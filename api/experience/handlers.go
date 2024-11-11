@@ -406,5 +406,4 @@ func HandlerToRemoveSkillFromExistingExperience(c *gin.Context, expSvc Experienc
 	}
 
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Skills successfully removed from the experience", Data: nil})
-
 }
