@@ -44,9 +44,9 @@ func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID 
 				SkillID:      skillID,
 				ExperienceID: experience.ID,
 			}
-		}
-		if err := tx.Create(&experienceSkill).Error; err != nil {
-			return err
+			if err := tx.Create(&experienceSkill).Error; err != nil {
+				return err
+			}
 		}
 
 		fmt.Println("Experience, UserExperience, and ExperienceSkills have been created successfully.")
@@ -164,12 +164,10 @@ func (repo *experienceRepositoryPostgres) AddSkillsToExperience(expID uint, skil
 				ExperienceID: expID,
 				SkillID:      skillID,
 			}
+			if err := tx.Create(&experienceSkill).Error; err != nil {
+				return fmt.Errorf("failed to add skill %d to experience: %v", err)
+			}
 		}
-
-		if err := tx.Create(&experienceSkill).Error; err != nil {
-			return fmt.Errorf("failed to add skill %d to experience: %v", err)
-		}
-
 		return nil
 	})
 
@@ -177,12 +175,8 @@ func (repo *experienceRepositoryPostgres) AddSkillsToExperience(expID uint, skil
 }
 
 func (repo *experienceRepositoryPostgres) RemoveSkillsFromExperience(expID uint, skillIDs []uint) error {
-	return repo.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where("experience_id = ? AND skill_id IN ?", expID, skillIDs).
-			Delete(&ExperienceSkill{}).Error; err != nil {
-			return fmt.Errorf("failed to delete skills from experience %d: %v", expID, err)
-		}
+	var experienceSkill ExperienceSkill
+	err := repo.db.Where("experience_id = ? AND skill_id IN ?", expID, skillIDs).Delete(&experienceSkill).Error
 
-		return nil
-	})
+	return err
 }

@@ -35,10 +35,6 @@ definitions:
         items:
           type: integer
         type: array
-      user_id:
-        type: integer
-    required:
-    - user_id
     type: object
   experience.ExpRequest:
     properties:

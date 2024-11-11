@@ -1889,9 +1889,6 @@ const docTemplate = `{
         },
         "experience.AddUserExperienceRequest": {
             "type": "object",
-            "required": [
-                "user_id"
-            ],
             "properties": {
                 "experiences": {
                     "$ref": "#/definitions/experience.ExpRequest"
@@ -1901,9 +1898,6 @@ const docTemplate = `{
                     "items": {
                         "type": "integer"
                     }
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
