@@ -49,7 +49,7 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 	skillsRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 		HandlerToDeleteSkillByID(c, skillSvc)
 	})
-	skillsRouter.POST("add-user-skill/", func(c *gin.Context) {
+	skillsRouter.POST("add-user-skill/:id", func(c *gin.Context) {
 		HandlerToAddUserSkills(c, skillSvc)
 	})
 	skillsRouter.POST("add-skill-in-bulk/", func(c *gin.Context) {
@@ -265,30 +265,28 @@ func HandlerToCreateSkill(c *gin.Context, skillSvc SkillService) {
 // @ID add-user-skill
 // @Security ApiAuthKey
 // @Accept json
-// @Param UserSkillRequest body UserSkillRequest true "User Skill"
+// @Param id path int true "User Id"
+// @Param AddBulkUserSkillsRequest body AddBulkUserSkillsRequest true "User Skill"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /skills/add-user-skill [post]
+// @Router /skills/add-user-skill/{id} [post]
 func HandlerToAddUserSkills(c *gin.Context, skillSvc SkillService) {
 	fmt.Println("HandlerToAddUserSkills")
-	var createUserSkillRequest UserSkillRequest
-	if err := c.ShouldBind(&createUserSkillRequest); err != nil {
+	userId := c.Param("id")
+	userIdInt, err := strconv.Atoi(userId)
+	var addUserSkillRequest AddBulkUserSkillsRequest
+	if err := c.ShouldBind(&addUserSkillRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
 		return
 	}
 
-	if err := validate.Struct(createUserSkillRequest); err != nil {
+	if err := validate.Struct(addUserSkillRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
 		return
 	}
-	userSkill := UserSkill{
-		SkillLevel: createUserSkillRequest.SkillLevel,
-		SkillID:    createUserSkillRequest.SkillID,
-		UserID:     createUserSkillRequest.UserID,
-	}
-	err := skillSvc.CreateUserSkill(&userSkill)
+	err = skillSvc.CreateUserSkill(uint(userIdInt), addUserSkillRequest)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileCreatingUserSkill, err), Data: nil})
 		return
@@ -544,7 +542,6 @@ type SkillCategoryUpdateRequest struct {
 }
 
 type UserSkillRequest struct {
-	UserID     uint   `json:"user_id"`
 	SkillID    uint   `json:"skill_id"`
 	SkillLevel string `json:"skill_level"`
 }
@@ -555,4 +552,7 @@ type SkillRequest struct {
 }
 type AddSkillsBulkRequest struct {
 	Skills []SkillRequest `json:"skills"`
+}
+type AddBulkUserSkillsRequest struct {
+	UserSkill []UserSkillRequest `json:"user_skill"`
 }

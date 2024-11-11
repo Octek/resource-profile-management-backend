@@ -682,7 +682,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/skills/add-user-skill": {
+        "/skills/add-user-skill/{id}": {
             "post": {
                 "security": [
                     {
@@ -700,12 +700,19 @@ const docTemplate = `{
                 "operationId": "add-user-skill",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "User Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "User Skill",
-                        "name": "UserSkillRequest",
+                        "name": "AddBulkUserSkillsRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/skills.UserSkillRequest"
+                            "$ref": "#/definitions/skills.AddBulkUserSkillsRequest"
                         }
                     }
                 ],
@@ -2065,6 +2072,17 @@ const docTemplate = `{
                 }
             }
         },
+        "skills.AddBulkUserSkillsRequest": {
+            "type": "object",
+            "properties": {
+                "user_skill": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/skills.UserSkillRequest"
+                    }
+                }
+            }
+        },
         "skills.AddSkillsBulkRequest": {
             "type": "object",
             "properties": {
@@ -2175,9 +2193,6 @@ const docTemplate = `{
                 },
                 "skill_level": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },

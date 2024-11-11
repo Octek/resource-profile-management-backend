@@ -153,6 +153,13 @@ definitions:
       updated_at:
         type: string
     type: object
+  skills.AddBulkUserSkillsRequest:
+    properties:
+      user_skill:
+        items:
+          $ref: '#/definitions/skills.UserSkillRequest'
+        type: array
+    type: object
   skills.AddSkillsBulkRequest:
     properties:
       skills:
@@ -225,8 +232,6 @@ definitions:
         type: integer
       skill_level:
         type: string
-      user_id:
-        type: integer
     type: object
   user.AddUserEducation:
     properties:
@@ -1012,19 +1017,24 @@ paths:
       summary: Add user skill
       tags:
       - Skills
-  /skills/add-user-skill:
+  /skills/add-user-skill/{id}:
     post:
       consumes:
       - application/json
       description: Add user skill
       operationId: add-user-skill
       parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: integer
       - description: User Skill
         in: body
-        name: UserSkillRequest
+        name: AddBulkUserSkillsRequest
         required: true
         schema:
-          $ref: '#/definitions/skills.UserSkillRequest'
+          $ref: '#/definitions/skills.AddBulkUserSkillsRequest'
       responses:
         "200":
           description: OK

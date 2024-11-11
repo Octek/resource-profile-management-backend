@@ -67,12 +67,19 @@ func (repo *skillRepositoryPostgres) AddSkillInBulk(bulkSkills AddSkillsBulkRequ
 	return len(skills), err
 }
 
-func (repo *skillRepositoryPostgres) CreateUserSkill(userSkill *UserSkill) error {
-	if err := repo.db.Create(userSkill).Error; err != nil {
-		return err
+func (repo *skillRepositoryPostgres) CreateUserSkill(userId uint, userSkill AddBulkUserSkillsRequest) error {
+	skills := make([]UserSkill, len(userSkill.UserSkill))
+
+	for i, skillReq := range userSkill.UserSkill {
+		skills[i] = UserSkill{
+			UserID:     userId,
+			SkillLevel: skillReq.SkillLevel,
+			SkillID:    skillReq.SkillID,
+		}
 	}
-	fmt.Println("Skill and UserSkill objects have been stored")
-	return nil
+
+	err := repo.db.CreateInBatches(&skills, utils.SkillsBatchSize).Error
+	return err
 }
 
 func (repo *skillRepositoryPostgres) createSkillCategories(skillCategories []SkillCategory) error {
