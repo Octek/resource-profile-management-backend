@@ -1,5 +1,5 @@
 # Stage 1: Builder
-FROM golang:1.20 as builder
+FROM golang:alpine as builder
 
 # Install necessary dependencies
 RUN apk update && apk add --no-cache git make gcc libtool musl-dev ca-certificates dumb-init build-base
