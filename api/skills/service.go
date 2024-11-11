@@ -42,6 +42,10 @@ func (svc *SkillService) DeleteSkillById(id uint) error {
 func (svc *SkillService) FetchAllSkill(limit, offset int, orderBy, keyword string) ([]Skill, int64, error) {
 	return svc.skillRepository.fetchAllSkill(limit, offset, orderBy, keyword)
 }
-func (svc *SkillService) CreateUserSkill(userSkillObj *UserSkill) error {
-	return svc.skillRepository.CreateUserSkill(userSkillObj)
+func (svc *SkillService) CreateUserSkill(userId uint, userSkillObj AddBulkUserSkillsRequest) error {
+	return svc.skillRepository.CreateUserSkill(userId, userSkillObj)
+}
+
+func (svc *SkillService) AddSkillInBulk(skill AddSkillsBulkRequest) (int, error) {
+	return svc.skillRepository.AddSkillInBulk(skill)
 }
