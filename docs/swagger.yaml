@@ -205,10 +205,10 @@ definitions:
     type: object
   skills.UserSkillRequest:
     properties:
+      skill_id:
+        type: integer
       skill_level:
         type: string
-      skillData:
-        $ref: '#/definitions/skills.SkillRequest'
       user_id:
         type: integer
     type: object
@@ -417,6 +417,8 @@ definitions:
         items:
           $ref: '#/definitions/user.Role'
         type: array
+      showcase:
+        type: boolean
       skills:
         items:
           $ref: '#/definitions/skills.Skill'
@@ -678,10 +680,10 @@ paths:
       parameters:
       - description: Skill
         in: body
-        name: UserSkillRequest
+        name: SkillRequest
         required: true
         schema:
-          $ref: '#/definitions/skills.UserSkillRequest'
+          $ref: '#/definitions/skills.SkillRequest'
       produces:
       - application/json
       responses:
@@ -810,6 +812,41 @@ paths:
       security:
       - ApiAuthKey: []
       summary: Update skill
+      tags:
+      - Skills
+  /skills/add-user-skill:
+    post:
+      consumes:
+      - application/json
+      description: Add user skill
+      operationId: add-user-skill
+      parameters:
+      - description: User Skill
+        in: body
+        name: UserSkillRequest
+        required: true
+        schema:
+          $ref: '#/definitions/skills.UserSkillRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Add user skill
       tags:
       - Skills
   /skills/categories:

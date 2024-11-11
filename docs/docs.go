@@ -368,11 +368,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Skill",
-                        "name": "UserSkillRequest",
+                        "name": "SkillRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/skills.UserSkillRequest"
+                            "$ref": "#/definitions/skills.SkillRequest"
                         }
                     }
                 ],
@@ -399,6 +399,61 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/skills/add-user-skill": {
+            "post": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Add user skill",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Add user skill",
+                "operationId": "add-user-skill",
+                "parameters": [
+                    {
+                        "description": "User Skill",
+                        "name": "UserSkillRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/skills.UserSkillRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -1775,8 +1830,8 @@ const docTemplate = `{
         "skills.UserSkillRequest": {
             "type": "object",
             "properties": {
-                "skillData": {
-                    "$ref": "#/definitions/skills.SkillRequest"
+                "skill_id": {
+                    "type": "integer"
                 },
                 "skill_level": {
                     "type": "string"
@@ -2094,6 +2149,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/user.Role"
                     }
+                },
+                "showcase": {
+                    "type": "boolean"
                 },
                 "skills": {
                     "type": "array",
