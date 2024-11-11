@@ -51,6 +51,21 @@ func (repo *skillRepositoryPostgres) createSkill(skillObj *Skill) error {
 	})
 }
 
+func (repo *skillRepositoryPostgres) AddSkillInBulk(bulkSkills AddSkillsBulkRequest) (int, error) {
+	skills := make([]Skill, len(bulkSkills.Skills))
+
+	for i, skillReq := range bulkSkills.Skills {
+		skills[i] = Skill{
+			Name:            skillReq.Name,
+			Icon:            skillReq.Icon,
+			SkillCategoryID: skillReq.SkillCategoryID,
+		}
+	}
+
+	err := repo.db.Create(&skills).Error
+	return len(skills), err
+}
+
 func (repo *skillRepositoryPostgres) CreateUserSkill(userSkill *UserSkill) error {
 	if err := repo.db.Create(userSkill).Error; err != nil {
 		return err

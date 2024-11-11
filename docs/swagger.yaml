@@ -20,12 +20,21 @@ definitions:
       user_id:
         type: integer
     type: object
+  experience.AddSkillsRequest:
+    properties:
+      skill_id:
+        items:
+          type: integer
+        type: array
+    type: object
   experience.AddUserExperienceRequest:
     properties:
       experiences:
         $ref: '#/definitions/experience.ExpRequest'
       skill_id:
-        type: integer
+        items:
+          type: integer
+        type: array
       user_id:
         type: integer
     required:
@@ -143,6 +152,13 @@ definitions:
         type: integer
       updated_at:
         type: string
+    type: object
+  skills.AddSkillsBulkRequest:
+    properties:
+      skills:
+        items:
+          $ref: '#/definitions/skills.SkillRequest'
+        type: array
     type: object
   skills.CreateSkillCategoryRequest:
     properties:
@@ -609,6 +625,45 @@ paths:
       summary: Update experience
       tags:
       - experience
+    post:
+      consumes:
+      - application/json
+      description: Add skill in existing experience
+      operationId: add-skill-in-existing-experience
+      parameters:
+      - description: AddSkillsRequest
+        in: body
+        name: AddSkillsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/experience.AddSkillsRequest'
+      - description: expId
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      summary: Add skill in existing experience
+      tags:
+      - experience
   /experience/user/{id}:
     delete:
       consumes:
@@ -877,6 +932,41 @@ paths:
       security:
       - ApiAuthKey: []
       summary: Update skill
+      tags:
+      - Skills
+  /skills/add-skill-in-bulk:
+    post:
+      consumes:
+      - application/json
+      description: Add user skill
+      operationId: add-skill-in-bulk
+      parameters:
+      - description: User Skill
+        in: body
+        name: AddSkillsBulkRequest
+        required: true
+        schema:
+          $ref: '#/definitions/skills.AddSkillsBulkRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Add user skill
       tags:
       - Skills
   /skills/add-user-skill:

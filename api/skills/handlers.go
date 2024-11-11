@@ -52,6 +52,9 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 	skillsRouter.POST("add-user-skill/", func(c *gin.Context) {
 		HandlerToAddUserSkills(c, skillSvc)
 	})
+	skillsRouter.POST("add-skill-in-bulk/", func(c *gin.Context) {
+		HandlerToAddSkillInBulk(c, skillSvc)
+	})
 }
 
 // HandlerToGetAllSkills godoc
@@ -293,6 +296,41 @@ func HandlerToAddUserSkills(c *gin.Context, skillSvc SkillService) {
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyCreatedUserSkill), Data: nil})
 }
 
+// HandlerToAddSkillInBulk godoc
+// @Tags Skills
+// @Summary Add user skill
+// @Description Add user skill
+// @ID add-skill-in-bulk
+// @Security ApiAuthKey
+// @Accept json
+// @Param AddSkillsBulkRequest body AddSkillsBulkRequest true "User Skill"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /skills/add-skill-in-bulk [post]
+func HandlerToAddSkillInBulk(c *gin.Context, skillSvc SkillService) {
+	fmt.Println("HandlerToAddSkillInBulk")
+	var addSkillsInBulk AddSkillsBulkRequest
+
+	if err := c.ShouldBindJSON(&addSkillsInBulk); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
+		return
+	}
+	if err := validate.Struct(&addSkillsInBulk); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
+		return
+	}
+
+	_, err := skillSvc.AddSkillInBulk(addSkillsInBulk)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileAddingBulkSkills, err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyAddedSkillsInBulk), Data: nil})
+}
+
 // HandlerToGetAllSkillCategories godoc
 // @Tags Skills Categories
 // @Summary Get all skill Categories
@@ -514,4 +552,7 @@ type SkillRequest struct {
 	Name            string `json:"name"`
 	Icon            string `json:"icon"`
 	SkillCategoryID uint   `json:"skill_category_id"`
+}
+type AddSkillsBulkRequest struct {
+	Skills []SkillRequest `json:"skills"`
 }

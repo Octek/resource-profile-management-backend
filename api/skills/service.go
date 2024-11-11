@@ -45,3 +45,7 @@ func (svc *SkillService) FetchAllSkill(limit, offset int, orderBy, keyword strin
 func (svc *SkillService) CreateUserSkill(userSkillObj *UserSkill) error {
 	return svc.skillRepository.CreateUserSkill(userSkillObj)
 }
+
+func (svc *SkillService) AddSkillInBulk(skill AddSkillsBulkRequest) (int, error) {
+	return svc.skillRepository.AddSkillInBulk(skill)
+}

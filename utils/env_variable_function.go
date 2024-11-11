@@ -61,4 +61,6 @@ const (
 	SomethingWentWrongWhileGettingExperience       = "Something went wrong while getting the experience: %v"
 	SomethingWentWrongWhileCreatingUserSkill       = "Something went wrong  while creating the user skill: %v"
 	SuccessfullyCreatedUserSkill                   = "User Skill has been created successfully"
+	SomethingWentWrongWhileAddingBulkSkills        = "Something went wrong  while adding the bulk skill: %v"
+	SuccessfullyAddedSkillsInBulk                  = "User Skill has been added successfully in bulk"
 )
