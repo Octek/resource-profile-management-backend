@@ -143,7 +143,8 @@ func (repo *experienceRepositoryPostgres) GetAllUserExperience(userId uint, limi
 			return fmt.Errorf("no experience records found for user_id: %d", userId)
 		}
 
-		query := tx.Model(&Experience{}).Where("deleted_at IS NULL").Where("id IN (?)", experienceIDs)
+		query := tx.Model(&Experience{}).Where("deleted_at IS NULL").Where("id IN (?)", experienceIDs).
+			Preload("Skills").Preload("Skills.SkillCategory")
 		err := query.Count(&total).Error
 		err = query.Order(orderBy).Limit(limit).Offset(offset).Find(&exp).Error
 		for i := range exp {

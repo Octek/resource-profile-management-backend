@@ -34,9 +34,6 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 		})
 
 	}
-	skillsRouter.POST("", func(c *gin.Context) {
-		HandlerToCreateSkill(c, skillSvc)
-	})
 	skillsRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 		HandlerToUpdateSkillByID(c, skillSvc)
 	})
@@ -217,45 +214,6 @@ func HandlerToUpdateSkillByID(c *gin.Context, skillSvc SkillService) {
 	}
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: utils.SuccessfullyUpdatedSkill, Data: nil})
 
-}
-
-// HandlerToCreateSkill godoc
-// @Tags Skills
-// @Summary Create skills
-// @Description Create skills
-// @ID Create-skills
-// @Security ApiAuthKey
-// @Accept json
-// @Produce json
-// @Param SkillRequest body SkillRequest true "Skill"
-// @Success 200 {object} utils.ResponseMessage
-// @Failure 400 {object} utils.ResponseMessage
-// @Failure 404 {object} utils.ResponseMessage
-// @Failure 500 {object} utils.ResponseMessage
-// @Router /skills [post]
-func HandlerToCreateSkill(c *gin.Context, skillSvc SkillService) {
-	fmt.Println("HandlerToCreateSkills")
-	var createUserSkillRequest SkillRequest
-	if err := c.ShouldBind(&createUserSkillRequest); err != nil {
-		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
-		return
-	}
-
-	if err := validate.Struct(createUserSkillRequest); err != nil {
-		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
-		return
-	}
-	skillObj := Skill{
-		Name:            createUserSkillRequest.Name,
-		Icon:            createUserSkillRequest.Icon,
-		SkillCategoryID: createUserSkillRequest.SkillCategoryID,
-	}
-	err := skillSvc.CreateSkill(&skillObj)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileCreatingSkill, err), Data: nil})
-		return
-	}
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyCreatedSkill), Data: nil})
 }
 
 // HandlerToAddUserSkills godoc
