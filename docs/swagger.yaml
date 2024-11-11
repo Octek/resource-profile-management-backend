@@ -488,6 +488,79 @@ paths:
       tags:
       - experience
   /experience/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user experience by id
+      operationId: delete-user-experience-by-id
+      parameters:
+      - description: experienceId
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Delete user experience by id
+      tags:
+      - experience
+    get:
+      consumes:
+      - application/json
+      description: get user experience details by id
+      operationId: get-user-experience-details-by-id
+      parameters:
+      - description: experienceId
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: userId
+        in: query
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get user experience details by id
+      tags:
+      - experience
     patch:
       consumes:
       - application/json
@@ -495,12 +568,12 @@ paths:
       operationId: update-experience
       parameters:
       - description: experienceId
-        in: query
+        in: path
         name: id
         required: true
         type: integer
       - description: userId
-        in: path
+        in: query
         name: id
         required: true
         type: integer
@@ -545,10 +618,6 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
-      - description: experienceId
-        in: query
-        name: id
         type: integer
       produces:
       - application/json
@@ -596,10 +665,6 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
-      - description: experienceId
-        in: query
-        name: id
         type: integer
       produces:
       - application/json
@@ -1226,12 +1291,12 @@ paths:
       operationId: delete-user-education-by-user-id
       parameters:
       - description: educationId
-        in: query
+        in: path
         name: id
         type: integer
       - description: userId
-        in: path
-        name: id
+        in: query
+        name: userId
         required: true
         type: integer
       produces:
@@ -1256,6 +1321,44 @@ paths:
       security:
       - ApiAuthKey: []
       summary: Delete user education by user id
+      tags:
+      - education
+    get:
+      consumes:
+      - application/json
+      description: get user education details by user id
+      operationId: get-user-education-details-by-user-id
+      parameters:
+      - description: educationId
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: userId
+        in: query
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/user.Education'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get user education details by user id
       tags:
       - education
     patch:
@@ -1315,10 +1418,6 @@ paths:
         in: path
         name: id
         required: true
-        type: integer
-      - description: educationId
-        in: query
-        name: id
         type: integer
       - description: example - 50
         in: query

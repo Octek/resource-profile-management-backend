@@ -130,6 +130,12 @@ func (repo *userRepositoryPostgres) GetEducationById(id uint) (*Education, error
 	return &education, err
 }
 
+func (repo *userRepositoryPostgres) GetUserEducationByUserAndEducationId(userId, id uint) (*Education, error) {
+	var education Education
+	err := repo.db.Model(Education{}).Where("user_id = ? AND id = ?", userId, id).First(&education).Error
+	return &education, err
+}
+
 func (repo *userRepositoryPostgres) UpdateEducation(education *Education) error {
 	if err := repo.db.Model(&Education{}).Where("id = ?", education.ID).Updates(education).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -154,14 +160,11 @@ func (repo *userRepositoryPostgres) DeleteUserEducationByID(userId, id uint) err
 	return repo.db.Where("user_id = ?", userId).Delete(&Education{}).Error
 }
 
-func (repo *userRepositoryPostgres) GetAllUserEducation(userId, id uint, limit int, offset int, orderBy string) ([]Education, uint, error) {
+func (repo *userRepositoryPostgres) GetAllUserEducation(userId uint, limit int, offset int, orderBy string) ([]Education, uint, error) {
 	var educations []Education
 	var total int64
+	fmt.Println("userId:", userId, "limit:", limit, "offset:", offset, "orderBy:", orderBy)
 
-	if id != 0 {
-		err := repo.db.Model(Education{}).Where("user_id = ? and id = ?", userId, id).Find(&educations).Count(&total).Error
-		return educations, uint(total), err
-	}
 	err := repo.db.Model(Education{}).Where("user_id = ?", userId).Count(&total).Error
 	err = repo.db.Model(Education{}).Where("user_id = ?", userId).Order(orderBy).Limit(limit).Offset(offset).Find(&educations).Error
 	return educations, uint(total), err
