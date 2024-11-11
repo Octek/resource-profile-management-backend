@@ -131,8 +131,8 @@ type UpdateExpRequest struct {
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
-// @Param userId query uint true "userId"
+// @Param id path uint true "experienceId"
+// @Param id query uint true "userId"
 // @Param UpdateExpRequest body UpdateExpRequest true "UpdateExpRequest"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -140,7 +140,7 @@ type UpdateExpRequest struct {
 // @Failure 500 {object} string
 // @Router /experience/{id} [patch]
 func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	userId := c.Request.URL.Query().Get("userId")
+	userId := c.Request.URL.Query().Get("id")
 	userIdInt, _ := strconv.Atoi(userId)
 	var updateExpRequest UpdateExpRequest
 
@@ -188,7 +188,7 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @ID get-user-experience-details-by-id
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
+// @Param id path uint true "experienceId"
 // @Param userId query uint true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -218,7 +218,7 @@ func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Contex
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path int true "id"
+// @Param id path int true "experienceId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -246,7 +246,7 @@ func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path int true "id"
+// @Param id path int true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -275,7 +275,7 @@ func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin
 // @Param   limit    query     int     false  "example - 50"     limit(int)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc,updated_at desc"    orderBy(string)
-// @Param id path int true "id"
+// @Param id path int true "userId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string

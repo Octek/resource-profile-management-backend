@@ -164,7 +164,7 @@
                     },
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -218,7 +218,7 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -269,7 +269,7 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "experienceId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -388,7 +388,7 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "experienceId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -442,7 +442,7 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "experienceId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -450,7 +450,7 @@
                     {
                         "type": "integer",
                         "description": "userId",
-                        "name": "userId",
+                        "name": "id",
                         "in": "query",
                         "required": true
                     },
@@ -1374,7 +1374,7 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1443,9 +1443,16 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1497,9 +1504,15 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
                         "name": "id",
-                        "in": "path",
+                        "in": "path"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1551,7 +1564,7 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
                         "name": "id",
                         "in": "path",
                         "required": true

@@ -478,7 +478,7 @@ paths:
       description: delete user experience by id
       operationId: delete-user-experience-by-id
       parameters:
-      - description: id
+      - description: experienceId
         in: path
         name: id
         required: true
@@ -513,7 +513,7 @@ paths:
       description: get user experience details by id
       operationId: get-user-experience-details-by-id
       parameters:
-      - description: id
+      - description: experienceId
         in: path
         name: id
         required: true
@@ -551,14 +551,14 @@ paths:
       description: Updates experience
       operationId: update-experience
       parameters:
-      - description: id
+      - description: experienceId
         in: path
         name: id
         required: true
         type: integer
       - description: userId
         in: query
-        name: userId
+        name: id
         required: true
         type: integer
       - description: UpdateExpRequest
@@ -719,7 +719,7 @@ paths:
       description: delete user experience by user id
       operationId: delete-user-experience-by-user-id
       parameters:
-      - description: id
+      - description: userId
         in: path
         name: id
         required: true
@@ -766,7 +766,7 @@ paths:
         in: query
         name: orderBy
         type: string
-      - description: id
+      - description: userId
         in: path
         name: id
         required: true
@@ -1470,9 +1470,13 @@ paths:
       description: delete user education by user id
       operationId: delete-user-education-by-user-id
       parameters:
-      - description: id
+      - description: educationId
         in: path
         name: id
+        type: integer
+      - description: userId
+        in: query
+        name: userId
         required: true
         type: integer
       produces:
@@ -1505,9 +1509,14 @@ paths:
       description: get user education details by user id
       operationId: get-user-education-details-by-user-id
       parameters:
-      - description: id
+      - description: educationId
         in: path
         name: id
+        required: true
+        type: integer
+      - description: userId
+        in: query
+        name: userId
         required: true
         type: integer
       produces:
@@ -1538,7 +1547,7 @@ paths:
       description: Update user education
       operationId: update-user-education
       parameters:
-      - description: id
+      - description: educationId
         in: path
         name: id
         required: true
@@ -1585,7 +1594,7 @@ paths:
       description: get all user education
       operationId: get-all-user-education
       parameters:
-      - description: id
+      - description: userId
         in: path
         name: id
         required: true

@@ -139,9 +139,6 @@ func (repo *experienceRepositoryPostgres) GetAllUserExperience(userId uint, limi
 			Pluck("experience_id", &experienceIDs).Error; err != nil {
 			return err
 		}
-		if len(experienceIDs) == 0 {
-			return fmt.Errorf("no experience records found for user_id: %d", userId)
-		}
 
 		query := tx.Model(&Experience{}).Where("deleted_at IS NULL").Where("id IN (?)", experienceIDs).
 			Preload("Skills").Preload("Skills.SkillCategory")

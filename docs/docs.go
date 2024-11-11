@@ -175,7 +175,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -229,7 +229,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -280,7 +280,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "experienceId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -399,7 +399,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "experienceId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -453,7 +453,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "experienceId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -461,7 +461,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "userId",
-                        "name": "userId",
+                        "name": "id",
                         "in": "query",
                         "required": true
                     },
@@ -1385,7 +1385,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1454,9 +1454,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
                         "name": "id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1508,9 +1515,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
                         "name": "id",
-                        "in": "path",
+                        "in": "path"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
+                        "name": "userId",
+                        "in": "query",
                         "required": true
                     }
                 ],
@@ -1562,7 +1575,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
                         "name": "id",
                         "in": "path",
                         "required": true
