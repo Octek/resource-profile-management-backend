@@ -178,11 +178,9 @@ func (repo *experienceRepositoryPostgres) AddSkillsToExperience(expID uint, skil
 
 func (repo *experienceRepositoryPostgres) RemoveSkillsFromExperience(expID uint, skillIDs []uint) error {
 	return repo.db.Transaction(func(tx *gorm.DB) error {
-		for _, skillID := range skillIDs {
-			if err := tx.Where("experience_id = ? AND skill_id = ?", expID, skillID).
-				Delete(&ExperienceSkill{}).Error; err != nil {
-				return fmt.Errorf("failed to delete skill %d from experience %d: %v", skillID, expID, err)
-			}
+		if err := tx.Where("experience_id = ? AND skill_id IN ?", expID, skillIDs).
+			Delete(&ExperienceSkill{}).Error; err != nil {
+			return fmt.Errorf("failed to delete skills from experience %d: %v", expID, err)
 		}
 
 		return nil

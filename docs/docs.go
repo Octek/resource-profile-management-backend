@@ -68,7 +68,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/experience/add-skill-from-experience/{id}": {
+        "/experience/add-experience-skills/{id}": {
             "post": {
                 "description": "Add skill in existing experience",
                 "consumes": [
@@ -128,7 +128,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/experience/remove-skill-from-experience/{id}": {
+        "/experience/remove-experience-skills/{id}": {
             "delete": {
                 "security": [
                     {

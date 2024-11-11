@@ -35,10 +35,10 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 		subRouter.GET("/user/:id", func(c *gin.Context) {
 			HandlerToGetAllUserExperience(experienceSvc, c)
 		})
-		subRouter.POST("add-skill-from-experience/:id", func(c *gin.Context) {
+		subRouter.POST("add-experience-skills/:id", func(c *gin.Context) {
 			HandlerToAddSkillInExistingExperience(c, experienceSvc)
 		})
-		subRouter.DELETE("remove-skill-from-experience/:id", func(c *gin.Context) {
+		subRouter.DELETE("remove-experience-skills/:id", func(c *gin.Context) {
 			HandlerToRemoveSkillFromExistingExperience(c, experienceSvc)
 		})
 	}
@@ -332,7 +332,7 @@ type AddSkillsRequest struct {
 // @Failure 400 {object} utils.ResponseMessage
 // @Failure 404 {object} utils.ResponseMessage
 // @Failure 500 {object} utils.ResponseMessage
-// @Router /experience/add-skill-from-experience/{id} [post]
+// @Router /experience/add-experience-skills/{id} [post]
 func HandlerToAddSkillInExistingExperience(c *gin.Context, expSvc ExperienceService) {
 	expID := c.Param("id")
 	expIDInt, _ := strconv.Atoi(expID)
@@ -376,7 +376,7 @@ func HandlerToAddSkillInExistingExperience(c *gin.Context, expSvc ExperienceServ
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /experience/remove-skill-from-experience/{id} [delete]
+// @Router /experience/remove-experience-skills/{id} [delete]
 func HandlerToRemoveSkillFromExistingExperience(c *gin.Context, expSvc ExperienceService) {
 	expID := c.Param("id")
 	expIDInt, _ := strconv.Atoi(expID)

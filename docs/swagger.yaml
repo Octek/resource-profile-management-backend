@@ -625,7 +625,7 @@ paths:
       summary: Update experience
       tags:
       - experience
-  /experience/add-skill-from-experience/{id}:
+  /experience/add-experience-skills/{id}:
     post:
       consumes:
       - application/json
@@ -665,7 +665,7 @@ paths:
       summary: Add skill in existing experience
       tags:
       - experience
-  /experience/remove-skill-from-experience/{id}:
+  /experience/remove-experience-skills/{id}:
     delete:
       consumes:
       - application/json
