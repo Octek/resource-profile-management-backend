@@ -75,7 +75,7 @@ type ExpRequest struct {
 // @Failure 500 {object} utils.ResponseMessage
 // @Router /experience/{id} [post]
 func AddUserExperienceHandler(experienceSvc ExperienceService, c *gin.Context) {
-	userId := c.Param("userId")
+	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
 	addUserExpReq := AddUserExperienceRequest{}
 
