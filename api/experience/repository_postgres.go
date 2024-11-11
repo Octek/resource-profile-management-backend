@@ -22,14 +22,15 @@ func NewExperienceRepositoryPostgres(db *gorm.DB) ExperienceRepository {
 	}
 }
 
-func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID, skillId uint, experience *Experience) (*Experience, error) {
-
+func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID uint, skillIds []uint, experience *Experience) (*Experience, error) {
 	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		var experienceSkill ExperienceSkill
 		if err := tx.Create(&experience).Error; err != nil {
 			return err
 		}
 
 		experience.ParseResponsibilities()
+
 		userExperience := UserExperience{
 			UserID:       userID,
 			ExperienceID: experience.ID,
@@ -38,14 +39,17 @@ func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID,
 			return err
 		}
 
-		experienceSkill := ExperienceSkill{
-			SkillID:      skillId,
-			ExperienceID: experience.ID,
+		for _, skillID := range skillIds {
+			experienceSkill = ExperienceSkill{
+				SkillID:      skillID,
+				ExperienceID: experience.ID,
+			}
+			if err := tx.Create(&experienceSkill).Error; err != nil {
+				return err
+			}
 		}
-		if err := tx.Create(&experienceSkill).Error; err != nil {
-			return err
-		}
-		fmt.Println("Experience, UserExperience, and ExperienceSkill have been created successfully.")
+
+		fmt.Println("Experience, UserExperience, and ExperienceSkills have been created successfully.")
 		return nil
 	})
 
@@ -136,7 +140,8 @@ func (repo *experienceRepositoryPostgres) GetAllUserExperience(userId uint, limi
 			return err
 		}
 
-		query := tx.Model(&Experience{}).Where("deleted_at IS NULL").Where("id IN (?)", experienceIDs)
+		query := tx.Model(&Experience{}).Where("deleted_at IS NULL").Where("id IN (?)", experienceIDs).
+			Preload("Skills").Preload("Skills.SkillCategory")
 		err := query.Count(&total).Error
 		err = query.Order(orderBy).Limit(limit).Offset(offset).Find(&exp).Error
 		for i := range exp {
@@ -147,4 +152,29 @@ func (repo *experienceRepositoryPostgres) GetAllUserExperience(userId uint, limi
 	})
 
 	return exp, uint(total), err
+}
+
+func (repo *experienceRepositoryPostgres) AddSkillsToExperience(expID uint, skillIDs []uint) error {
+	var experienceSkill ExperienceSkill
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		for _, skillID := range skillIDs {
+			experienceSkill = ExperienceSkill{
+				ExperienceID: expID,
+				SkillID:      skillID,
+			}
+			if err := tx.Create(&experienceSkill).Error; err != nil {
+				return fmt.Errorf("failed to add skill %d to experience: %v", err)
+			}
+		}
+		return nil
+	})
+
+	return err
+}
+
+func (repo *experienceRepositoryPostgres) RemoveSkillsFromExperience(expID uint, skillIDs []uint) error {
+	var experienceSkill ExperienceSkill
+	err := repo.db.Where("experience_id = ? AND skill_id IN ?", expID, skillIDs).Delete(&experienceSkill).Error
+
+	return err
 }

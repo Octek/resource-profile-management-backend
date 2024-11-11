@@ -17,7 +17,7 @@ var validate = validator.New()
 func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 	subRouter := router.Group("/experience")
 	{
-		subRouter.POST("", func(c *gin.Context) {
+		subRouter.POST("/:id", func(c *gin.Context) {
 			AddUserExperienceHandler(experienceSvc, c)
 		})
 		subRouter.GET("/:id", func(c *gin.Context) {
@@ -35,13 +35,18 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 		subRouter.GET("/user/:id", func(c *gin.Context) {
 			HandlerToGetAllUserExperience(experienceSvc, c)
 		})
+		subRouter.POST("add-experience-skills/:id", func(c *gin.Context) {
+			HandlerToAddSkillInExistingExperience(c, experienceSvc)
+		})
+		subRouter.DELETE("remove-experience-skills/:id", func(c *gin.Context) {
+			HandlerToRemoveSkillFromExistingExperience(c, experienceSvc)
+		})
 	}
 
 }
 
 type AddUserExperienceRequest struct {
-	SkillID     uint       `json:"skill_id"`
-	UserID      uint       `json:"user_id" validate:"required"`
+	SkillID     []uint     `json:"skill_id"`
 	Experiences ExpRequest `json:"experiences"`
 }
 
@@ -62,13 +67,16 @@ type ExpRequest struct {
 // @ID add-experience
 // @Accept json
 // @Produce json
+// @Param id path uint true "User Id"
 // @Param AddUserExperienceRequest body AddUserExperienceRequest true "AddUserExperienceRequest"
 // @Success 200 {object} utils.ResponseMessage
 // @Failure 400 {object} utils.ResponseMessage
 // @Failure 404 {object} utils.ResponseMessage
 // @Failure 500 {object} utils.ResponseMessage
-// @Router /experience [post]
+// @Router /experience/{id} [post]
 func AddUserExperienceHandler(experienceSvc ExperienceService, c *gin.Context) {
+	userId := c.Param("id")
+	userIdInt, _ := strconv.Atoi(userId)
 	addUserExpReq := AddUserExperienceRequest{}
 
 	if err := c.ShouldBindJSON(&addUserExpReq); err != nil {
@@ -96,7 +104,7 @@ func AddUserExperienceHandler(experienceSvc ExperienceService, c *gin.Context) {
 		Responsibilities:   addUserExpReq.Experiences.Responsibilities,
 	}
 
-	createdExperiences, err := experienceSvc.AddExperienceWithUserAndSkills(addUserExpReq.UserID, addUserExpReq.SkillID, &experience)
+	createdExperiences, err := experienceSvc.AddExperienceWithUserAndSkills(uint(userIdInt), addUserExpReq.SkillID, &experience)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Failed to add experiences: %v", err), Data: nil})
 		return
@@ -306,5 +314,97 @@ func HandlerToGetAllUserExperience(expSvc ExperienceService, c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: utils.Success, Data: utils.RecordsResponse{Total: int64(totalRecords), RecordsFiltered: len(expList), Data: expList}})
+
+}
+
+type AddSkillsRequest struct {
+	SkillID []uint `json:"skill_id"`
+}
+
+// HandlerToAddSkillInExistingExperience godoc
+// @Tags experience
+// @Summary Add skill in existing experience
+// @Description Add skill in existing experience
+// @ID add-skill-in-existing-experience
+// @Accept json
+// @Produce json
+// @Param AddSkillsRequest body AddSkillsRequest true "AddSkillsRequest"
+// @Param id path int true "experience Id"
+// @Success 200 {object} utils.ResponseMessage
+// @Failure 400 {object} utils.ResponseMessage
+// @Failure 404 {object} utils.ResponseMessage
+// @Failure 500 {object} utils.ResponseMessage
+// @Router /experience/add-experience-skills/{id} [post]
+func HandlerToAddSkillInExistingExperience(c *gin.Context, expSvc ExperienceService) {
+	expID := c.Param("id")
+	expIDInt, _ := strconv.Atoi(expID)
+	var addSkillsRequest AddSkillsRequest
+	if err := c.ShouldBindJSON(&addSkillsRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Failed to parse request body: %v", err), Data: nil})
+		return
+	}
+
+	if err := validate.Struct(&addSkillsRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
+		return
+	}
+
+	_, err := expSvc.GetExperienceById(uint(expIDInt))
+	if err != nil {
+		c.JSON(http.StatusNotFound, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Experience doesn't exist against the provided id: %v", err), Data: nil})
+		return
+	}
+
+	err = expSvc.AddSkillsToExperience(uint(expIDInt), addSkillsRequest.SkillID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Something went wrong while adding skills: %v", err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Skills successfully added to the experience", Data: nil})
+}
+
+// HandlerToRemoveSkillFromExistingExperience godoc
+// @Tags experience
+// @Summary Delete user experience skill by experience id
+// @Description Delete user experience skill by experience id
+// @ID delete-user-experience-skill-by-id
+// @Security ApiAuthKey
+// @Accept  json
+// @Produce  json
+// @Param id path int true "experience id"
+// @Param AddSkillsRequest body AddSkillsRequest true "AddSkillsRequest"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /experience/remove-experience-skills/{id} [delete]
+func HandlerToRemoveSkillFromExistingExperience(c *gin.Context, expSvc ExperienceService) {
+	expID := c.Param("id")
+	expIDInt, _ := strconv.Atoi(expID)
+	var addSkillsRequest AddSkillsRequest
+	if err := c.ShouldBindJSON(&addSkillsRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Failed to parse request body: %v", err), Data: nil})
+		return
+	}
+
+	if err := validate.Struct(&addSkillsRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Validation failed: %v", err), Data: nil})
+		return
+	}
+
+	_, err := expSvc.GetExperienceById(uint(expIDInt))
+	if err != nil {
+		c.JSON(http.StatusNotFound, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Experience doesn't exist against the provided id: %v", err), Data: nil})
+		return
+	}
+
+	err = expSvc.RemoveSkillsFromExperience(uint(expIDInt), addSkillsRequest.SkillID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Something went wrong while removing skills: %v", err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Skills successfully removed from the experience", Data: nil})
 
 }

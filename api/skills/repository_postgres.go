@@ -2,6 +2,7 @@ package skills
 
 import (
 	"fmt"
+	"github.com/Octek/resource-profile-management-backend.git/utils"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"strings"
@@ -41,22 +42,44 @@ func (repo *skillRepositoryPostgres) createCategories(jsonData []SkillCategory) 
 	return nil
 }
 
-func (repo *skillRepositoryPostgres) createSkill(skillObj *Skill, userID uint, skillLevel string) error {
+func (repo *skillRepositoryPostgres) createSkill(skillObj *Skill) error {
 	return repo.db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(&skillObj).Error; err != nil {
-			return err
-		}
-		userSkillObj := UserSkill{
-			SkillLevel: skillLevel,
-			SkillID:    skillObj.ID,
-			UserID:     userID,
-		}
-		if err := tx.Create(&userSkillObj).Error; err != nil {
 			return err
 		}
 		fmt.Println("Skill and UserSkill objects have been stored")
 		return nil
 	})
+}
+
+func (repo *skillRepositoryPostgres) AddSkillInBulk(bulkSkills AddSkillsBulkRequest) (int, error) {
+	skills := make([]Skill, len(bulkSkills.Skills))
+
+	for i, skillReq := range bulkSkills.Skills {
+		skills[i] = Skill{
+			Name:            skillReq.Name,
+			Icon:            skillReq.Icon,
+			SkillCategoryID: skillReq.SkillCategoryID,
+		}
+	}
+
+	err := repo.db.CreateInBatches(&skills, utils.SkillsBatchSize).Error
+	return len(skills), err
+}
+
+func (repo *skillRepositoryPostgres) CreateUserSkill(userId uint, userSkill AddBulkUserSkillsRequest) error {
+	skills := make([]UserSkill, len(userSkill.UserSkill))
+
+	for i, skillReq := range userSkill.UserSkill {
+		skills[i] = UserSkill{
+			UserID:     userId,
+			SkillLevel: skillReq.SkillLevel,
+			SkillID:    skillReq.SkillID,
+		}
+	}
+
+	err := repo.db.CreateInBatches(&skills, utils.SkillsBatchSize).Error
+	return err
 }
 
 func (repo *skillRepositoryPostgres) createSkillCategories(skillCategories []SkillCategory) error {
