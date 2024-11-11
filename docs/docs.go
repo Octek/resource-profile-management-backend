@@ -103,10 +103,16 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "experienceId",
+                        "name": "id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -157,10 +163,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "experienceId",
+                        "name": "id",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -192,116 +204,6 @@ const docTemplate = `{
             }
         },
         "/experience/{id}": {
-            "get": {
-                "description": "get user experience details by id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "experience"
-                ],
-                "summary": "Get user experience details by id",
-                "operationId": "get-user-experience-details-by-id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "security": [
-                    {
-                        "ApiAuthKey": []
-                    }
-                ],
-                "description": "delete user experience by id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "experience"
-                ],
-                "summary": "Delete user experience by id",
-                "operationId": "delete-user-experience-by-id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "patch": {
                 "security": [
                     {
@@ -323,16 +225,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "experienceId",
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
                         "description": "userId",
-                        "name": "userId",
-                        "in": "query",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     },
                     {
@@ -1193,10 +1095,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "educationId",
+                        "name": "id",
+                        "in": "query"
                     },
                     {
                         "type": "integer",
@@ -1246,55 +1154,6 @@ const docTemplate = `{
             }
         },
         "/user/education/{id}": {
-            "get": {
-                "description": "get user education details by user id",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "education"
-                ],
-                "summary": "Get user education details by user id",
-                "operationId": "get-user-education-details-by-user-id",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/user.Education"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
             "delete": {
                 "security": [
                     {
@@ -1316,7 +1175,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1370,7 +1235,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
                         "name": "id",
                         "in": "path",
                         "required": true

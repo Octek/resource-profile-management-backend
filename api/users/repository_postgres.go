@@ -130,12 +130,6 @@ func (repo *userRepositoryPostgres) GetEducationById(id uint) (*Education, error
 	return &education, err
 }
 
-func (repo *userRepositoryPostgres) GetUserEducationByUserAndEducationId(userId, id uint) (*Education, error) {
-	var education Education
-	err := repo.db.Model(Education{}).Where("user_id = ? AND id = ?", userId, id).First(&education).Error
-	return &education, err
-}
-
 func (repo *userRepositoryPostgres) UpdateEducation(education *Education) error {
 	if err := repo.db.Model(&Education{}).Where("id = ?", education.ID).Updates(education).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -148,33 +142,29 @@ func (repo *userRepositoryPostgres) UpdateEducation(education *Education) error 
 
 func (repo *userRepositoryPostgres) GetUserEducationByUserId(userId uint) (*Education, error) {
 	var education Education
-	err := repo.db.Model(Education{}).Where("user_id = ? ", userId).First(&education).Error
+	err := repo.db.Model(Education{}).Where("user_id = ?", userId).First(&education).Error
 	return &education, err
 }
 
-func (repo *userRepositoryPostgres) DeleteUserEducationByID(userId uint) error {
-	err := repo.db.Model(Education{}).Where("user_id = ?", userId).Delete(&Education{}).Error
+func (repo *userRepositoryPostgres) DeleteUserEducationByID(userId, id uint) error {
+	if id != 0 {
+		return repo.db.Where("user_id = ? AND id = ?", userId, id).Delete(&Education{}).Error
+	}
 
-	return err
+	return repo.db.Where("user_id = ?", userId).Delete(&Education{}).Error
 }
 
-func (repo *userRepositoryPostgres) GetAllUserEducation(userId uint, limit int, offset int, orderBy string) ([]Education, uint, error) {
+func (repo *userRepositoryPostgres) GetAllUserEducation(userId, id uint, limit int, offset int, orderBy string) ([]Education, uint, error) {
 	var educations []Education
 	var total int64
 
-	query := repo.db.Model(Education{})
-	query = query.Where("user_id = ?", userId)
-
-	err := query.Count(&total).Error
-	if err != nil {
-		return nil, 0, err
+	if id != 0 {
+		err := repo.db.Model(Education{}).Where("user_id = ? and id = ?", userId, id).Find(&educations).Count(&total).Error
+		return educations, uint(total), err
 	}
-	err = query.Order(orderBy).Limit(limit).Offset(offset).Find(&educations).Error
-	if err != nil {
-		return nil, uint(total), err
-	}
-
-	return educations, uint(total), nil
+	err := repo.db.Model(Education{}).Where("user_id = ?", userId).Count(&total).Error
+	err = repo.db.Model(Education{}).Where("user_id = ?", userId).Order(orderBy).Limit(limit).Offset(offset).Find(&educations).Error
+	return educations, uint(total), err
 }
 
 func (repo *userRepositoryPostgres) GetAllUserCategories(keyword string, limit int, offset int, orderBy string) ([]UserCategory, int64, error) {

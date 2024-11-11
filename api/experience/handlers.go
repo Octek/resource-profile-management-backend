@@ -20,12 +20,6 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 		subRouter.POST("", func(c *gin.Context) {
 			AddUserExperienceHandler(experienceSvc, c)
 		})
-		subRouter.GET("/:id", func(c *gin.Context) {
-			GetUserExperienceByIdHandler(experienceSvc, c)
-		})
-		subRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
-			DeleteUserExperienceByIdHandler(experienceSvc, c)
-		})
 		subRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 			UpdateUserExperienceByIdHandler(experienceSvc, c)
 		})
@@ -123,8 +117,8 @@ type UpdateExpRequest struct {
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
-// @Param userId query uint true "userId"
+// @Param id query uint true "experienceId"
+// @Param id path uint true "userId"
 // @Param UpdateExpRequest body UpdateExpRequest true "UpdateExpRequest"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -132,7 +126,7 @@ type UpdateExpRequest struct {
 // @Failure 500 {object} string
 // @Router /experience/{id} [patch]
 func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	userId := c.Request.URL.Query().Get("userId")
+	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
 	var updateExpRequest UpdateExpRequest
 
@@ -146,7 +140,7 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 		return
 	}
 
-	experienceId, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	experienceId, err := strconv.ParseUint(c.Request.URL.Query().Get("id"), 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: "Invalid experience ID", Data: nil})
 		return
@@ -173,63 +167,6 @@ func UpdateUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Experience updated successfully", Data: nil})
 }
 
-// GetUserExperienceByIdHandler godoc
-// @Tags experience
-// @Summary Get user experience details by id
-// @Description get user experience details by id
-// @ID get-user-experience-details-by-id
-// @Accept  json
-// @Produce  json
-// @Param id path uint true "id"
-// @Param userId query uint true "userId"
-// @Success 200 {object} string
-// @Failure 400 {object} string
-// @Failure 404 {object} string
-// @Failure 500 {object} string
-// @Router /experience/{id} [get]
-func GetUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	expId := c.Param("id")
-	expIdInt, _ := strconv.Atoi(expId)
-	userId := c.Request.URL.Query().Get("userId")
-	userIdInt, _ := strconv.Atoi(userId)
-
-	expDetails, err := experienceSvc.GetAllUserExperienceList(uint(expIdInt), uint(userIdInt))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Cannot fetch user experience against provided ID:", err), Data: nil})
-		return
-	}
-
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: expDetails})
-}
-
-// DeleteUserExperienceByIdHandler godoc
-// @Tags experience
-// @Summary Delete user experience by id
-// @Description delete user experience by id
-// @ID delete-user-experience-by-id
-// @Security ApiAuthKey
-// @Accept  json
-// @Produce  json
-// @Param id path int true "id"
-// @Success 200 {object} string
-// @Failure 400 {object} string
-// @Failure 404 {object} string
-// @Failure 500 {object} string
-// @Router /experience/{id} [delete]
-func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Context) {
-	expId := c.Param("id")
-	expIdInt, _ := strconv.Atoi(expId)
-
-	err := experienceSvc.DeleteUserExperienceByID(uint(expIdInt))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Unable to Delete user experience against provided id:", err), Data: nil})
-		return
-	}
-
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: nil})
-
-}
-
 // DeleteUserExperienceByUserIdHandler godoc
 // @Tags experience
 // @Summary Delete user experience by user id
@@ -238,7 +175,8 @@ func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path int true "id"
+// @Param id path int true "userId"
+// @Param id query int false "experienceId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -247,8 +185,10 @@ func DeleteUserExperienceByIdHandler(experienceSvc ExperienceService, c *gin.Con
 func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin.Context) {
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
+	expId := c.Request.URL.Query().Get("id")
+	expIdInt, _ := strconv.Atoi(expId)
 	fmt.Println("userid", userIdInt)
-	err := experienceSvc.DeleteUserExperienceByUserID(uint(userIdInt))
+	err := experienceSvc.DeleteUserExperienceByUserID(uint(userIdInt), uint(expIdInt))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Unable to Delete user experience against provided id:", err), Data: nil})
 		return
@@ -267,7 +207,8 @@ func DeleteUserExperienceByUserIdHandler(experienceSvc ExperienceService, c *gin
 // @Param   limit    query     int     false  "example - 50"     limit(int)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc,updated_at desc"    orderBy(string)
-// @Param id path int true "id"
+// @Param id path int true "userId"
+// @Param id query uint false "experienceId"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -280,6 +221,8 @@ func HandlerToGetAllUserExperience(expSvc ExperienceService, c *gin.Context) {
 	orderBy := baseQuery.Get("orderBy")
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
+	expId := c.Request.URL.Query().Get("id")
+	expIdInt, _ := strconv.Atoi(expId)
 	if limit == "" {
 		limit = utils.DefaultLimit
 	}
@@ -300,7 +243,7 @@ func HandlerToGetAllUserExperience(expSvc ExperienceService, c *gin.Context) {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidIntegerValueOffsetMessage, err), Data: nil})
 		return
 	}
-	expList, totalRecords, err := expSvc.GetAllUserExperience(uint(userIdInt), limitInt, offsetInt, orderBy)
+	expList, totalRecords, err := expSvc.GetAllUserExperience(uint(userIdInt), uint(expIdInt), limitInt, offsetInt, orderBy)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileGettingExperience, err), Data: nil})
 		return
