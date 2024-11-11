@@ -637,7 +637,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/experience.AddSkillsRequest'
-      - description: expId
+      - description: experience Id
         in: path
         name: id
         required: true

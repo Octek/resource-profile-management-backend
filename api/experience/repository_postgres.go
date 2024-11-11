@@ -24,6 +24,7 @@ func NewExperienceRepositoryPostgres(db *gorm.DB) ExperienceRepository {
 
 func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID uint, skillIds []uint, experience *Experience) (*Experience, error) {
 	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		var experienceSkill ExperienceSkill
 		if err := tx.Create(&experience).Error; err != nil {
 			return err
 		}
@@ -39,13 +40,13 @@ func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID 
 		}
 
 		for _, skillID := range skillIds {
-			experienceSkill := ExperienceSkill{
+			experienceSkill = ExperienceSkill{
 				SkillID:      skillID,
 				ExperienceID: experience.ID,
 			}
-			if err := tx.Create(&experienceSkill).Error; err != nil {
-				return err
-			}
+		}
+		if err := tx.Create(&experienceSkill).Error; err != nil {
+			return err
 		}
 
 		fmt.Println("Experience, UserExperience, and ExperienceSkills have been created successfully.")
@@ -157,20 +158,25 @@ func (repo *experienceRepositoryPostgres) GetAllUserExperience(userId uint, limi
 
 func (repo *experienceRepositoryPostgres) AddSkillsToExperience(expID uint, skillIDs []uint) error {
 	var experience Experience
-	if err := repo.db.Where("id = ? ", expID).Find(&experience).Error; err != nil {
-		return fmt.Errorf("experience not found: %v", err)
-	}
-
-	for _, skillID := range skillIDs {
-		experienceSkill := ExperienceSkill{
-			ExperienceID: expID,
-			SkillID:      skillID,
+	var experienceSkill ExperienceSkill
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Where("id = ?", expID).Find(&experience).Error; err != nil {
+			return fmt.Errorf("experience not found: %v", err)
 		}
 
-		if err := repo.db.Create(&experienceSkill).Error; err != nil {
-			return fmt.Errorf("failed to add skill %d to experience: %v", skillID, err)
+		for _, skillID := range skillIDs {
+			experienceSkill = ExperienceSkill{
+				ExperienceID: expID,
+				SkillID:      skillID,
+			}
 		}
-	}
 
-	return nil
+		if err := tx.Create(&experienceSkill).Error; err != nil {
+			return fmt.Errorf("failed to add skill %d to experience: %v", err)
+		}
+
+		return nil
+	})
+
+	return err
 }

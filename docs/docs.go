@@ -273,7 +273,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "expId",
+                        "description": "experience Id",
                         "name": "id",
                         "in": "path",
                         "required": true

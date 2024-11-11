@@ -2,6 +2,7 @@ package skills
 
 import (
 	"fmt"
+	"github.com/Octek/resource-profile-management-backend.git/utils"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"strings"
@@ -62,7 +63,7 @@ func (repo *skillRepositoryPostgres) AddSkillInBulk(bulkSkills AddSkillsBulkRequ
 		}
 	}
 
-	err := repo.db.Create(&skills).Error
+	err := repo.db.CreateInBatches(&skills, utils.SkillsBatchSize).Error
 	return len(skills), err
 }
 

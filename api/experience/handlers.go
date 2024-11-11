@@ -324,7 +324,7 @@ type AddSkillsRequest struct {
 // @Accept json
 // @Produce json
 // @Param AddSkillsRequest body AddSkillsRequest true "AddSkillsRequest"
-// @Param id path int true "expId"
+// @Param id path int true "experience Id"
 // @Success 200 {object} utils.ResponseMessage
 // @Failure 400 {object} utils.ResponseMessage
 // @Failure 404 {object} utils.ResponseMessage
