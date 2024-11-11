@@ -625,6 +625,7 @@ paths:
       summary: Update experience
       tags:
       - experience
+  /experience/add-skill-from-experience/{id}:
     post:
       consumes:
       - application/json
@@ -662,6 +663,48 @@ paths:
           schema:
             $ref: '#/definitions/utils.ResponseMessage'
       summary: Add skill in existing experience
+      tags:
+      - experience
+  /experience/remove-skill-from-experience/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user experience skill by experience id
+      operationId: delete-user-experience-skill-by-id
+      parameters:
+      - description: experience id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AddSkillsRequest
+        in: body
+        name: AddSkillsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/experience.AddSkillsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Delete user experience skill by experience id
       tags:
       - experience
   /experience/user/{id}:

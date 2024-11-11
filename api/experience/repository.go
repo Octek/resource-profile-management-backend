@@ -11,5 +11,6 @@ type ExperienceRepository interface {
 	DeleteUserExperienceByUserID(id uint) error
 	GetAllUserExperience(userId uint, limit int, offset int, orderBy string) ([]Experience, uint, error)
 	AddSkillsToExperience(expId uint, skillId []uint) error
+	RemoveSkillsFromExperience(expId uint, skillId []uint) error
 	//createCategories(jsonData []Category) error
 }

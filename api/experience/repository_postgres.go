@@ -157,13 +157,8 @@ func (repo *experienceRepositoryPostgres) GetAllUserExperience(userId uint, limi
 }
 
 func (repo *experienceRepositoryPostgres) AddSkillsToExperience(expID uint, skillIDs []uint) error {
-	var experience Experience
 	var experienceSkill ExperienceSkill
 	err := repo.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Where("id = ?", expID).Find(&experience).Error; err != nil {
-			return fmt.Errorf("experience not found: %v", err)
-		}
-
 		for _, skillID := range skillIDs {
 			experienceSkill = ExperienceSkill{
 				ExperienceID: expID,
@@ -179,4 +174,17 @@ func (repo *experienceRepositoryPostgres) AddSkillsToExperience(expID uint, skil
 	})
 
 	return err
+}
+
+func (repo *experienceRepositoryPostgres) RemoveSkillsFromExperience(expID uint, skillIDs []uint) error {
+	return repo.db.Transaction(func(tx *gorm.DB) error {
+		for _, skillID := range skillIDs {
+			if err := tx.Where("experience_id = ? AND skill_id = ?", expID, skillID).
+				Delete(&ExperienceSkill{}).Error; err != nil {
+				return fmt.Errorf("failed to delete skill %d from experience %d: %v", skillID, expID, err)
+			}
+		}
+
+		return nil
+	})
 }

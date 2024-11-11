@@ -46,3 +46,7 @@ func (svc *ExperienceService) GetAllUserExperience(userId uint, limit int, offse
 func (svc *ExperienceService) AddSkillsToExperience(expId uint, skills []uint) error {
 	return svc.experienceRepository.AddSkillsToExperience(expId, skills)
 }
+
+func (svc *ExperienceService) RemoveSkillsFromExperience(expId uint, skills []uint) error {
+	return svc.experienceRepository.RemoveSkillsFromExperience(expId, skills)
+}
