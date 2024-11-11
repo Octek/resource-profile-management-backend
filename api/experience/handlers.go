@@ -17,7 +17,7 @@ var validate = validator.New()
 func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 	subRouter := router.Group("/experience")
 	{
-		subRouter.POST("", func(c *gin.Context) {
+		subRouter.POST("/:id", func(c *gin.Context) {
 			AddUserExperienceHandler(experienceSvc, c)
 		})
 		subRouter.GET("/:id", func(c *gin.Context) {
@@ -68,13 +68,16 @@ type ExpRequest struct {
 // @ID add-experience
 // @Accept json
 // @Produce json
+// @Param id path uint true "User Id"
 // @Param AddUserExperienceRequest body AddUserExperienceRequest true "AddUserExperienceRequest"
 // @Success 200 {object} utils.ResponseMessage
 // @Failure 400 {object} utils.ResponseMessage
 // @Failure 404 {object} utils.ResponseMessage
 // @Failure 500 {object} utils.ResponseMessage
-// @Router /experience [post]
+// @Router /experience/{id} [post]
 func AddUserExperienceHandler(experienceSvc ExperienceService, c *gin.Context) {
+	userId := c.Request.URL.Query().Get("userId")
+	userIdInt, _ := strconv.Atoi(userId)
 	addUserExpReq := AddUserExperienceRequest{}
 
 	if err := c.ShouldBindJSON(&addUserExpReq); err != nil {
@@ -102,7 +105,7 @@ func AddUserExperienceHandler(experienceSvc ExperienceService, c *gin.Context) {
 		Responsibilities:   addUserExpReq.Experiences.Responsibilities,
 	}
 
-	createdExperiences, err := experienceSvc.AddExperienceWithUserAndSkills(addUserExpReq.UserID, addUserExpReq.SkillID, &experience)
+	createdExperiences, err := experienceSvc.AddExperienceWithUserAndSkills(uint(userIdInt), addUserExpReq.SkillID, &experience)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Failed to add experiences: %v", err), Data: nil})
 		return
