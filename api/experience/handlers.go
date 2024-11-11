@@ -47,7 +47,6 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 
 type AddUserExperienceRequest struct {
 	SkillID     []uint     `json:"skill_id"`
-	UserID      uint       `json:"user_id" validate:"required"`
 	Experiences ExpRequest `json:"experiences"`
 }
 

@@ -475,41 +475,6 @@ definitions:
 info:
   contact: {}
 paths:
-  /experience:
-    post:
-      consumes:
-      - application/json
-      description: Adds new experiences for a given user ID
-      operationId: add-experience
-      parameters:
-      - description: AddUserExperienceRequest
-        in: body
-        name: AddUserExperienceRequest
-        required: true
-        schema:
-          $ref: '#/definitions/experience.AddUserExperienceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Add experiences for user
-      tags:
-      - experience
   /experience/{id}:
     delete:
       consumes:
@@ -628,6 +593,45 @@ paths:
       security:
       - ApiAuthKey: []
       summary: Update experience
+      tags:
+      - experience
+    post:
+      consumes:
+      - application/json
+      description: Adds new experiences for a given user ID
+      operationId: add-experience
+      parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AddUserExperienceRequest
+        in: body
+        name: AddUserExperienceRequest
+        required: true
+        schema:
+          $ref: '#/definitions/experience.AddUserExperienceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      summary: Add experiences for user
       tags:
       - experience
   /experience/add-experience-skills/{id}:
