@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"fmt"
+	"github.com/Octek/resource-profile-management-backend.git/utils"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"strings"
@@ -117,11 +118,9 @@ func (repo *userRepositoryPostgres) createRoles(jsonData []Role) error {
 	return nil
 }
 
-func (repo *userRepositoryPostgres) AddUserEducation(education Education) (Education, error) {
-
-	err := repo.db.Model(Education{}).Create(&education).Error
-
-	return education, err
+func (repo *userRepositoryPostgres) AddUserEducation(educations []Education) ([]Education, error) {
+	err := repo.db.CreateInBatches(&educations, utils.SkillsBatchSize).Error
+	return educations, err
 }
 
 func (repo *userRepositoryPostgres) GetEducationById(id uint) (*Education, error) {

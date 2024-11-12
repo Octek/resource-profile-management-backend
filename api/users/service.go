@@ -29,7 +29,7 @@ func (svc *UserService) DeleteUserByUserID(userId uint) error {
 func (svc *UserService) UpdateUserByUserID(user *User) (*User, error) {
 	return svc.userRepository.UpdateUserByUserID(user)
 }
-func (svc *UserService) AddUserEducation(education Education) (Education, error) {
+func (svc *UserService) AddUserEducation(education []Education) ([]Education, error) {
 	return svc.userRepository.AddUserEducation(education)
 }
 

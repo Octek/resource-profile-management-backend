@@ -574,62 +574,6 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiAuthKey": []
-                    }
-                ],
-                "description": "Create skills",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Skills"
-                ],
-                "summary": "Create skills",
-                "operationId": "Create-skills",
-                "parameters": [
-                    {
-                        "description": "Skill",
-                        "name": "SkillRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/skills.SkillRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
-                        }
-                    }
-                }
             }
         },
         "/skills/add-skill-in-bulk": {
@@ -1315,59 +1259,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/education": {
-            "post": {
-                "description": "add user education",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "education"
-                ],
-                "summary": "add user education",
-                "operationId": "add-user-education",
-                "parameters": [
-                    {
-                        "description": "AddUserEducation",
-                        "name": "AddUserEducation",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user.AddUserEducation"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/user/education/all/{id}": {
             "get": {
                 "description": "get all user education",
@@ -1385,7 +1276,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "userId",
+                        "description": "User Id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1456,14 +1347,14 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "educationId",
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "query",
+                        "description": "User Id",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -1472,6 +1363,64 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/user.Education"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "add user education",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "add user education",
+                "operationId": "add-user-education",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AddUserEducation",
+                        "name": "AddBulkUserEducation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.AddBulkUserEducation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
                         }
                     },
                     "400": {
@@ -1517,13 +1466,13 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "educationId",
                         "name": "id",
-                        "in": "path"
+                        "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "query",
+                        "description": "User Id",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -1577,14 +1526,14 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "educationId",
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "query",
+                        "description": "User Id",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     },
                     {
@@ -2208,13 +2157,25 @@ const docTemplate = `{
                 }
             }
         },
+        "user.AddBulkUserEducation": {
+            "type": "object",
+            "required": [
+                "user_education"
+            ],
+            "properties": {
+                "user_education": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.AddUserEducation"
+                    }
+                }
+            }
+        },
         "user.AddUserEducation": {
             "type": "object",
             "required": [
-                "end_date",
                 "institution_name",
-                "start_date",
-                "user_id"
+                "start_date"
             ],
             "properties": {
                 "achievements": {
@@ -2234,9 +2195,6 @@ const docTemplate = `{
                 },
                 "start_date": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },

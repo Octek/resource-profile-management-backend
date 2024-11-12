@@ -229,6 +229,15 @@ definitions:
       skill_level:
         type: string
     type: object
+  user.AddBulkUserEducation:
+    properties:
+      user_education:
+        items:
+          $ref: '#/definitions/user.AddUserEducation'
+        type: array
+    required:
+    - user_education
+    type: object
   user.AddUserEducation:
     properties:
       achievements:
@@ -243,13 +252,9 @@ definitions:
         type: string
       start_date:
         type: string
-      user_id:
-        type: integer
     required:
-    - end_date
     - institution_name
     - start_date
-    - user_id
     type: object
   user.CategoriesResponse:
     properties:
@@ -840,42 +845,6 @@ paths:
       summary: Get all skills
       tags:
       - Skills
-    post:
-      consumes:
-      - application/json
-      description: Create skills
-      operationId: Create-skills
-      parameters:
-      - description: Skill
-        in: body
-        name: SkillRequest
-        required: true
-        schema:
-          $ref: '#/definitions/skills.SkillRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      security:
-      - ApiAuthKey: []
-      summary: Create skills
-      tags:
-      - Skills
   /skills/{id}:
     delete:
       consumes:
@@ -1428,41 +1397,6 @@ paths:
       summary: Get all user
       tags:
       - user
-  /user/education:
-    post:
-      consumes:
-      - application/json
-      description: add user education
-      operationId: add-user-education
-      parameters:
-      - description: AddUserEducation
-        in: body
-        name: AddUserEducation
-        required: true
-        schema:
-          $ref: '#/definitions/user.AddUserEducation'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: add user education
-      tags:
-      - education
   /user/education/{id}:
     delete:
       consumes:
@@ -1471,12 +1405,12 @@ paths:
       operationId: delete-user-education-by-user-id
       parameters:
       - description: educationId
-        in: path
+        in: query
         name: id
         type: integer
-      - description: userId
-        in: query
-        name: userId
+      - description: User Id
+        in: path
+        name: id
         required: true
         type: integer
       produces:
@@ -1510,13 +1444,13 @@ paths:
       operationId: get-user-education-details-by-user-id
       parameters:
       - description: educationId
-        in: path
+        in: query
         name: id
         required: true
         type: integer
-      - description: userId
-        in: query
-        name: userId
+      - description: User Id
+        in: path
+        name: id
         required: true
         type: integer
       produces:
@@ -1548,13 +1482,13 @@ paths:
       operationId: update-user-education
       parameters:
       - description: educationId
-        in: path
+        in: query
         name: id
         required: true
         type: integer
-      - description: userId
-        in: query
-        name: userId
+      - description: User Id
+        in: path
+        name: id
         required: true
         type: integer
       - description: UpdateUserEducation
@@ -1587,6 +1521,45 @@ paths:
       summary: Update user education
       tags:
       - education
+    post:
+      consumes:
+      - application/json
+      description: add user education
+      operationId: add-user-education
+      parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AddUserEducation
+        in: body
+        name: AddBulkUserEducation
+        required: true
+        schema:
+          $ref: '#/definitions/user.AddBulkUserEducation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: add user education
+      tags:
+      - education
   /user/education/all/{id}:
     get:
       consumes:
@@ -1594,7 +1567,7 @@ paths:
       description: get all user education
       operationId: get-all-user-education
       parameters:
-      - description: userId
+      - description: User Id
         in: path
         name: id
         required: true
