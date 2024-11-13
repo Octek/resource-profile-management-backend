@@ -1,6 +1,6 @@
 module github.com/Octek/resource-profile-management-backend.git
 
-go 1.20
+go 1.21.3
 
 require (
 	github.com/gin-contrib/cors v1.7.2
