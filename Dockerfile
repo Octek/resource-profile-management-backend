@@ -1,9 +1,8 @@
 # Stage 1: Builder
-# Use the ECR-hosted Golang image
-FROM 983280470870.dkr.ecr.us-east-1.amazonaws.com/golanglatest:latest as builder
+FROM public.ecr.aws/docker/library/golang:latest as builder
 
 # Install necessary dependencies
-RUN apk update && apk add --no-cache git make gcc libtool musl-dev ca-certificates dumb-init build-base
+RUN apt-get update && apt-get install -y git make gcc libtool ca-certificates dumb-init build-essential
 
 # Set the current working directory inside the container
 WORKDIR /app
