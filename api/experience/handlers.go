@@ -360,7 +360,6 @@ func HandlerToAddSkillInExistingExperience(c *gin.Context, expSvc ExperienceServ
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Something went wrong while adding skills: %v", err), Data: nil})
 		return
 	}
-
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Skills successfully added to the experience", Data: nil})
 }
 
