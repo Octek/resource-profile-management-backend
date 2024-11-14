@@ -30,10 +30,8 @@ definitions:
   experience.AddUserExperienceRequest:
     properties:
       experiences:
-        $ref: '#/definitions/experience.ExpRequest'
-      skill_id:
         items:
-          type: integer
+          $ref: '#/definitions/experience.ExpRequest'
         type: array
     type: object
   experience.ExpRequest:
@@ -50,6 +48,10 @@ definitions:
         type: string
       responsibilities:
         type: string
+      skill_id:
+        items:
+          type: integer
+        type: array
       start_date:
         type: string
     required:

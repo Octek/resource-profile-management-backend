@@ -63,7 +63,7 @@ func (repo *skillRepositoryPostgres) AddSkillInBulk(bulkSkills AddSkillsBulkRequ
 		}
 	}
 
-	err := repo.db.CreateInBatches(&skills, utils.SkillsBatchSize).Error
+	err := repo.db.CreateInBatches(&skills, utils.CommonBatchSize).Error
 	return len(skills), err
 }
 
@@ -78,7 +78,7 @@ func (repo *skillRepositoryPostgres) CreateUserSkill(userId uint, userSkill AddB
 		}
 	}
 
-	err := repo.db.CreateInBatches(&skills, utils.SkillsBatchSize).Error
+	err := repo.db.CreateInBatches(&skills, utils.CommonBatchSize).Error
 	return err
 }
 

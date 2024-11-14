@@ -12,8 +12,8 @@ func NewService(r ExperienceRepository) ExperienceService {
 //	return svc.userRepository.createCategories(jsonData)
 //}
 
-func (svc *ExperienceService) AddExperienceWithUserAndSkills(userID uint, skillId []uint, experience *Experience) (*Experience, error) {
-	return svc.experienceRepository.AddExperienceWithUserAndSkills(userID, skillId, experience)
+func (svc *ExperienceService) AddExperienceWithUserAndSkills(userID uint, experience AddUserExperienceRequest) (AddUserExperienceRequest, error) {
+	return svc.experienceRepository.AddExperienceWithUserAndSkills(userID, experience)
 }
 
 func (svc *ExperienceService) GetExperienceById(id uint) (*Experience, error) {

@@ -235,12 +235,12 @@ func HandlerToAddUserSkills(c *gin.Context, skillSvc SkillService) {
 	userId := c.Param("id")
 	userIdInt, err := strconv.Atoi(userId)
 	var addUserSkillRequest AddBulkUserSkillsRequest
-	if err := c.ShouldBind(&addUserSkillRequest); err != nil {
+	if err = c.ShouldBind(&addUserSkillRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
 		return
 	}
 
-	if err := validate.Struct(addUserSkillRequest); err != nil {
+	if err = validate.Struct(addUserSkillRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
 		return
 	}

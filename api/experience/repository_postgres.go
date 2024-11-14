@@ -21,39 +21,49 @@ func NewExperienceRepositoryPostgres(db *gorm.DB) ExperienceRepository {
 		db: db,
 	}
 }
-
-func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID uint, skillIds []uint, experience *Experience) (*Experience, error) {
+func (repo *experienceRepositoryPostgres) AddExperienceWithUserAndSkills(userID uint, request AddUserExperienceRequest) (AddUserExperienceRequest, error) {
 	err := repo.db.Transaction(func(tx *gorm.DB) error {
-		var experienceSkill ExperienceSkill
-		if err := tx.Create(&experience).Error; err != nil {
-			return err
-		}
-
-		experience.ParseResponsibilities()
-
-		userExperience := UserExperience{
-			UserID:       userID,
-			ExperienceID: experience.ID,
-		}
-		if err := tx.Create(&userExperience).Error; err != nil {
-			return err
-		}
-
-		for _, skillID := range skillIds {
-			experienceSkill = ExperienceSkill{
-				SkillID:      skillID,
-				ExperienceID: experience.ID,
+		for _, expReq := range request.Experiences {
+			exp := Experience{
+				Position:           expReq.Position,
+				Company:            expReq.Company,
+				Description:        expReq.Description,
+				StartDate:          expReq.StartDate,
+				EndDate:            expReq.EndDate,
+				IsCurrentlyWorking: expReq.IsCurrentlyWorking,
+				Responsibilities:   expReq.Responsibilities,
 			}
-			if err := tx.Create(&experienceSkill).Error; err != nil {
+
+			if err := tx.Create(&exp).Error; err != nil {
 				return err
 			}
-		}
 
-		fmt.Println("Experience, UserExperience, and ExperienceSkills have been created successfully.")
+			exp.ParseResponsibilities()
+
+			userExperience := UserExperience{
+				UserID:       userID,
+				ExperienceID: exp.ID,
+			}
+			if err := tx.Create(&userExperience).Error; err != nil {
+				return err
+			}
+
+			for _, skillID := range expReq.SkillID {
+				experienceSkill := ExperienceSkill{
+					SkillID:      skillID,
+					ExperienceID: exp.ID,
+				}
+				if err := tx.Create(&experienceSkill).Error; err != nil {
+					return err
+				}
+			}
+
+		}
+		fmt.Println("Experiences, UserExperiences, and ExperienceSkills have been created successfully.")
 		return nil
 	})
 
-	return experience, err
+	return request, err
 }
 
 func (repo *experienceRepositoryPostgres) GetExperienceById(id uint) (*Experience, error) {

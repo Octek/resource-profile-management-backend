@@ -46,8 +46,7 @@ func Routes(router *gin.Engine, experienceSvc ExperienceService) {
 }
 
 type AddUserExperienceRequest struct {
-	SkillID     []uint     `json:"skill_id"`
-	Experiences ExpRequest `json:"experiences"`
+	Experiences []ExpRequest `json:"experiences"`
 }
 
 type ExpRequest struct {
@@ -58,6 +57,7 @@ type ExpRequest struct {
 	EndDate            time.Time `json:"end_date"`
 	IsCurrentlyWorking bool      `json:"is_currently_working"`
 	Responsibilities   string    `json:"responsibilities"`
+	SkillID            []uint    `json:"skill_id"`
 }
 
 // AddUserExperienceHandler godoc
@@ -89,28 +89,20 @@ func AddUserExperienceHandler(experienceSvc ExperienceService, c *gin.Context) {
 		return
 	}
 
-	if !addUserExpReq.Experiences.IsCurrentlyWorking && addUserExpReq.Experiences.EndDate.Before(addUserExpReq.Experiences.StartDate) {
-		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: "End date cannot be before the start date.", Data: nil})
-		return
+	for _, exp := range addUserExpReq.Experiences {
+		if !exp.IsCurrentlyWorking && exp.EndDate.Before(exp.StartDate) {
+			c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: "End date cannot be before the start date.", Data: nil})
+			return
+		}
 	}
 
-	experience := Experience{
-		Position:           addUserExpReq.Experiences.Position,
-		Company:            addUserExpReq.Experiences.Company,
-		Description:        addUserExpReq.Experiences.Description,
-		StartDate:          addUserExpReq.Experiences.StartDate,
-		EndDate:            addUserExpReq.Experiences.EndDate,
-		IsCurrentlyWorking: addUserExpReq.Experiences.IsCurrentlyWorking,
-		Responsibilities:   addUserExpReq.Experiences.Responsibilities,
-	}
-
-	createdExperiences, err := experienceSvc.AddExperienceWithUserAndSkills(uint(userIdInt), addUserExpReq.SkillID, &experience)
+	_, err := experienceSvc.AddExperienceWithUserAndSkills(uint(userIdInt), addUserExpReq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf("Failed to add experiences: %v", err), Data: nil})
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Experience added successfully.", Data: createdExperiences})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Experience added successfully.", Data: nil})
 }
 
 type UpdateExpRequest struct {
