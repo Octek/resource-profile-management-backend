@@ -18,7 +18,7 @@ RUN go mod download
 RUN GOOS=linux go build -o main .
 
 # Stage 2: Final Image
-FROM alpine:latest
+FROM public.ecr.aws/docker/library/alpine:latest
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /app/
