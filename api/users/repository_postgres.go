@@ -119,7 +119,7 @@ func (repo *userRepositoryPostgres) createRoles(jsonData []Role) error {
 }
 
 func (repo *userRepositoryPostgres) AddUserEducation(educations []Education) ([]Education, error) {
-	err := repo.db.CreateInBatches(&educations, utils.SkillsBatchSize).Error
+	err := repo.db.CreateInBatches(&educations, utils.CommonBatchSize).Error
 	return educations, err
 }
 

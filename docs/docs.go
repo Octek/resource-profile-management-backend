@@ -1853,12 +1853,9 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "experiences": {
-                    "$ref": "#/definitions/experience.ExpRequest"
-                },
-                "skill_id": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "$ref": "#/definitions/experience.ExpRequest"
                     }
                 }
             }
@@ -1888,6 +1885,12 @@ const docTemplate = `{
                 },
                 "responsibilities": {
                     "type": "string"
+                },
+                "skill_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "start_date": {
                     "type": "string"
