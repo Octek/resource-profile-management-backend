@@ -1,8 +1,8 @@
 # Stage 1: Builder
-FROM public.ecr.aws/docker/library/golang:latest as builder
+FROM golang:alpine as builder
 
 # Install necessary dependencies
-RUN apt-get update && apt-get install -y git make gcc libtool ca-certificates dumb-init build-essential
+RUN apk update && apk add --no-cache git make gcc libtool musl-dev ca-certificates dumb-init build-base
 
 # Set the current working directory inside the container
 WORKDIR /app
@@ -18,7 +18,7 @@ RUN go mod download
 RUN GOOS=linux go build -o main .
 
 # Stage 2: Final Image
-FROM public.ecr.aws/docker/library/alpine:latest
+FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /app/
