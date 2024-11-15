@@ -12,7 +12,7 @@ type SkillRepository interface {
 	getSkillById(id uint) (Skill, error)
 	updateSkill(skillObj Skill) error
 	deleteSkillById(id uint) error
-	fetchAllSkill(limit, offset int, orderBy, keyword string) ([]Skill, int64, error)
+	fetchAllSkill(limit, offset int, orderBy, keyword, category string) ([]Skill, int64, error)
 	CreateUserSkill(userId uint, userSkill AddBulkUserSkillsRequest) error
 	AddSkillInBulk(skill AddSkillsBulkRequest) (int, error)
 }

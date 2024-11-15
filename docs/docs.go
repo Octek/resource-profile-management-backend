@@ -546,6 +546,12 @@ const docTemplate = `{
                         "description": "Search for a keyword in skill names",
                         "name": "keyword",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search for a category in skill",
+                        "name": "category",
+                        "in": "query"
                     }
                 ],
                 "responses": {

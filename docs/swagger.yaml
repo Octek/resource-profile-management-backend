@@ -823,6 +823,10 @@ paths:
         in: query
         name: keyword
         type: string
+      - description: Search for a category in skill
+        in: query
+        name: category
+        type: string
       produces:
       - application/json
       responses:

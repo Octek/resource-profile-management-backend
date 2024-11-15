@@ -164,19 +164,21 @@ func (repo *skillRepositoryPostgres) deleteSkillById(id uint) error {
 	return nil
 }
 
-func (repo *skillRepositoryPostgres) fetchAllSkill(limit, offset int, orderBy, keyword string) ([]Skill, int64, error) {
+func (repo *skillRepositoryPostgres) fetchAllSkill(limit, offset int, orderBy, keyword, category string) ([]Skill, int64, error) {
 	var skillList []Skill
 	var totalRecords int64
 
-	query := repo.db.Model(&Skill{}).Where("deleted_at IS NULL")
-	if keyword != "" {
-		query = query.Where("LOWER(name) LIKE ?", "%"+strings.ToLower(keyword)+"%")
-	}
+	query := repo.db.Model(&Skill{}).
+		Joins("JOIN skill_categories AS sc ON sc.id = skills.skill_category_id").
+		Where("skills.deleted_at IS NULL").
+		Where("LOWER(sc.name) LIKE ? OR sc.name IS NULL", "%"+strings.ToLower(category)+"%").
+		Where("LOWER(skills.name) LIKE ?", "%"+strings.ToLower(keyword)+"%")
 
 	err := query.Count(&totalRecords).Error
 	if err != nil {
 		return nil, 0, err
 	}
+
 	err = query.Order(orderBy).Limit(limit).Offset(offset).Preload("SkillCategory").Preload("Bookings").Find(&skillList).Error
 	if err != nil {
 		return nil, totalRecords, err

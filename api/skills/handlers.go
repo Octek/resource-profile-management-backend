@@ -66,6 +66,7 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc,updated_at desc"    orderBy(string)
 // @Param   keyword   query   string  false  "Search for a keyword in skill names"
+// @Param   category   query   string  false  "Search for a category in skill"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -78,6 +79,7 @@ func HandlerToGetAllSkills(c *gin.Context, skillSvc SkillService) {
 	offset := baseQuery.Get("offset")
 	orderBy := baseQuery.Get("orderBy")
 	keyword := baseQuery.Get("keyword")
+	category := baseQuery.Get("category")
 
 	if limit == "" {
 		limit = utils.DefaultLimit
@@ -99,7 +101,7 @@ func HandlerToGetAllSkills(c *gin.Context, skillSvc SkillService) {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidIntegerValueOffsetMessage, err), Data: nil})
 		return
 	}
-	skillList, totalRecords, err := skillSvc.FetchAllSkill(limitInt, offsetInt, orderBy, keyword)
+	skillList, totalRecords, err := skillSvc.FetchAllSkill(limitInt, offsetInt, orderBy, keyword, category)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileGettingSkill, err), Data: nil})
 		return
