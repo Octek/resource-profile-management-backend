@@ -23,6 +23,7 @@ type User struct {
 	ProfilePicture string                  `json:"profile_picture"`
 	VideoUrl       string                  `json:"video_url"`
 	Certifications string                  `json:"certifications"`
+	Showcase       bool                    `json:"showcase" gorm:"default:true"`
 	UserCategoryID uint                    `json:"user_category_id" gorm:"NOT NULL;index:user_category_id"`
 	UserCategory   *UserCategory           `json:"user_category" gorm:"foreignKey:UserCategoryID;references:ID"`
 	Educations     []Education             `json:"educations" gorm:"foreignKey:UserID"`

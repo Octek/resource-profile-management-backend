@@ -48,16 +48,19 @@ definitions:
       user_id:
         type: integer
     type: object
+  experience.AddSkillsRequest:
+    properties:
+      skill_id:
+        items:
+          type: integer
+        type: array
+    type: object
   experience.AddUserExperienceRequest:
     properties:
       experiences:
-        $ref: '#/definitions/experience.ExpRequest'
-      skill_id:
-        type: integer
-      user_id:
-        type: integer
-    required:
-    - user_id
+        items:
+          $ref: '#/definitions/experience.ExpRequest'
+        type: array
     type: object
   experience.ExpRequest:
     properties:
@@ -73,6 +76,10 @@ definitions:
         type: string
       responsibilities:
         type: string
+      skill_id:
+        items:
+          type: integer
+        type: array
       start_date:
         type: string
     required:
@@ -172,6 +179,20 @@ definitions:
       updated_at:
         type: string
     type: object
+  skills.AddBulkUserSkillsRequest:
+    properties:
+      user_skill:
+        items:
+          $ref: '#/definitions/skills.UserSkillRequest'
+        type: array
+    type: object
+  skills.AddSkillsBulkRequest:
+    properties:
+      skills:
+        items:
+          $ref: '#/definitions/skills.SkillRequest'
+        type: array
+    type: object
   skills.CreateSkillCategoryRequest:
     properties:
       name:
@@ -233,12 +254,19 @@ definitions:
     type: object
   skills.UserSkillRequest:
     properties:
+      skill_id:
+        type: integer
       skill_level:
         type: string
-      skillData:
-        $ref: '#/definitions/skills.SkillRequest'
-      user_id:
-        type: integer
+    type: object
+  user.AddBulkUserEducation:
+    properties:
+      user_education:
+        items:
+          $ref: '#/definitions/user.AddUserEducation'
+        type: array
+    required:
+    - user_education
     type: object
   user.AddUserEducation:
     properties:
@@ -254,13 +282,9 @@ definitions:
         type: string
       start_date:
         type: string
-      user_id:
-        type: integer
     required:
-    - end_date
     - institution_name
     - start_date
-    - user_id
     type: object
   user.CategoriesResponse:
     properties:
@@ -445,6 +469,8 @@ definitions:
         items:
           $ref: '#/definitions/user.Role'
         type: array
+      showcase:
+        type: boolean
       skills:
         items:
           $ref: '#/definitions/skills.Skill'
@@ -480,41 +506,6 @@ definitions:
 info:
   contact: {}
 paths:
-  /experience:
-    post:
-      consumes:
-      - application/json
-      description: Adds new experiences for a given user ID
-      operationId: add-experience
-      parameters:
-      - description: AddUserExperienceRequest
-        in: body
-        name: AddUserExperienceRequest
-        required: true
-        schema:
-          $ref: '#/definitions/experience.AddUserExperienceRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Add experiences for user
-      tags:
-      - experience
   /experience/{id}:
     delete:
       consumes:
@@ -522,7 +513,7 @@ paths:
       description: delete user experience by id
       operationId: delete-user-experience-by-id
       parameters:
-      - description: id
+      - description: experienceId
         in: path
         name: id
         required: true
@@ -557,7 +548,7 @@ paths:
       description: get user experience details by id
       operationId: get-user-experience-details-by-id
       parameters:
-      - description: id
+      - description: experienceId
         in: path
         name: id
         required: true
@@ -595,14 +586,14 @@ paths:
       description: Updates experience
       operationId: update-experience
       parameters:
-      - description: id
+      - description: experienceId
         in: path
         name: id
         required: true
         type: integer
       - description: userId
         in: query
-        name: userId
+        name: id
         required: true
         type: integer
       - description: UpdateExpRequest
@@ -635,6 +626,127 @@ paths:
       summary: Update experience
       tags:
       - experience
+    post:
+      consumes:
+      - application/json
+      description: Adds new experiences for a given user ID
+      operationId: add-experience
+      parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AddUserExperienceRequest
+        in: body
+        name: AddUserExperienceRequest
+        required: true
+        schema:
+          $ref: '#/definitions/experience.AddUserExperienceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      summary: Add experiences for user
+      tags:
+      - experience
+  /experience/add-experience-skills/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Add skill in existing experience
+      operationId: add-skill-in-existing-experience
+      parameters:
+      - description: AddSkillsRequest
+        in: body
+        name: AddSkillsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/experience.AddSkillsRequest'
+      - description: experience Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      summary: Add skill in existing experience
+      tags:
+      - experience
+  /experience/remove-experience-skills/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user experience skill by experience id
+      operationId: delete-user-experience-skill-by-id
+      parameters:
+      - description: experience id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AddSkillsRequest
+        in: body
+        name: AddSkillsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/experience.AddSkillsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Delete user experience skill by experience id
+      tags:
+      - experience
   /experience/user/{id}:
     delete:
       consumes:
@@ -642,7 +754,7 @@ paths:
       description: delete user experience by user id
       operationId: delete-user-experience-by-user-id
       parameters:
-      - description: id
+      - description: userId
         in: path
         name: id
         required: true
@@ -689,7 +801,7 @@ paths:
         in: query
         name: orderBy
         type: string
-      - description: id
+      - description: userId
         in: path
         name: id
         required: true
@@ -962,42 +1074,6 @@ paths:
       summary: Get all skills
       tags:
       - Skills
-    post:
-      consumes:
-      - application/json
-      description: Create skills
-      operationId: Create-skills
-      parameters:
-      - description: Skill
-        in: body
-        name: UserSkillRequest
-        required: true
-        schema:
-          $ref: '#/definitions/skills.UserSkillRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      security:
-      - ApiAuthKey: []
-      summary: Create skills
-      tags:
-      - Skills
   /skills/{id}:
     delete:
       consumes:
@@ -1102,6 +1178,81 @@ paths:
       security:
       - ApiAuthKey: []
       summary: Update skill
+      tags:
+      - Skills
+  /skills/add-skill-in-bulk:
+    post:
+      consumes:
+      - application/json
+      description: Add user skill
+      operationId: add-skill-in-bulk
+      parameters:
+      - description: User Skill
+        in: body
+        name: AddSkillsBulkRequest
+        required: true
+        schema:
+          $ref: '#/definitions/skills.AddSkillsBulkRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Add user skill
+      tags:
+      - Skills
+  /skills/add-user-skill/{id}:
+    post:
+      consumes:
+      - application/json
+      description: Add user skill
+      operationId: add-user-skill
+      parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User Skill
+        in: body
+        name: AddBulkUserSkillsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/skills.AddBulkUserSkillsRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Add user skill
       tags:
       - Skills
   /skills/categories:
@@ -1475,41 +1626,6 @@ paths:
       summary: Get all user
       tags:
       - user
-  /user/education:
-    post:
-      consumes:
-      - application/json
-      description: add user education
-      operationId: add-user-education
-      parameters:
-      - description: AddUserEducation
-        in: body
-        name: AddUserEducation
-        required: true
-        schema:
-          $ref: '#/definitions/user.AddUserEducation'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: add user education
-      tags:
-      - education
   /user/education/{id}:
     delete:
       consumes:
@@ -1517,7 +1633,11 @@ paths:
       description: delete user education by user id
       operationId: delete-user-education-by-user-id
       parameters:
-      - description: id
+      - description: educationId
+        in: query
+        name: id
+        type: integer
+      - description: User Id
         in: path
         name: id
         required: true
@@ -1552,7 +1672,12 @@ paths:
       description: get user education details by user id
       operationId: get-user-education-details-by-user-id
       parameters:
-      - description: id
+      - description: educationId
+        in: query
+        name: id
+        required: true
+        type: integer
+      - description: User Id
         in: path
         name: id
         required: true
@@ -1585,14 +1710,14 @@ paths:
       description: Update user education
       operationId: update-user-education
       parameters:
-      - description: id
-        in: path
+      - description: educationId
+        in: query
         name: id
         required: true
         type: integer
-      - description: userId
-        in: query
-        name: userId
+      - description: User Id
+        in: path
+        name: id
         required: true
         type: integer
       - description: UpdateUserEducation
@@ -1625,6 +1750,45 @@ paths:
       summary: Update user education
       tags:
       - education
+    post:
+      consumes:
+      - application/json
+      description: add user education
+      operationId: add-user-education
+      parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: AddUserEducation
+        in: body
+        name: AddBulkUserEducation
+        required: true
+        schema:
+          $ref: '#/definitions/user.AddBulkUserEducation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: add user education
+      tags:
+      - education
   /user/education/all/{id}:
     get:
       consumes:
@@ -1632,7 +1796,7 @@ paths:
       description: get all user education
       operationId: get-all-user-education
       parameters:
-      - description: id
+      - description: User Id
         in: path
         name: id
         required: true

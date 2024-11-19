@@ -34,9 +34,6 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 		})
 
 	}
-	skillsRouter.POST("", func(c *gin.Context) {
-		HandlerToCreateSkill(c, skillSvc)
-	})
 	skillsRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 		HandlerToUpdateSkillByID(c, skillSvc)
 	})
@@ -48,6 +45,12 @@ func Routes(router *gin.Engine, skillSvc SkillService) {
 	})
 	skillsRouter.DELETE("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 		HandlerToDeleteSkillByID(c, skillSvc)
+	})
+	skillsRouter.POST("add-user-skill/:id", func(c *gin.Context) {
+		HandlerToAddUserSkills(c, skillSvc)
+	})
+	skillsRouter.POST("add-skill-in-bulk/", func(c *gin.Context) {
+		HandlerToAddSkillInBulk(c, skillSvc)
 	})
 }
 
@@ -213,43 +216,75 @@ func HandlerToUpdateSkillByID(c *gin.Context, skillSvc SkillService) {
 
 }
 
-// HandlerToCreateSkill godoc
+// HandlerToAddUserSkills godoc
 // @Tags Skills
-// @Summary Create skills
-// @Description Create skills
-// @ID Create-skills
+// @Summary Add user skill
+// @Description Add user skill
+// @ID add-user-skill
 // @Security ApiAuthKey
 // @Accept json
-// @Produce json
-// @Param UserSkillRequest body UserSkillRequest true "Skill"
-// @Success 200 {object} utils.ResponseMessage
-// @Failure 400 {object} utils.ResponseMessage
-// @Failure 404 {object} utils.ResponseMessage
-// @Failure 500 {object} utils.ResponseMessage
-// @Router /skills [post]
-func HandlerToCreateSkill(c *gin.Context, skillSvc SkillService) {
-	fmt.Println("HandlerToCreateSkills")
-	var createUserSkillRequest UserSkillRequest
-	if err := c.ShouldBind(&createUserSkillRequest); err != nil {
+// @Param id path int true "User Id"
+// @Param AddBulkUserSkillsRequest body AddBulkUserSkillsRequest true "User Skill"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /skills/add-user-skill/{id} [post]
+func HandlerToAddUserSkills(c *gin.Context, skillSvc SkillService) {
+	fmt.Println("HandlerToAddUserSkills")
+	userId := c.Param("id")
+	userIdInt, err := strconv.Atoi(userId)
+	var addUserSkillRequest AddBulkUserSkillsRequest
+	if err = c.ShouldBind(&addUserSkillRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
 		return
 	}
 
-	if err := validate.Struct(createUserSkillRequest); err != nil {
+	if err = validate.Struct(addUserSkillRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
 		return
 	}
-	skillObj := Skill{
-		Name:            createUserSkillRequest.SkillData.Name,
-		Icon:            createUserSkillRequest.SkillData.Icon,
-		SkillCategoryID: createUserSkillRequest.SkillData.SkillCategoryID,
-	}
-	err := skillSvc.CreateSkill(&skillObj, createUserSkillRequest.UserID, createUserSkillRequest.SkillLevel)
+	err = skillSvc.CreateUserSkill(uint(userIdInt), addUserSkillRequest)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileCreatingSkill, err), Data: nil})
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileCreatingUserSkill, err), Data: nil})
 		return
 	}
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyCreatedSkill), Data: nil})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyCreatedUserSkill), Data: nil})
+}
+
+// HandlerToAddSkillInBulk godoc
+// @Tags Skills
+// @Summary Add user skill
+// @Description Add user skill
+// @ID add-skill-in-bulk
+// @Security ApiAuthKey
+// @Accept json
+// @Param AddSkillsBulkRequest body AddSkillsBulkRequest true "User Skill"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /skills/add-skill-in-bulk [post]
+func HandlerToAddSkillInBulk(c *gin.Context, skillSvc SkillService) {
+	fmt.Println("HandlerToAddSkillInBulk")
+	var addSkillsInBulk AddSkillsBulkRequest
+
+	if err := c.ShouldBindJSON(&addSkillsInBulk); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
+		return
+	}
+	if err := validate.Struct(&addSkillsInBulk); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
+		return
+	}
+
+	_, err := skillSvc.AddSkillInBulk(addSkillsInBulk)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileAddingBulkSkills, err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyAddedSkillsInBulk), Data: nil})
 }
 
 // HandlerToGetAllSkillCategories godoc
@@ -465,12 +500,17 @@ type SkillCategoryUpdateRequest struct {
 }
 
 type UserSkillRequest struct {
-	SkillData  SkillRequest `json:"skillData"`
-	UserID     uint         `json:"user_id"`
-	SkillLevel string       `json:"skill_level"`
+	SkillID    uint   `json:"skill_id"`
+	SkillLevel string `json:"skill_level"`
 }
 type SkillRequest struct {
 	Name            string `json:"name"`
 	Icon            string `json:"icon"`
 	SkillCategoryID uint   `json:"skill_category_id"`
+}
+type AddSkillsBulkRequest struct {
+	Skills []SkillRequest `json:"skills"`
+}
+type AddBulkUserSkillsRequest struct {
+	UserSkill []UserSkillRequest `json:"user_skill"`
 }
