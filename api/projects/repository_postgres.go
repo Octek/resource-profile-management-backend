@@ -2,6 +2,7 @@ package projects
 
 import (
 	"fmt"
+	"github.com/Octek/resource-profile-management-backend.git/utils"
 	log "github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
@@ -22,26 +23,37 @@ func NewProjectRepositoryPostgres(db *gorm.DB) ProjectRepository {
 	}
 }
 
-func (repo *projectRepositoryPostgres) AddUserProject(userID uint, project *Project) (*Project, error) {
+func (repo *projectRepositoryPostgres) AddUserProject(addBulkProject AddProjectsInBulk) (int, error) {
 
-	err := repo.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&project).Error; err != nil {
-			return err
+	projects := make([]Project, len(addBulkProject.AddProject))
+
+	for i, projectReq := range addBulkProject.AddProject {
+		projects[i] = Project{
+			Name:         projectReq.Name,
+			Description:  projectReq.Description,
+			Link:         projectReq.Link,
+			Technologies: projectReq.Technologies,
 		}
+	}
 
-		userProject := UserProject{
-			UserID:    userID,
-			ProjectID: project.ID,
+	err := repo.db.CreateInBatches(&projects, utils.CommonBatchSize).Error
+	fmt.Println("Experience, UserExperience, and ExperienceSkill have been created successfully.")
+
+	return len(projects), err
+}
+
+func (repo *projectRepositoryPostgres) AddBulkUserProject(userId uint, userProject AddUserProjectRequest) (int, error) {
+	userProjects := make([]UserProject, len(userProject.ProjectID))
+
+	for i, projectId := range userProject.ProjectID {
+		userProjects[i] = UserProject{
+			UserID:    userId,
+			ProjectID: projectId,
 		}
-		if err := tx.Create(&userProject).Error; err != nil {
-			return err
-		}
+	}
 
-		fmt.Println("Experience, UserExperience, and ExperienceSkill have been created successfully.")
-		return nil
-	})
-
-	return project, err
+	err := repo.db.CreateInBatches(&userProjects, utils.CommonBatchSize).Error
+	return len(userProjects), err
 }
 
 func (repo *projectRepositoryPostgres) GetProjectById(id uint) (*Project, error) {

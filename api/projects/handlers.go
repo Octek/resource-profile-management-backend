@@ -16,8 +16,11 @@ var validate = validator.New()
 // Routes Exports all routes handled by this service
 func Routes(router *gin.Engine, projectSvc ProjectService) {
 	subRouter := router.Group("/projects")
+	subRouter.POST("", func(c *gin.Context) {
+		AddProjectsHandler(projectSvc, c)
+	})
 	subRouter.POST("/:id", func(c *gin.Context) {
-		AddUserProjectHandler(projectSvc, c)
+		AssociateProjectWithUser(projectSvc, c)
 	})
 	subRouter.PATCH("/:id", middleware.AuthMiddleware(), func(c *gin.Context) {
 		UpdateProjectByIdHandler(projectSvc, c)
@@ -47,24 +50,25 @@ type UpdateProjectRequest struct {
 	Technologies string `json:"technologies" validate:"required"`
 }
 
-// AddUserProjectHandler godoc
+type AddProjectsInBulk struct {
+	AddProject []AddProjectRequest `json:"add_project" validate:"required"`
+}
+
+// AddProjectsHandler godoc
 // @Tags projects
 // @Summary Create project
 // @Description create project
 // @ID create-project
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
-// @Param AddProjectRequest body AddProjectRequest true "AddProjectRequest"
+// @Param AddProjectsInBulk body AddProjectsInBulk true "AddProjectRequest"
 // @Success 200 {object} utils.ResponseMessage
 // @Failure 400 {object} string
 // @Failure 404 {object} string
 // @Failure 500 {object} string
-// @Router /projects/{id} [post]
-func AddUserProjectHandler(projectSvc ProjectService, c *gin.Context) {
-	userId := c.Param("id")
-	userIdInt, _ := strconv.Atoi(userId)
-	addProjectRequest := AddProjectRequest{}
+// @Router /projects [post]
+func AddProjectsHandler(projectSvc ProjectService, c *gin.Context) {
+	addProjectRequest := AddProjectsInBulk{}
 	if err := c.ShouldBind(&addProjectRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Failed to create user: %v", err), Data: nil})
 		return
@@ -74,13 +78,7 @@ func AddUserProjectHandler(projectSvc ProjectService, c *gin.Context) {
 		return
 	}
 
-	project := Project{
-		Name:         addProjectRequest.Name,
-		Description:  addProjectRequest.Description,
-		Link:         addProjectRequest.Link,
-		Technologies: addProjectRequest.Technologies,
-	}
-	addProject, err := projectSvc.AddUserProject(uint(userIdInt), &project)
+	addProject, err := projectSvc.AddUserProject(addProjectRequest)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf("Failed to bind user: %v", err), Data: nil})
 		return
@@ -257,4 +255,44 @@ func GetAllUserProjectHandler(projectSvc ProjectService, c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: AllUserProjects{Total: total, Project: allUserProjects, RecordsFiltered: len(allUserProjects)}})
+}
+
+type AddUserProjectRequest struct {
+	ProjectID []uint `json:"project_id" gorm:"NOT NULL;index:project_id"`
+}
+
+// AssociateProjectWithUser godoc
+// @Tags projects
+// @Summary Add user projects
+// @Description Add user projects
+// @ID add-user-projects
+// @Security ApiAuthKey
+// @Accept json
+// @Param id path int true "User Id"
+// @Param AddUserProjectRequest body AddUserProjectRequest true "User Project"
+// @Success 200 {object} string
+// @Failure 400 {object} string
+// @Failure 404 {object} string
+// @Failure 500 {object} string
+// @Router /projects/{id} [post]
+func AssociateProjectWithUser(projectSvc ProjectService, c *gin.Context) {
+	userId := c.Param("id")
+	userIdInt, err := strconv.Atoi(userId)
+	var addUserProjectRequest AddUserProjectRequest
+	if err = c.ShouldBind(&addUserProjectRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
+		return
+	}
+
+	if err = validate.Struct(addUserProjectRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
+		return
+	}
+
+	_, err = projectSvc.AddBulkUserProject(uint(userIdInt), addUserProjectRequest)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileCreatingUserSkill, err), Data: nil})
+		return
+	}
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyCreatedUserSkill), Data: nil})
 }

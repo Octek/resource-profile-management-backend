@@ -7,8 +7,8 @@ type ProjectService struct {
 func NewService(r ProjectRepository) ProjectService {
 	return ProjectService{projectRepository: r}
 }
-func (svc *ProjectService) AddUserProject(userId uint, project *Project) (*Project, error) {
-	return svc.projectRepository.AddUserProject(userId, project)
+func (svc *ProjectService) AddUserProject(project AddProjectsInBulk) (int, error) {
+	return svc.projectRepository.AddUserProject(project)
 }
 
 func (svc *ProjectService) GetProjectById(id uint) (*Project, error) {
@@ -33,4 +33,7 @@ func (svc *ProjectService) DeleteUserProjectByID(userId uint) error {
 
 func (svc *ProjectService) GetAllUserProject(userId uint, limit int, offset int, orderBy string) ([]Project, uint, error) {
 	return svc.projectRepository.GetAllUserProject(userId, limit, offset, orderBy)
+}
+func (svc *ProjectService) AddBulkUserProject(userId uint, addUserProjectRequest AddUserProjectRequest) (int, error) {
+	return svc.projectRepository.AddBulkUserProject(userId, addUserProjectRequest)
 }

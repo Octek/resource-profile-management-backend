@@ -1,32 +1,4 @@
 definitions:
-  projects.AddProjectRequest:
-    properties:
-      description:
-        type: string
-      link:
-        type: string
-      name:
-        type: string
-      technologies:
-        type: string
-    required:
-    - name
-    - technologies
-    type: object
-  projects.UpdateProjectRequest:
-    properties:
-      description:
-        type: string
-      link:
-        type: string
-      name:
-        type: string
-      technologies:
-        type: string
-    required:
-    - name
-    - technologies
-    type: object
   bookings.Booking:
     properties:
       booking_date_time:
@@ -147,6 +119,36 @@ definitions:
         description: Valid is true if Time is not NULL
         type: boolean
     type: object
+  projects.AddProjectRequest:
+    properties:
+      description:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      technologies:
+        type: string
+    required:
+    - name
+    - technologies
+    type: object
+  projects.AddProjectsInBulk:
+    properties:
+      add_project:
+        items:
+          $ref: '#/definitions/projects.AddProjectRequest'
+        type: array
+    required:
+    - add_project
+    type: object
+  projects.AddUserProjectRequest:
+    properties:
+      project_id:
+        items:
+          type: integer
+        type: array
+    type: object
   projects.Project:
     properties:
       created_at:
@@ -165,6 +167,20 @@ definitions:
         type: string
       updated_at:
         type: string
+    type: object
+  projects.UpdateProjectRequest:
+    properties:
+      description:
+        type: string
+      link:
+        type: string
+      name:
+        type: string
+      technologies:
+        type: string
+    required:
+    - name
+    - technologies
     type: object
   questions.QuestionOption:
     properties:
@@ -828,24 +844,19 @@ paths:
       summary: Get all user experience
       tags:
       - experience
-  /projects/add-user-project/{id}:
+  /projects:
     post:
       consumes:
       - application/json
       description: create project
       operationId: create-project
       parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
       - description: AddProjectRequest
         in: body
-        name: AddProjectRequest
+        name: AddProjectsInBulk
         required: true
         schema:
-          $ref: '#/definitions/projects.AddProjectRequest'
+          $ref: '#/definitions/projects.AddProjectsInBulk'
       produces:
       - application/json
       responses:
@@ -868,7 +879,7 @@ paths:
       summary: Create project
       tags:
       - projects
-  /projects/delete-user-project/{id}:
+  /projects/{id}:
     delete:
       consumes:
       - application/json
@@ -899,10 +910,130 @@ paths:
           description: Internal Server Error
           schema:
             type: string
+      security:
+      - ApiAuthKey: []
       summary: Delete user project by user id
       tags:
       - projects
-  /projects/get-all-user-project/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get user project details by user id
+      operationId: get-user-project-details-by-user-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get user project details by user id
+      tags:
+      - projects
+    patch:
+      consumes:
+      - application/json
+      description: Update user project
+      operationId: update-user-project
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: userId
+        in: query
+        name: userId
+        required: true
+        type: integer
+      - description: UpdateProjectRequest
+        in: body
+        name: UpdateProjectRequest
+        required: true
+        schema:
+          $ref: '#/definitions/projects.UpdateProjectRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Update user project
+      tags:
+      - projects
+    post:
+      consumes:
+      - application/json
+      description: Add user projects
+      operationId: add-user-projects
+      parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: User Project
+        in: body
+        name: AddUserProjectRequest
+        required: true
+        schema:
+          $ref: '#/definitions/projects.AddUserProjectRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiAuthKey: []
+      summary: Add user projects
+      tags:
+      - projects
+  /projects/get-all/{id}:
     get:
       consumes:
       - application/json
@@ -946,85 +1077,6 @@ paths:
           schema:
             type: string
       summary: Get all user project
-      tags:
-      - projects
-  /projects/get-project/{id}:
-    get:
-      consumes:
-      - application/json
-      description: get user project details by user id
-      operationId: get-user-project-details-by-user-id
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Get user project details by user id
-      tags:
-      - projects
-  /projects/update-user-project/{id}:
-    patch:
-      consumes:
-      - application/json
-      description: Update user project
-      operationId: update-user-project
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: userId
-        in: query
-        name: userId
-        required: true
-        type: integer
-      - description: UpdateProjectRequest
-        in: body
-        name: UpdateProjectRequest
-        required: true
-        schema:
-          $ref: '#/definitions/projects.UpdateProjectRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "404":
-          description: Not Found
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Update user project
       tags:
       - projects
   /skills:
