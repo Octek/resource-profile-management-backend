@@ -111,24 +111,6 @@ definitions:
     - position
     - start_date
     type: object
-  questions.QuestionWithOptionsRequest:
-    properties:
-      option_names:
-        items:
-          type: string
-        type: array
-      question_type:
-        type: string
-      questions:
-        type: string
-    type: object
-  questions.UpdateQuestionRequest:
-    properties:
-      question_type:
-        type: string
-      questions:
-        type: string
-    type: object
   gorm.DeletedAt:
     properties:
       time:
@@ -156,6 +138,15 @@ definitions:
       updated_at:
         type: string
     type: object
+  questions.AddQuestionRequestBulk:
+    properties:
+      add_question_request:
+        items:
+          $ref: '#/definitions/questions.QuestionWithOptionsRequest'
+        type: array
+    required:
+    - add_question_request
+    type: object
   questions.QuestionOption:
     properties:
       created_at:
@@ -167,6 +158,24 @@ definitions:
       question_id:
         type: integer
       updated_at:
+        type: string
+    type: object
+  questions.QuestionWithOptionsRequest:
+    properties:
+      option_names:
+        items:
+          type: string
+        type: array
+      question_type:
+        type: string
+      questions:
+        type: string
+    type: object
+  questions.UpdateQuestionRequest:
+    properties:
+      question_type:
+        type: string
+      questions:
         type: string
     type: object
   skills.AddBulkUserSkillsRequest:
@@ -867,10 +876,10 @@ paths:
       parameters:
       - description: question
         in: body
-        name: QuestionWithOptionsRequest
+        name: AddQuestionRequestBulk
         required: true
         schema:
-          $ref: '#/definitions/questions.QuestionWithOptionsRequest'
+          $ref: '#/definitions/questions.AddQuestionRequestBulk'
       produces:
       - application/json
       responses:
@@ -924,6 +933,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.ResponseMessage'
+      security:
+      - ApiAuthKey: []
       summary: Delete question by id
       tags:
       - questions
@@ -996,6 +1007,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/utils.ResponseMessage'
+      security:
+      - ApiAuthKey: []
       summary: update questions
       tags:
       - questions

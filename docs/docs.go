@@ -580,11 +580,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "question",
-                        "name": "QuestionWithOptionsRequest",
+                        "name": "AddQuestionRequestBulk",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/questions.QuestionWithOptionsRequest"
+                            "$ref": "#/definitions/questions.AddQuestionRequestBulk"
                         }
                     }
                 ],
@@ -667,6 +667,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "delete question by id",
                 "consumes": [
                     "application/json"
@@ -716,6 +721,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
                 "description": "update a question",
                 "consumes": [
                     "application/json"
@@ -2246,34 +2256,6 @@ const docTemplate = `{
                 }
             }
         },
-        "questions.QuestionWithOptionsRequest": {
-            "type": "object",
-            "properties": {
-                "option_names": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "question_type": {
-                    "type": "string"
-                },
-                "questions": {
-                    "type": "string"
-                }
-            }
-        },
-        "questions.UpdateQuestionRequest": {
-            "type": "object",
-            "properties": {
-                "question_type": {
-                    "type": "string"
-                },
-                "questions": {
-                    "type": "string"
-                }
-            }
-        },
         "gorm.DeletedAt": {
             "type": "object",
             "properties": {
@@ -2315,6 +2297,20 @@ const docTemplate = `{
                 }
             }
         },
+        "questions.AddQuestionRequestBulk": {
+            "type": "object",
+            "required": [
+                "add_question_request"
+            ],
+            "properties": {
+                "add_question_request": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/questions.QuestionWithOptionsRequest"
+                    }
+                }
+            }
+        },
         "questions.QuestionOption": {
             "type": "object",
             "properties": {
@@ -2331,6 +2327,34 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "questions.QuestionWithOptionsRequest": {
+            "type": "object",
+            "properties": {
+                "option_names": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "question_type": {
+                    "type": "string"
+                },
+                "questions": {
+                    "type": "string"
+                }
+            }
+        },
+        "questions.UpdateQuestionRequest": {
+            "type": "object",
+            "properties": {
+                "question_type": {
+                    "type": "string"
+                },
+                "questions": {
                     "type": "string"
                 }
             }

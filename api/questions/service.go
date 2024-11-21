@@ -8,8 +8,8 @@ func NewService(r QuestionRepository) QuestionService {
 	return QuestionService{questionRepository: r}
 }
 
-func (svc *QuestionService) AddQuestion(question *Question, name []string) (*Question, error) {
-	return svc.questionRepository.AddQuestion(question, name)
+func (svc *QuestionService) AddQuestion(question AddQuestionRequestBulk) error {
+	return svc.questionRepository.AddQuestion(question)
 }
 
 func (svc *QuestionService) GetQuestionById(id uint) (*Question, error) {

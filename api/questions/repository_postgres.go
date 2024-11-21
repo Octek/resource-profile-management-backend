@@ -22,29 +22,40 @@ func NewQuestionRepositoryPostgres(db *gorm.DB) QuestionRepository {
 	}
 }
 
-func (repo *questionRepositoryPostgres) AddQuestion(question *Question, names []string) (*Question, error) {
+func (repo *questionRepositoryPostgres) AddQuestion(request AddQuestionRequestBulk) error {
 	err := repo.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&question).Error; err != nil {
-			return err
-		}
+		for _, questionReq := range request.AddQuestionRequest {
 
-		var questionOptionArray []QuestionOption
-		for _, name := range names {
-			questionOption := QuestionOption{
-				QuestionID: question.ID,
-				Name:       name,
+			questionModel := Question{
+				Questions:    questionReq.Questions,
+				QuestionType: questionReq.QuestionType,
 			}
-			questionOptionArray = append(questionOptionArray, questionOption)
+
+			if err := tx.Create(&questionModel).Error; err != nil {
+				return fmt.Errorf("failed to create question: %w", err)
+			}
+
+			var questionOptionArray []QuestionOption
+			for _, name := range questionReq.OptionNames {
+				questionOption := QuestionOption{
+					QuestionID: questionModel.ID,
+					Name:       name,
+				}
+				questionOptionArray = append(questionOptionArray, questionOption)
+			}
+
+			if len(questionOptionArray) > 0 {
+				if err := tx.Create(&questionOptionArray).Error; err != nil {
+					return fmt.Errorf("failed to create question options for question ID %d: %w", questionModel.ID, err)
+				}
+			}
 		}
 
-		if err := tx.Create(&questionOptionArray).Error; err != nil {
-			return err
-		}
-		fmt.Println("Question, QuestionOption have been created successfully.")
+		fmt.Println("Questions and their options have been created successfully.")
 		return nil
 	})
 
-	return question, err
+	return err
 }
 
 func (repo *questionRepositoryPostgres) GetQuestionById(id uint) (*Question, error) {

@@ -46,6 +46,10 @@ type UpdateQuestionRequest struct {
 	QuestionType string `json:"question_type"`
 }
 
+type AddQuestionRequestBulk struct {
+	AddQuestionRequest []QuestionWithOptionsRequest `json:"add_question_request" validate:"required"`
+}
+
 // HandlerToCreateQuestions godoc
 // @Tags questions
 // @Summary add questions
@@ -53,14 +57,14 @@ type UpdateQuestionRequest struct {
 // @ID add-question
 // @Accept  json
 // @Produce  json
-// @Param QuestionWithOptionsRequest body QuestionWithOptionsRequest true "question"
+// @Param AddQuestionRequestBulk body AddQuestionRequestBulk true "question"
 // @Success 200 {object} utils.ResponseMessage
 // @Failure 400 {object} utils.ResponseMessage
 // @Failure 404 {object} utils.ResponseMessage
 // @Failure 500 {object} utils.ResponseMessage
 // @Router /questions [post]
 func HandlerToCreateQuestions(questionSvc QuestionService, c *gin.Context) {
-	addQuestionRequest := QuestionWithOptionsRequest{}
+	addQuestionRequest := AddQuestionRequestBulk{}
 	if err := c.ShouldBind(&addQuestionRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidIntegerValueLimitMessage, err), Data: nil})
 		return
@@ -71,18 +75,13 @@ func HandlerToCreateQuestions(questionSvc QuestionService, c *gin.Context) {
 		return
 	}
 
-	question := Question{
-		Questions:    addQuestionRequest.Questions,
-		QuestionType: addQuestionRequest.QuestionType,
-	}
-
-	createUser, err := questionSvc.AddQuestion(&question, addQuestionRequest.OptionNames)
+	err := questionSvc.AddQuestion(addQuestionRequest)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: "Something went wrong while creating question.", Data: nil})
 		return
 	}
 
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "question created successfully.", Data: createUser})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "question created successfully.", Data: nil})
 }
 
 // HandlerToUpdateQuestions godoc
