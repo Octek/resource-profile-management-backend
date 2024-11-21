@@ -29,7 +29,7 @@ func (svc *UserService) DeleteUserByUserID(userId uint) error {
 func (svc *UserService) UpdateUserByUserID(user *User) (*User, error) {
 	return svc.userRepository.UpdateUserByUserID(user)
 }
-func (svc *UserService) AddUserEducation(education Education) (Education, error) {
+func (svc *UserService) AddUserEducation(education []Education) ([]Education, error) {
 	return svc.userRepository.AddUserEducation(education)
 }
 
@@ -49,8 +49,8 @@ func (svc *UserService) GetUserEducationByUserId(userId uint) (*Education, error
 	return svc.userRepository.GetUserEducationByUserId(userId)
 }
 
-func (svc *UserService) DeleteUserEducationByID(userId uint) error {
-	return svc.userRepository.DeleteUserEducationByID(userId)
+func (svc *UserService) DeleteUserEducationByID(userId, id uint) error {
+	return svc.userRepository.DeleteUserEducationByID(userId, id)
 }
 
 func (svc *UserService) GetAllUserEducation(userId uint, limit int, offset int, orderBy string) ([]Education, uint, error) {

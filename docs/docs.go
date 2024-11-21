@@ -15,9 +15,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/experience": {
+        "/experience/add-experience-skills/{id}": {
             "post": {
-                "description": "Adds new experiences for a given user ID",
+                "description": "Add skill in existing experience",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,17 +27,24 @@ const docTemplate = `{
                 "tags": [
                     "experience"
                 ],
-                "summary": "Add experiences for user",
-                "operationId": "add-experience",
+                "summary": "Add skill in existing experience",
+                "operationId": "add-skill-in-existing-experience",
                 "parameters": [
                     {
-                        "description": "AddUserExperienceRequest",
-                        "name": "AddUserExperienceRequest",
+                        "description": "AddSkillsRequest",
+                        "name": "AddSkillsRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/experience.AddUserExperienceRequest"
+                            "$ref": "#/definitions/experience.AddSkillsRequest"
                         }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "experience Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -63,6 +70,71 @@ const docTemplate = `{
                         "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/experience/remove-experience-skills/{id}": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Delete user experience skill by experience id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Delete user experience skill by experience id",
+                "operationId": "delete-user-experience-skill-by-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "experience id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AddSkillsRequest",
+                        "name": "AddSkillsRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/experience.AddSkillsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -103,7 +175,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -157,7 +229,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "userId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -208,7 +280,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "experienceId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -248,6 +320,64 @@ const docTemplate = `{
                     }
                 }
             },
+            "post": {
+                "description": "Adds new experiences for a given user ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "experience"
+                ],
+                "summary": "Add experiences for user",
+                "operationId": "add-experience",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AddUserExperienceRequest",
+                        "name": "AddUserExperienceRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/experience.AddUserExperienceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "security": [
                     {
@@ -269,7 +399,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "experienceId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -323,7 +453,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "experienceId",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -331,7 +461,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "userId",
-                        "name": "userId",
+                        "name": "id",
                         "in": "query",
                         "required": true
                     },
@@ -784,33 +914,32 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
+            }
+        },
+        "/skills/add-skill-in-bulk": {
             "post": {
                 "security": [
                     {
                         "ApiAuthKey": []
                     }
                 ],
-                "description": "Create skills",
+                "description": "Add user skill",
                 "consumes": [
-                    "application/json"
-                ],
-                "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Skills"
                 ],
-                "summary": "Create skills",
-                "operationId": "Create-skills",
+                "summary": "Add user skill",
+                "operationId": "add-skill-in-bulk",
                 "parameters": [
                     {
-                        "description": "Skill",
-                        "name": "UserSkillRequest",
+                        "description": "User Skill",
+                        "name": "AddSkillsBulkRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/skills.UserSkillRequest"
+                            "$ref": "#/definitions/skills.AddSkillsBulkRequest"
                         }
                     }
                 ],
@@ -818,25 +947,87 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
+                            "type": "string"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
+                            "type": "string"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
+                            "type": "string"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/skills/add-user-skill/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "Add user skill",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Skills"
+                ],
+                "summary": "Add user skill",
+                "operationId": "add-user-skill",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User Skill",
+                        "name": "AddBulkUserSkillsRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/skills.AddBulkUserSkillsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -1408,59 +1599,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/education": {
-            "post": {
-                "description": "add user education",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "education"
-                ],
-                "summary": "add user education",
-                "operationId": "add-user-education",
-                "parameters": [
-                    {
-                        "description": "AddUserEducation",
-                        "name": "AddUserEducation",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/user.AddUserEducation"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/utils.ResponseMessage"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/user/education/all/{id}": {
             "get": {
                 "description": "get all user education",
@@ -1478,7 +1616,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "User Id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1547,7 +1685,14 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User Id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1558,6 +1703,64 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/user.Education"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "add user education",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "education"
+                ],
+                "summary": "add user education",
+                "operationId": "add-user-education",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "AddUserEducation",
+                        "name": "AddBulkUserEducation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.AddBulkUserEducation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
                         }
                     },
                     "400": {
@@ -1601,7 +1804,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User Id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -1655,16 +1864,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "educationId",
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "query",
+                        "description": "User Id",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     },
                     {
@@ -1969,20 +2178,25 @@ const docTemplate = `{
                 }
             }
         },
+        "experience.AddSkillsRequest": {
+            "type": "object",
+            "properties": {
+                "skill_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "experience.AddUserExperienceRequest": {
             "type": "object",
-            "required": [
-                "user_id"
-            ],
             "properties": {
                 "experiences": {
-                    "$ref": "#/definitions/experience.ExpRequest"
-                },
-                "skill_id": {
-                    "type": "integer"
-                },
-                "user_id": {
-                    "type": "integer"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/experience.ExpRequest"
+                    }
                 }
             }
         },
@@ -2011,6 +2225,12 @@ const docTemplate = `{
                 },
                 "responsibilities": {
                     "type": "string"
+                },
+                "skill_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 },
                 "start_date": {
                     "type": "string"
@@ -2207,6 +2427,28 @@ const docTemplate = `{
                 }
             }
         },
+        "skills.AddBulkUserSkillsRequest": {
+            "type": "object",
+            "properties": {
+                "user_skill": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/skills.UserSkillRequest"
+                    }
+                }
+            }
+        },
+        "skills.AddSkillsBulkRequest": {
+            "type": "object",
+            "properties": {
+                "skills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/skills.SkillRequest"
+                    }
+                }
+            }
+        },
         "skills.CreateSkillCategoryRequest": {
             "type": "object",
             "required": [
@@ -2301,24 +2543,33 @@ const docTemplate = `{
         "skills.UserSkillRequest": {
             "type": "object",
             "properties": {
-                "skillData": {
-                    "$ref": "#/definitions/skills.SkillRequest"
+                "skill_id": {
+                    "type": "integer"
                 },
                 "skill_level": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
+                }
+            }
+        },
+        "user.AddBulkUserEducation": {
+            "type": "object",
+            "required": [
+                "user_education"
+            ],
+            "properties": {
+                "user_education": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/user.AddUserEducation"
+                    }
                 }
             }
         },
         "user.AddUserEducation": {
             "type": "object",
             "required": [
-                "end_date",
                 "institution_name",
-                "start_date",
-                "user_id"
+                "start_date"
             ],
             "properties": {
                 "achievements": {
@@ -2338,9 +2589,6 @@ const docTemplate = `{
                 },
                 "start_date": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -2620,6 +2868,9 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/user.Role"
                     }
+                },
+                "showcase": {
+                    "type": "boolean"
                 },
                 "skills": {
                     "type": "array",
