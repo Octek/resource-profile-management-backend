@@ -2,7 +2,7 @@ package bookings
 
 // BookingRepository Used to store and retrieve user bookings
 type BookingRepository interface {
-	AddBooking(Booking *Booking, skillId, questionOptId uint) (*Booking, error)
+	AddBooking(Booking AddBookingRequest, userId uint) error
 	GetBookingById(id uint) (*Booking, error)
 	GetUserBookingByUserIdAndBookingId(userId, bookingId uint) (*Booking, error)
 	UpdateBooking(booking *Booking) error

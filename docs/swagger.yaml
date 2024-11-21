@@ -2,36 +2,11 @@ definitions:
   bookings.AddBookingRequest:
     properties:
       booking_request:
-        $ref: '#/definitions/bookings.BookingRequest'
-      question_option_id:
-        type: integer
-      skill_id:
-        type: integer
+        items:
+          $ref: '#/definitions/bookings.BookingRequest'
+        type: array
     required:
     - booking_request
-    type: object
-  bookings.BookingRequest:
-    properties:
-      booking_date_time:
-        type: string
-      meeting_link:
-        type: string
-      user_id:
-        type: integer
-    required:
-    - booking_date_time
-    - meeting_link
-    - user_id
-    type: object
-  bookings.UpdateUserBookingRequest:
-    properties:
-      booking_date_time:
-        type: string
-      meeting_link:
-        type: string
-    required:
-    - booking_date_time
-    - meeting_link
     type: object
   bookings.Booking:
     properties:
@@ -53,6 +28,34 @@ definitions:
         type: string
       user_id:
         type: integer
+    type: object
+  bookings.BookingRequest:
+    properties:
+      booking_date_time:
+        type: string
+      meeting_link:
+        type: string
+      question_option_id:
+        items:
+          type: integer
+        type: array
+      skill_id:
+        items:
+          type: integer
+        type: array
+    required:
+    - booking_date_time
+    - meeting_link
+    type: object
+  bookings.UpdateUserBookingRequest:
+    properties:
+      booking_date_time:
+        type: string
+      meeting_link:
+        type: string
+    required:
+    - booking_date_time
+    - meeting_link
     type: object
   experience.AddSkillsRequest:
     properties:
@@ -512,6 +515,245 @@ definitions:
 info:
   contact: {}
 paths:
+  /bookings:
+    post:
+      consumes:
+      - application/json
+      description: Create bookings
+      operationId: Create-bookings
+      parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Booking
+        in: body
+        name: AddBookingRequest
+        required: true
+        schema:
+          $ref: '#/definitions/bookings.AddBookingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      summary: Create bookings
+      tags:
+      - Booking
+  /bookings/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user booking by id
+      operationId: delete-user-booking-by-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      security:
+      - ApiAuthKey: []
+      summary: Delete user booking by id
+      tags:
+      - Booking
+    get:
+      consumes:
+      - application/json
+      description: get user booking details by id
+      operationId: get-user-booking-details-by-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: userId
+        in: query
+        name: userId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      summary: Get user booking details by id
+      tags:
+      - Booking
+    patch:
+      consumes:
+      - application/json
+      description: Update booking
+      operationId: update-booking
+      parameters:
+      - description: booking ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: userId
+        in: query
+        name: userId
+        required: true
+        type: integer
+      - description: booking
+        in: body
+        name: UpdateUserBookingRequest
+        required: true
+        schema:
+          $ref: '#/definitions/bookings.UpdateUserBookingRequest'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      security:
+      - ApiAuthKey: []
+      summary: Update booking
+      tags:
+      - Booking
+  /bookings/user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete user booking by user id
+      operationId: delete-booking-by-user-id
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      security:
+      - ApiAuthKey: []
+      summary: Delete user booking by user id
+      tags:
+      - Booking
+    get:
+      consumes:
+      - application/json
+      description: Get all user booking
+      operationId: Get-all-user-booking
+      parameters:
+      - description: example - 50
+        in: query
+        name: limit
+        type: integer
+      - description: example - 0
+        in: query
+        name: offset
+        type: integer
+      - description: example - created_at desc,updated_at desc
+        in: query
+        name: orderBy
+        type: string
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      summary: Get all user booking
+      tags:
+      - Booking
   /experience/{id}:
     delete:
       consumes:
@@ -834,234 +1076,6 @@ paths:
       summary: Get all user experience
       tags:
       - experience
-  /bookings:
-    post:
-      consumes:
-      - application/json
-      description: Create bookings
-      operationId: Create-bookings
-      parameters:
-      - description: Booking
-        in: body
-        name: AddBookingRequest
-        required: true
-        schema:
-          $ref: '#/definitions/bookings.AddBookingRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Create bookings
-      tags:
-      - Booking
-  /bookings/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: delete user booking by id
-      operationId: delete-user-booking-by-id
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Delete user booking by id
-      tags:
-      - Booking
-    get:
-      consumes:
-      - application/json
-      description: get user booking details by id
-      operationId: get-user-booking-details-by-id
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: userId
-        in: query
-        name: userId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Get user booking details by id
-      tags:
-      - Booking
-    patch:
-      consumes:
-      - application/json
-      description: Update booking
-      operationId: update-booking
-      parameters:
-      - description: booking ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: userId
-        in: query
-        name: userId
-        required: true
-        type: integer
-      - description: booking
-        in: body
-        name: UpdateUserBookingRequest
-        required: true
-        schema:
-          $ref: '#/definitions/bookings.UpdateUserBookingRequest'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Update booking
-      tags:
-      - Booking
-  /bookings/user/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: delete user booking by user id
-      operationId: delete-booking-by-user-id
-      parameters:
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Delete user booking by user id
-      tags:
-      - Booking
-    get:
-      consumes:
-      - application/json
-      description: Get all user booking
-      operationId: Get-all-user-booking
-      parameters:
-      - description: example - 50
-        in: query
-        name: limit
-        type: integer
-      - description: example - 0
-        in: query
-        name: offset
-        type: integer
-      - description: example - created_at desc,updated_at desc
-        in: query
-        name: orderBy
-        type: string
-      - description: id
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Get all user booking
-      tags:
-      - Booking
   /skills:
     get:
       consumes:

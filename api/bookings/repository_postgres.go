@@ -22,33 +22,55 @@ func NewBookingRepositoryPostgres(db *gorm.DB) BookingRepository {
 	}
 }
 
-func (repo *bookingRepositoryPostgres) AddBooking(Booking *Booking, skillId, questionOptId uint) (*Booking, error) {
-
+func (repo *bookingRepositoryPostgres) AddBooking(request AddBookingRequest, userId uint) error {
 	err := repo.db.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&Booking).Error; err != nil {
-			return err
+		for _, bookingReq := range request.BookingRequest {
+			bookingModel := Booking{
+				UserID:          userId,
+				BookingDateTime: bookingReq.BookingDateTime,
+				MeetingLink:     bookingReq.MeetingLink,
+			}
+
+			if err := tx.Create(&bookingModel).Error; err != nil {
+				return fmt.Errorf("failed to create booking: %w", err)
+			}
+
+			var bookingSkillArray []BookingSkill
+			for _, skillID := range bookingReq.SkillID {
+				bookingSkill := BookingSkill{
+					SkillID:   skillID,
+					BookingID: bookingModel.ID,
+				}
+				bookingSkillArray = append(bookingSkillArray, bookingSkill)
+			}
+
+			if len(bookingSkillArray) > 0 {
+				if err := tx.Create(&bookingSkillArray).Error; err != nil {
+					return fmt.Errorf("failed to create booking skills for booking ID %d: %w", bookingModel.ID, err)
+				}
+			}
+
+			var bookingQuestionArray []BookingQuestion
+			for _, questionOptionID := range bookingReq.QuestionOptionID {
+				bookingQuestion := BookingQuestion{
+					QuestionOptionID: questionOptionID,
+					BookingID:        bookingModel.ID,
+				}
+				bookingQuestionArray = append(bookingQuestionArray, bookingQuestion)
+			}
+
+			if len(bookingQuestionArray) > 0 {
+				if err := tx.Create(&bookingQuestionArray).Error; err != nil {
+					return fmt.Errorf("failed to create booking questions for booking ID %d: %w", bookingModel.ID, err)
+				}
+			}
 		}
 
-		bookingQuestion := BookingQuestion{
-			QuestionOptionID: questionOptId,
-			BookingID:        Booking.ID,
-		}
-		if err := tx.Create(&bookingQuestion).Error; err != nil {
-			return err
-		}
-
-		bookingSkill := BookingSkill{
-			SkillID:   skillId,
-			BookingID: Booking.ID,
-		}
-		if err := tx.Create(&bookingSkill).Error; err != nil {
-			return err
-		}
-		fmt.Println("Booking, bookingQuestion, and BookingSkill have been created successfully.")
+		fmt.Println("Booking, BookingSkill, and BookingQuestion records have been created successfully.")
 		return nil
 	})
 
-	return Booking, err
+	return err
 }
 
 func (repo *bookingRepositoryPostgres) GetBookingById(id uint) (*Booking, error) {

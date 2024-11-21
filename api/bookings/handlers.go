@@ -40,15 +40,14 @@ func Routes(router *gin.Engine, bookingSvc BookingService) {
 }
 
 type AddBookingRequest struct {
-	BookingRequest   BookingRequest `json:"booking_request" validate:"required"`
-	SkillID          uint           `json:"skill_id"`
-	QuestionOptionID uint           `json:"question_option_id"`
+	BookingRequest []BookingRequest `json:"booking_request" validate:"required"`
 }
 
 type BookingRequest struct {
-	UserID          uint      `json:"user_id" validate:"required"`
-	BookingDateTime time.Time `json:"booking_date_time" validate:"required"`
-	MeetingLink     string    `json:"meeting_link" validate:"required"`
+	SkillID          []uint    `json:"skill_id"`
+	QuestionOptionID []uint    `json:"question_option_id"`
+	BookingDateTime  time.Time `json:"booking_date_time" validate:"required"`
+	MeetingLink      string    `json:"meeting_link" validate:"required"`
 }
 
 type UpdateUserBookingRequest struct {
@@ -63,6 +62,7 @@ type UpdateUserBookingRequest struct {
 // @ID Create-bookings
 // @Accept json
 // @Produce json
+// @Param id path uint true "User Id"
 // @Param AddBookingRequest body AddBookingRequest true "Booking"
 // @Success 200 {object} utils.ResponseMessage
 // @Failure 400 {object} utils.ResponseMessage
@@ -70,6 +70,8 @@ type UpdateUserBookingRequest struct {
 // @Failure 500 {object} utils.ResponseMessage
 // @Router /bookings [post]
 func AddUserBookingHandler(bookingSvc BookingService, c *gin.Context) {
+	userId := c.Param("id")
+	userIdInt, _ := strconv.Atoi(userId)
 	var addBookingRequest AddBookingRequest
 	if err := c.ShouldBind(&addBookingRequest); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
@@ -80,17 +82,13 @@ func AddUserBookingHandler(bookingSvc BookingService, c *gin.Context) {
 		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
 		return
 	}
-	bookingObj := Booking{
-		UserID:          addBookingRequest.BookingRequest.UserID,
-		BookingDateTime: addBookingRequest.BookingRequest.BookingDateTime,
-		MeetingLink:     addBookingRequest.BookingRequest.MeetingLink,
-	}
-	booking, err := bookingSvc.AddBooking(&bookingObj, addBookingRequest.QuestionOptionID, addBookingRequest.SkillID)
+
+	err := bookingSvc.AddBooking(addBookingRequest, uint(userIdInt))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileAddingBooking, err), Data: nil})
 		return
 	}
-	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyAddedBooking), Data: booking})
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: fmt.Sprintf(utils.SuccessfullyAddedBooking), Data: nil})
 }
 
 // UpdateUserBookingByIdHandler godoc

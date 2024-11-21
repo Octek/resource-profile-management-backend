@@ -8,8 +8,8 @@ func NewService(r BookingRepository) BookingService {
 	return BookingService{bookingRepository: r}
 }
 
-func (svc *BookingService) AddBooking(booking *Booking, questionOptId, skillId uint) (*Booking, error) {
-	return svc.bookingRepository.AddBooking(booking, questionOptId, skillId)
+func (svc *BookingService) AddBooking(booking AddBookingRequest, userId uint) error {
+	return svc.bookingRepository.AddBooking(booking, userId)
 }
 
 func (svc *BookingService) GetBookingById(id uint) (*Booking, error) {
