@@ -573,7 +573,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "user id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -642,7 +642,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "project id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -756,7 +756,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "user id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -810,16 +810,16 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "id",
+                        "description": "project id",
                         "name": "id",
-                        "in": "path",
+                        "in": "query",
                         "required": true
                     },
                     {
                         "type": "integer",
-                        "description": "userId",
-                        "name": "userId",
-                        "in": "query",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
                         "required": true
                     },
                     {

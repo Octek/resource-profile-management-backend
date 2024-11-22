@@ -96,8 +96,8 @@ func AddProjectsHandler(projectSvc ProjectService, c *gin.Context) {
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
-// @Param userId query uint true "userId"
+// @Param id query uint true "project id"
+// @Param id path uint true "user id"
 // @Param UpdateProjectRequest body UpdateProjectRequest true "UpdateProjectRequest"
 // @Success 200 {object} string
 // @Failure 400 {object} string
@@ -105,9 +105,9 @@ func AddProjectsHandler(projectSvc ProjectService, c *gin.Context) {
 // @Failure 500 {object} string
 // @Router /projects/{id} [patch]
 func UpdateProjectByIdHandler(projectSvc ProjectService, c *gin.Context) {
-	projId := c.Param("id")
+	projId := c.Request.URL.Query().Get("id")
 	projIdInt, _ := strconv.Atoi(projId)
-	userId := c.Request.URL.Query().Get("userId")
+	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
 	var updateProjectRequest UpdateProjectRequest
 
@@ -154,7 +154,7 @@ func UpdateProjectByIdHandler(projectSvc ProjectService, c *gin.Context) {
 // @Security ApiAuthKey
 // @Accept  json
 // @Produce  json
-// @Param id path int true "id"
+// @Param id path int true "user id"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -179,7 +179,7 @@ func DeleteUserProjectByUserIdHandler(projectSvc ProjectService, c *gin.Context)
 // @ID get-user-project-details-by-user-id
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
+// @Param id path uint true "project id"
 // @Success 200 {object} string
 // @Failure 400 {object} string
 // @Failure 404 {object} string
@@ -211,7 +211,7 @@ type AllUserProjects struct {
 // @ID get-all-user-project
 // @Accept  json
 // @Produce  json
-// @Param id path uint true "id"
+// @Param id path uint true "user id"
 // @Param   limit    query     int     false  "example - 50"     limit(int)
 // @Param   offset     query     int     false  "example - 0"     offset(int)
 // @Param   orderBy     query     string     false  "example - created_at desc"  orderBy(string)

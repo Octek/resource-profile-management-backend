@@ -886,7 +886,7 @@ paths:
       description: delete user project by user id
       operationId: delete-user-project-by-user-id
       parameters:
-      - description: id
+      - description: user id
         in: path
         name: id
         required: true
@@ -921,7 +921,7 @@ paths:
       description: get user project details by user id
       operationId: get-user-project-details-by-user-id
       parameters:
-      - description: id
+      - description: project id
         in: path
         name: id
         required: true
@@ -954,14 +954,14 @@ paths:
       description: Update user project
       operationId: update-user-project
       parameters:
-      - description: id
-        in: path
+      - description: project id
+        in: query
         name: id
         required: true
         type: integer
-      - description: userId
-        in: query
-        name: userId
+      - description: user id
+        in: path
+        name: id
         required: true
         type: integer
       - description: UpdateProjectRequest
@@ -1040,7 +1040,7 @@ paths:
       description: get all user project
       operationId: get-all-user-project
       parameters:
-      - description: id
+      - description: user id
         in: path
         name: id
         required: true
