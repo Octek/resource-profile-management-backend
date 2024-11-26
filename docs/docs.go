@@ -2362,6 +2362,9 @@ const docTemplate = `{
                 "first_name": {
                     "type": "string"
                 },
+                "job_title": {
+                    "type": "string"
+                },
                 "last_name": {
                     "type": "string"
                 },

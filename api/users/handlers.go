@@ -242,6 +242,7 @@ type UpdateUser struct {
 	Email          string `json:"email"`
 	MobileNumber   string `json:"mobile_number"`
 	ProfilePicture string `json:"profile_picture"`
+	JobTitle       string `json:"job_title"`
 	Bio            string `json:"bio"`
 	Location       string `json:"location"`
 	VideoUrl       string `json:"video_url"`
