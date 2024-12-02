@@ -15,8 +15,8 @@ tasks:
         export SMTP_PORT="587"
         export SENDER_EMAIL="hrsourceit42@gmail.com"
         export SENDER_PASSWORD="vfks vrch jcys szlj"
-        export TO_EMAIL="hej@sourceit.se"
-        export CC_EMAILS=nicklas.rydberg@sourceit.se,aladdin.kader@sourceit.se
+        export TO_EMAIL="test@test.com"
+        export CC_EMAILS=test@test.com,test@test.com
         export SWAGGER_HOST_URL=localhost:4001
         go run .
   swagger:
