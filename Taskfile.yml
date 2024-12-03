@@ -15,9 +15,10 @@ tasks:
         export SMTP_PORT="587"
         export SENDER_EMAIL="hrsourceit42@gmail.com"
         export SENDER_PASSWORD="vfks vrch jcys szlj"
-        export TO_EMAIL="test@test.com"
-        export CC_EMAILS=test@test.com,test@test.com
+        export TO_EMAIL="meharu641@gmail.com"
+        export CC_EMAILS=abdullahhkhalidd734@gmail.com,bcsm-f18-494@superior.edu.pk
         export SWAGGER_HOST_URL=localhost:4001
+        export CC_TOGGLE=false
         go run .
   swagger:
     cmds:

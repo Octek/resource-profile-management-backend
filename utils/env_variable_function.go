@@ -16,6 +16,7 @@ const (
 	SENDER_PASSWORD              = "SENDER_PASSWORD"
 	CC_EMAILS                    = "CC_EMAILS"
 	TO_EMAIL                     = "TO_EMAIL"
+	CC_TOGGLE                    = "CC_TOGGLE"
 )
 
 func GetConnectionString() string {
@@ -92,6 +93,14 @@ func GetToEmail() string {
 		panic(TO_EMAIL + EnvironmentVariableNotSet)
 	}
 	return toEmail
+}
+
+func GetCCToggle() string {
+	ccToggle, ok := os.LookupEnv(CC_TOGGLE)
+	if !ok {
+		panic(CC_TOGGLE + EnvironmentVariableNotSet)
+	}
+	return ccToggle
 }
 
 const (
