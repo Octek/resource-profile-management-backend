@@ -71,8 +71,8 @@ func SendEmail(req ContactUsRequest) error {
 	ccToggle := utils.GetCCToggle()
 
 	emailBody := fmt.Sprintf(
-		"Name: %s\nEmail: %s\nSubject: %s\nMessage: %s",
-		req.Name, req.Email, req.Subject, req.Message,
+		"Name: %s\nEmail: %s\nMessage: %s",
+		req.Name, req.Email, req.Message,
 	)
 
 	headers := make(map[string]string)
