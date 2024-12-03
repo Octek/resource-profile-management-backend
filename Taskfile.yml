@@ -15,7 +15,7 @@ tasks:
         export SMTP_PORT=587
         export SENDER_EMAIL=hrsourceit42@gmail.com
         export SENDER_PASSWORD="vfks vrch jcys szlj"
-        export TO_EMAIL=meharu641@gmail.com
+        export TO_EMAIL=test@test.com
         export CC_EMAILS=test@test.com,test@test.com
         export SWAGGER_HOST_URL=localhost:4001
         export SEND_CC_EMAIL=false
