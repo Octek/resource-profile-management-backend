@@ -68,22 +68,29 @@ func SendEmail(req ContactUsRequest) error {
 	senderPass := utils.GetSenderPassword()
 	ccEmails := utils.GetCCEmails()
 	toEmail := utils.GetToEmail()
+	ccToggle := utils.GetCCToggle()
 
 	emailBody := fmt.Sprintf(
-		"Name: %s\nEmail: %s\nSubject: %s\nMessage: %s",
+		"Name: %s\nEmail: %s\nMessage: %s",
 		req.Name, req.Email, req.Message,
 	)
 
 	headers := make(map[string]string)
 	headers["From"] = senderEmail
 	headers["To"] = toEmail
-	if ccEmails != "" {
+
+	var recipients []string
+	recipients = append(recipients, toEmail)
+
+	if ccToggle == "true" && ccEmails != "" {
 		ccAddresses := strings.Split(ccEmails, ",")
 		for i, addr := range ccAddresses {
 			ccAddresses[i] = strings.TrimSpace(addr)
 		}
 		headers["Cc"] = strings.Join(ccAddresses, ",")
+		recipients = append(recipients, ccAddresses...)
 	}
+
 	headers["Subject"] = req.Subject
 
 	msg := ""
@@ -91,17 +98,10 @@ func SendEmail(req ContactUsRequest) error {
 		msg += fmt.Sprintf("%s: %s\r\n", key, value)
 	}
 	msg += "\r\n" + emailBody
+
 	auth := smtp.PlainAuth("", senderEmail, senderPass, smtpHost)
-
-	recipients := []string{req.Email}
-	if ccEmails != "" {
-		ccAddresses := strings.Split(ccEmails, ",")
-		for _, addr := range ccAddresses {
-			recipients = append(recipients, strings.TrimSpace(addr))
-		}
-	}
-
 	addr := fmt.Sprintf("%s:%d", smtpHost, smtpPort)
+
 	err := smtp.SendMail(addr, auth, senderEmail, recipients, []byte(msg))
 	if err != nil {
 		return fmt.Errorf("failed to send email: %v", err)

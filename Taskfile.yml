@@ -11,13 +11,14 @@ tasks:
         export S3_BUCKET_NAME=skoopsignage-dev
         export SERVER_PORT=4001
         export AUTH_TOKEN="kmWCIMkEUE4I7thvO8X6shsDee4AA04ATrIvQxBgps7fKOTfX3p83Rj5g0EpxA9D"
-        export SMTP_HOST="smtp.gmail.com"
-        export SMTP_PORT="587"
-        export SENDER_EMAIL="hrsourceit42@gmail.com"
+        export SMTP_HOST=smtp.gmail.com
+        export SMTP_PORT=587
+        export SENDER_EMAIL=hrsourceit42@gmail.com
         export SENDER_PASSWORD="vfks vrch jcys szlj"
-        export TO_EMAIL="test@test.com"
+        export TO_EMAIL=test@test.com
         export CC_EMAILS=test@test.com,test@test.com
         export SWAGGER_HOST_URL=localhost:4001
+        export SEND_CC_EMAIL=false
         go run .
   swagger:
     cmds:
