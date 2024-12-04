@@ -38,3 +38,11 @@ func (svc *BookingService) DeleteUserBookingByUserID(id uint) error {
 func (svc *BookingService) GetAllUserBooking(userId uint, limit int, offset int, orderBy string) ([]Booking, uint, error) {
 	return svc.bookingRepository.GetAllUserBooking(userId, limit, offset, orderBy)
 }
+
+func (svc *BookingService) AddBookingSkills(skillIds []uint, bookingId uint) error {
+	return svc.bookingRepository.AddBookingSkills(skillIds, bookingId)
+}
+
+func (svc *BookingService) AddBookingQuestionOption(questionOptId []uint, bookingId uint) error {
+	return svc.bookingRepository.AddBookingQuestionOption(questionOptId, bookingId)
+}

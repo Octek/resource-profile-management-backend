@@ -34,38 +34,52 @@ func (repo *bookingRepositoryPostgres) AddBooking(request AddBookingRequest, use
 			if err := tx.Create(&bookingModel).Error; err != nil {
 				return fmt.Errorf("failed to create booking: %w", err)
 			}
-
-			var bookingSkillArray []BookingSkill
-			for _, skillID := range bookingReq.SkillID {
-				bookingSkill := BookingSkill{
-					SkillID:   skillID,
-					BookingID: bookingModel.ID,
-				}
-				bookingSkillArray = append(bookingSkillArray, bookingSkill)
-			}
-
-			if len(bookingSkillArray) > 0 {
-				if err := tx.Create(&bookingSkillArray).Error; err != nil {
-					return fmt.Errorf("failed to create booking skills for booking ID %d: %w", bookingModel.ID, err)
-				}
-			}
-
-			var bookingQuestionArray []BookingQuestion
-			for _, questionOptionID := range bookingReq.QuestionOptionID {
-				bookingQuestion := BookingQuestion{
-					QuestionOptionID: questionOptionID,
-					BookingID:        bookingModel.ID,
-				}
-				bookingQuestionArray = append(bookingQuestionArray, bookingQuestion)
-			}
-
-			if len(bookingQuestionArray) > 0 {
-				if err := tx.Create(&bookingQuestionArray).Error; err != nil {
-					return fmt.Errorf("failed to create booking questions for booking ID %d: %w", bookingModel.ID, err)
-				}
-			}
 		}
 
+		fmt.Println("Booking have been created successfully.")
+		return nil
+	})
+
+	return err
+}
+
+func (repo *bookingRepositoryPostgres) AddBookingSkills(skillIds []uint, bookingId uint) error {
+	var bookingSkillArray []BookingSkill
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		for _, skillID := range skillIds {
+			bookingSkill := BookingSkill{
+				SkillID:   skillID,
+				BookingID: bookingId,
+			}
+			bookingSkillArray = append(bookingSkillArray, bookingSkill)
+		}
+
+		if len(bookingSkillArray) > 0 {
+			if err := tx.Create(&bookingSkillArray).Error; err != nil {
+				return fmt.Errorf("failed to create booking skills for booking ID %d: %w", bookingId, err)
+			}
+		}
+		return nil
+	})
+	return err
+}
+
+func (repo *bookingRepositoryPostgres) AddBookingQuestionOption(questionOptId []uint, bookingId uint) error {
+	var bookingQuestionArray []BookingQuestion
+	err := repo.db.Transaction(func(tx *gorm.DB) error {
+		for _, questionOptionID := range questionOptId {
+			bookingQuestion := BookingQuestion{
+				QuestionOptionID: questionOptionID,
+				BookingID:        bookingId,
+			}
+			bookingQuestionArray = append(bookingQuestionArray, bookingQuestion)
+		}
+
+		if len(bookingQuestionArray) > 0 {
+			if err := tx.Create(&bookingQuestionArray).Error; err != nil {
+				return fmt.Errorf("failed to create booking questions for booking ID %d: %w", bookingId, err)
+			}
+		}
 		fmt.Println("Booking, BookingSkill, and BookingQuestion records have been created successfully.")
 		return nil
 	})

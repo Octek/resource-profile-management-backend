@@ -17,7 +17,7 @@ var validate = validator.New()
 func Routes(router *gin.Engine, bookingSvc BookingService) {
 	subRouter := router.Group("/bookings")
 	{
-		subRouter.POST("", func(c *gin.Context) {
+		subRouter.POST("/:id", func(c *gin.Context) {
 			AddUserBookingHandler(bookingSvc, c)
 		})
 		subRouter.GET("/:id", func(c *gin.Context) {
@@ -35,6 +35,12 @@ func Routes(router *gin.Engine, bookingSvc BookingService) {
 		subRouter.GET("/user/:id", func(c *gin.Context) {
 			HandlerToGetAllUserBookings(bookingSvc, c)
 		})
+		subRouter.POST("/booking-skills/:id", func(c *gin.Context) {
+			HandlerToBookSkills(bookingSvc, c)
+		})
+		subRouter.POST("/booking-question/:id", func(c *gin.Context) {
+			HandlerToBookQuestion(bookingSvc, c)
+		})
 	}
 
 }
@@ -44,10 +50,8 @@ type AddBookingRequest struct {
 }
 
 type BookingRequest struct {
-	SkillID          []uint    `json:"skill_id"`
-	QuestionOptionID []uint    `json:"question_option_id"`
-	BookingDateTime  time.Time `json:"booking_date_time" validate:"required"`
-	MeetingLink      string    `json:"meeting_link" validate:"required"`
+	BookingDateTime time.Time `json:"booking_date_time" validate:"required"`
+	MeetingLink     string    `json:"meeting_link" validate:"required"`
 }
 
 type UpdateUserBookingRequest struct {
@@ -68,7 +72,7 @@ type UpdateUserBookingRequest struct {
 // @Failure 400 {object} utils.ResponseMessage
 // @Failure 404 {object} utils.ResponseMessage
 // @Failure 500 {object} utils.ResponseMessage
-// @Router /bookings [post]
+// @Router /bookings/{id} [post]
 func AddUserBookingHandler(bookingSvc BookingService, c *gin.Context) {
 	userId := c.Param("id")
 	userIdInt, _ := strconv.Atoi(userId)
@@ -280,4 +284,110 @@ func DeleteUserBookingByUserIdHandler(bookingSvc BookingService, c *gin.Context)
 	}
 
 	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "Success", Data: nil})
+}
+
+type AddBookingSkillRequest struct {
+	SkillId []uint `json:"skill_id"`
+}
+
+// HandlerToBookSkills godoc
+// @Tags Booking
+// @Summary book skills
+// @Description book skills
+// @ID booking-skills-by-booking-id
+// @Security ApiAuthKey
+// @Accept  json
+// @Produce  json
+// @Param id path int true "booking id"
+// @Param AddBookingSkillRequest body AddBookingSkillRequest true "booking"
+// @Success 200 {object} utils.ResponseMessage
+// @Failure 400 {object} utils.ResponseMessage
+// @Failure 404 {object} utils.ResponseMessage
+// @Failure 500 {object} utils.ResponseMessage
+// @Router /bookings/booking-skills/{id} [post]
+func HandlerToBookSkills(bookingSvc BookingService, c *gin.Context) {
+	var addBookingSkillRequest AddBookingSkillRequest
+
+	if err := c.ShouldBindJSON(&addBookingSkillRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
+		return
+	}
+
+	if err := validate.Struct(&addBookingSkillRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
+		return
+	}
+
+	bookingId, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: "Invalid Booking ID", Data: nil})
+		return
+	}
+
+	_, err = bookingSvc.GetBookingById(uint(bookingId))
+	if err != nil {
+		c.JSON(http.StatusNotFound, utils.ResponseMessage{StatusCode: http.StatusNotFound, Message: "Booking not found", Data: nil})
+		return
+	}
+
+	err = bookingSvc.AddBookingSkills(addBookingSkillRequest.SkillId, uint(bookingId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileAddingBookingSkills, err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "booking skills added successfully.", Data: nil})
+}
+
+type AddBookingQuestionOptionRequest struct {
+	QuestionOptionID []uint `json:"question_option_id"`
+}
+
+// HandlerToBookQuestion godoc
+// @Tags Booking
+// @Summary book question option
+// @Description book questions option
+// @ID booking-question-option-by-booking-id
+// @Security ApiAuthKey
+// @Accept  json
+// @Produce  json
+// @Param id path int true "booking id"
+// @Param AddBookingQuestionOptionRequest body AddBookingQuestionOptionRequest true "booking"
+// @Success 200 {object} utils.ResponseMessage
+// @Failure 400 {object} utils.ResponseMessage
+// @Failure 404 {object} utils.ResponseMessage
+// @Failure 500 {object} utils.ResponseMessage
+// @Router /bookings/booking-question/{id} [post]
+func HandlerToBookQuestion(bookingSvc BookingService, c *gin.Context) {
+	var addBookingQuestionOptionRequest AddBookingQuestionOptionRequest
+
+	if err := c.ShouldBindJSON(&addBookingQuestionOptionRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.InvalidJsonBody, err), Data: nil})
+		return
+	}
+
+	if err := validate.Struct(&addBookingQuestionOptionRequest); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: fmt.Sprintf(utils.RequestSchemaInvalid, err), Data: nil})
+		return
+	}
+
+	bookingId, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, utils.ResponseMessage{StatusCode: http.StatusBadRequest, Message: "Invalid Booking ID", Data: nil})
+		return
+	}
+
+	_, err = bookingSvc.GetBookingById(uint(bookingId))
+	if err != nil {
+		c.JSON(http.StatusNotFound, utils.ResponseMessage{StatusCode: http.StatusNotFound, Message: "Booking not found", Data: nil})
+		return
+	}
+
+	err = bookingSvc.AddBookingQuestionOption(addBookingQuestionOptionRequest.QuestionOptionID, uint(bookingId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ResponseMessage{StatusCode: http.StatusInternalServerError, Message: fmt.Sprintf(utils.SomethingWentWrongWhileAddingBookingQuestionOption, err), Data: nil})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.ResponseMessage{StatusCode: http.StatusOK, Message: "booking question option added successfully.", Data: nil})
 }

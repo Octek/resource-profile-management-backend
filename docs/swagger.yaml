@@ -1,4 +1,11 @@
 definitions:
+  bookings.AddBookingQuestionOptionRequest:
+    properties:
+      question_option_id:
+        items:
+          type: integer
+        type: array
+    type: object
   bookings.AddBookingRequest:
     properties:
       booking_request:
@@ -7,6 +14,13 @@ definitions:
         type: array
     required:
     - booking_request
+    type: object
+  bookings.AddBookingSkillRequest:
+    properties:
+      skill_id:
+        items:
+          type: integer
+        type: array
     type: object
   bookings.Booking:
     properties:
@@ -29,6 +43,26 @@ definitions:
       user_id:
         type: integer
     type: object
+  bookings.BookingRequest:
+    properties:
+      booking_date_time:
+        type: string
+      meeting_link:
+        type: string
+    required:
+    - booking_date_time
+    - meeting_link
+    type: object
+  bookings.UpdateUserBookingRequest:
+    properties:
+      booking_date_time:
+        type: string
+      meeting_link:
+        type: string
+    required:
+    - booking_date_time
+    - meeting_link
+    type: object
   contact_us.ContactUsRequest:
     properties:
       email:
@@ -44,34 +78,6 @@ definitions:
     - message
     - name
     - subject
-    type: object
-  bookings.BookingRequest:
-    properties:
-      booking_date_time:
-        type: string
-      meeting_link:
-        type: string
-      question_option_id:
-        items:
-          type: integer
-        type: array
-      skill_id:
-        items:
-          type: integer
-        type: array
-    required:
-    - booking_date_time
-    - meeting_link
-    type: object
-  bookings.UpdateUserBookingRequest:
-    properties:
-      booking_date_time:
-        type: string
-      meeting_link:
-        type: string
-    required:
-    - booking_date_time
-    - meeting_link
     type: object
   experience.AddSkillsRequest:
     properties:
@@ -533,81 +539,6 @@ definitions:
 info:
   contact: {}
 paths:
-  /contact-us:
-    post:
-      consumes:
-      - application/json
-      description: Adds new Contact Us Info
-      operationId: add-contact-us
-      parameters:
-      - description: ContactUsRequest
-        in: body
-        name: ContactUsRequest
-        required: true
-        schema:
-          $ref: '#/definitions/contact_us.ContactUsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Add Contact Us Info
-      tags:
-      - contact-us
-  /bookings:
-    post:
-      consumes:
-      - application/json
-      description: Create bookings
-      operationId: Create-bookings
-      parameters:
-      - description: User Id
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Booking
-        in: body
-        name: AddBookingRequest
-        required: true
-        schema:
-          $ref: '#/definitions/bookings.AddBookingRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/utils.ResponseMessage'
-      summary: Create bookings
-      tags:
-      - Booking
   /bookings/{id}:
     delete:
       consumes:
@@ -726,6 +657,129 @@ paths:
       summary: Update booking
       tags:
       - Booking
+    post:
+      consumes:
+      - application/json
+      description: Create bookings
+      operationId: Create-bookings
+      parameters:
+      - description: User Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Booking
+        in: body
+        name: AddBookingRequest
+        required: true
+        schema:
+          $ref: '#/definitions/bookings.AddBookingRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      summary: Create bookings
+      tags:
+      - Booking
+  /bookings/booking-question/{id}:
+    post:
+      consumes:
+      - application/json
+      description: book questions option
+      operationId: booking-question-option-by-booking-id
+      parameters:
+      - description: booking id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: booking
+        in: body
+        name: AddBookingQuestionOptionRequest
+        required: true
+        schema:
+          $ref: '#/definitions/bookings.AddBookingQuestionOptionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      security:
+      - ApiAuthKey: []
+      summary: book question option
+      tags:
+      - Booking
+  /bookings/booking-skills/{id}:
+    post:
+      consumes:
+      - application/json
+      description: book skills
+      operationId: booking-skills-by-booking-id
+      parameters:
+      - description: booking id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: booking
+        in: body
+        name: AddBookingSkillRequest
+        required: true
+        schema:
+          $ref: '#/definitions/bookings.AddBookingSkillRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      security:
+      - ApiAuthKey: []
+      summary: book skills
+      tags:
+      - Booking
   /bookings/user/{id}:
     delete:
       consumes:
@@ -807,6 +861,41 @@ paths:
       summary: Get all user booking
       tags:
       - Booking
+  /contact-us:
+    post:
+      consumes:
+      - application/json
+      description: Adds new Contact Us Info
+      operationId: add-contact-us
+      parameters:
+      - description: ContactUsRequest
+        in: body
+        name: ContactUsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/contact_us.ContactUsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ResponseMessage'
+      summary: Add Contact Us Info
+      tags:
+      - contact-us
   /experience/{id}:
     delete:
       consumes:

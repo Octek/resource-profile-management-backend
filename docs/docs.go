@@ -15,9 +15,14 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/bookings": {
+        "/bookings/booking-question/{id}": {
             "post": {
-                "description": "Create bookings",
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "book questions option",
                 "consumes": [
                     "application/json"
                 ],
@@ -27,23 +32,88 @@ const docTemplate = `{
                 "tags": [
                     "Booking"
                 ],
-                "summary": "Create bookings",
-                "operationId": "Create-bookings",
+                "summary": "book question option",
+                "operationId": "booking-question-option-by-booking-id",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "User Id",
+                        "description": "booking id",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Booking",
-                        "name": "AddBookingRequest",
+                        "description": "booking",
+                        "name": "AddBookingQuestionOptionRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/bookings.AddBookingRequest"
+                            "$ref": "#/definitions/bookings.AddBookingQuestionOptionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
+        "/bookings/booking-skills/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiAuthKey": []
+                    }
+                ],
+                "description": "book skills",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "book skills",
+                "operationId": "booking-skills-by-booking-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "booking id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "booking",
+                        "name": "AddBookingSkillRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bookings.AddBookingSkillRequest"
                         }
                     }
                 ],
@@ -226,6 +296,64 @@ const docTemplate = `{
                         "name": "userId",
                         "in": "query",
                         "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create bookings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Booking"
+                ],
+                "summary": "Create bookings",
+                "operationId": "Create-bookings",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Booking",
+                        "name": "AddBookingRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bookings.AddBookingRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -2221,6 +2349,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "bookings.AddBookingQuestionOptionRequest": {
+            "type": "object",
+            "properties": {
+                "question_option_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "bookings.AddBookingRequest": {
             "type": "object",
             "required": [
@@ -2231,6 +2370,17 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/bookings.BookingRequest"
+                    }
+                }
+            }
+        },
+        "bookings.AddBookingSkillRequest": {
+            "type": "object",
+            "properties": {
+                "skill_id": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
                     }
                 }
             }
@@ -2279,18 +2429,6 @@ const docTemplate = `{
                 },
                 "meeting_link": {
                     "type": "string"
-                },
-                "question_option_id": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "skill_id": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
                 }
             }
         },
