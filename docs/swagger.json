@@ -366,6 +366,59 @@
                 }
             }
         },
+        "/contact-us": {
+            "post": {
+                "description": "Adds new Contact Us Info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "contact-us"
+                ],
+                "summary": "Add Contact Us Info",
+                "operationId": "add-contact-us",
+                "parameters": [
+                    {
+                        "description": "ContactUsRequest",
+                        "name": "ContactUsRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/contact_us.ContactUsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/utils.ResponseMessage"
+                        }
+                    }
+                }
+            }
+        },
         "/experience/add-experience-skills/{id}": {
             "post": {
                 "description": "Add skill in existing experience",
@@ -2245,6 +2298,29 @@
                 }
             }
         },
+        "contact_us.ContactUsRequest": {
+            "type": "object",
+            "required": [
+                "email",
+                "message",
+                "name",
+                "subject"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                }
+            }
+        },
         "experience.AddSkillsRequest": {
             "type": "object",
             "properties": {
@@ -2767,6 +2843,9 @@
                     "type": "string"
                 },
                 "first_name": {
+                    "type": "string"
+                },
+                "job_title": {
                     "type": "string"
                 },
                 "last_name": {

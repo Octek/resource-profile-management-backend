@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Octek/resource-profile-management-backend.git/api/bookings"
+	"github.com/Octek/resource-profile-management-backend.git/api/contact_us"
 	"github.com/Octek/resource-profile-management-backend.git/api/experience"
 	"github.com/Octek/resource-profile-management-backend.git/api/projects"
 	"github.com/Octek/resource-profile-management-backend.git/api/questions"
@@ -134,6 +135,9 @@ func main() {
 	var userRepo = user.NewUserRepositoryPostgres(db)
 	userService := user.NewService(userRepo)
 	user.Routes(router, userService)
+
+	//contact-us
+	contact_us.Routes(router)
 
 	seed.SeedData(userService)
 

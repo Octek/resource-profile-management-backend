@@ -1,12 +1,22 @@
 package utils
 
-import "os"
+import (
+	"os"
+	"strconv"
+)
 
 const (
 	EnvironmentVariableNotSet    = " environment variable not set"
 	DB_SERVICE_CONNECTION_STRING = "DB_SERVICE_CONNECTION_STRING"
 	SWAGGER_HOST_URL             = "SWAGGER_HOST_URL"
 	AUTH_TOKEN                   = "AUTH_TOKEN"
+	SMTP_HOST                    = "SMTP_HOST"
+	SMTP_PORT                    = "SMTP_PORT"
+	SENDER_EMAIL                 = "SENDER_EMAIL"
+	SENDER_PASSWORD              = "SENDER_PASSWORD"
+	CC_EMAILS                    = "CC_EMAILS"
+	TO_EMAIL                     = "TO_EMAIL"
+	SEND_CC_EMAIL                = "SEND_CC_EMAIL"
 )
 
 func GetConnectionString() string {
@@ -31,6 +41,66 @@ func GetAuthToken() string {
 		panic(AUTH_TOKEN + EnvironmentVariableNotSet)
 	}
 	return bearerTokenString
+}
+
+func GetSMTPHost() string {
+	host, ok := os.LookupEnv(SMTP_HOST)
+	if !ok {
+		panic(SMTP_HOST + EnvironmentVariableNotSet)
+	}
+	return host
+}
+
+func GetSMTPPort() int {
+	portStr, ok := os.LookupEnv(SMTP_PORT)
+	if !ok {
+		panic(SMTP_PORT + EnvironmentVariableNotSet)
+	}
+	port, err := strconv.Atoi(portStr)
+	if err != nil {
+		panic("Invalid value for " + SMTP_PORT + ": " + err.Error())
+	}
+	return port
+}
+
+func GetSenderEmail() string {
+	email, ok := os.LookupEnv(SENDER_EMAIL)
+	if !ok {
+		panic(SENDER_EMAIL + EnvironmentVariableNotSet)
+	}
+	return email
+}
+
+func GetSenderPassword() string {
+	password, ok := os.LookupEnv(SENDER_PASSWORD)
+	if !ok {
+		panic(SENDER_PASSWORD + EnvironmentVariableNotSet)
+	}
+	return password
+}
+
+func GetCCEmails() string {
+	ccEmails, ok := os.LookupEnv(CC_EMAILS)
+	if !ok {
+		panic(CC_EMAILS + EnvironmentVariableNotSet)
+	}
+	return ccEmails
+}
+
+func GetToEmail() string {
+	toEmail, ok := os.LookupEnv(TO_EMAIL)
+	if !ok {
+		panic(TO_EMAIL + EnvironmentVariableNotSet)
+	}
+	return toEmail
+}
+
+func GetCCToggle() string {
+	ccToggle, ok := os.LookupEnv(SEND_CC_EMAIL)
+	if !ok {
+		panic(SEND_CC_EMAIL + EnvironmentVariableNotSet)
+	}
+	return ccToggle
 }
 
 const (
